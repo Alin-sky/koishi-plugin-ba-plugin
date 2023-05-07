@@ -1,9 +1,13 @@
 # koishi-plugin-ba-plugin
-# koishi插件，bluearchive.碧蓝档案工具箱，正在开发
-目前支持了抽卡模拟、千里眼和角色评分查询，
-之后会加其他查询模块和有意思的功能。
-阿林笨比一个，正在自学代码。
-一边学一边改。
+# koishi插件，bluearchive.碧蓝档案工具箱，正在不断开发新功能
+
+
+##功能
+- 抽卡模拟器
+- 角色评分
+- 国际服千里眼
+- 总力战模拟
+
 
 ## 声明
  - 数据来自于[bawiki](https://ba.gamekee.com/entry)
