@@ -1,5 +1,5 @@
 # koishi-plugin-ba-plugin
-# koishi插件，bluearchive.碧蓝档案工具箱，正在不断开发新功能
+## koishi插件，bluearchive.碧蓝档案工具箱，正在不断开发新功能
 
 
 ## 功能
@@ -12,7 +12,7 @@
 ## 声明
  - 数据来自于[bawiki](https://ba.gamekee.com/entry)
 
-## 更新内容
+## 更新日志
 
 ### 0.3.1 
   - 添加了保底算法
