@@ -17,6 +17,8 @@
 
 我会不断更新这个项目
 
+ba聊天水群：662889478
+
 
  - 数据来自于[bawiki](https://ba.gamekee.com/entry)
 
