@@ -19,8 +19,7 @@
 
 ba聊天水群：662889478
 
-
- - 数据来自于[bawiki](https://ba.gamekee.com/entry)
+数据来自于[bawiki](https://ba.gamekee.com/entry)
 
 ## 更新日志
 
