@@ -1,7 +1,6 @@
 # koishi-plugin-ba-plugin
 ## koishi插件，bluearchive.碧蓝档案工具箱，正在不断开发新功能
 
-
 ## 功能
 - 抽卡模拟器
 - 角色评分
