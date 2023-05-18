@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-ba-plugin",
   "description": "blueArchive.碧蓝档案游戏工具箱,拥有多种ba小功能,正在不断更新",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "contributors": [
     "alin <lvdonglin514@qq.com>",
     "Sanaene <22160528@zju.edu.cn>"
@@ -29,5 +29,15 @@
   ],
   "peerDependencies": {
     "koishi": "^4.12.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.194"
   }
+
+
+
+
 }
