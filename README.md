@@ -23,9 +23,11 @@
 
 感谢各位巨佬的指导🙏
 
+感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏
+
 ba聊天水群：662889478
 
-数据目前来源于[bawiki](https://ba.gamekee.com/entry)和[ba- wiki](https://github.com/lgc-NB2Dev/bawiki-data)
+数据目前来源于[bawiki](https://ba.gamekee.com/entry)和[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)
 
 ## 更新日志
 
