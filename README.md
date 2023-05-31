@@ -1,4 +1,5 @@
 # koishi-plugin-ba-plugin
+[![npm](https://img.shields.io/npm/v/koishi-plugin-ba-plugin?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
 ## koishi插件，bluearchive.碧蓝档案工具箱，正在不断开发新功能
 
 
