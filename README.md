@@ -1,7 +1,14 @@
+<div align="center">
+  
 # koishi-plugin-ba-plugin
+  
+ <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/logo1.png" width="119" height="170">
+
+
+
 [![npm](https://img.shields.io/npm/v/koishi-plugin-ba-plugin?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
 ## koishi插件，bluearchive.碧蓝档案工具箱，正在不断开发新功能
-
+</div>
 
 ## 功能
 - 抽卡模拟器
@@ -26,8 +33,8 @@
 交互和功能设计灵感借鉴了[arona](https://github.com/diyigemt/arona)
 和[NoneBot-Plugin-BAWiki](https://github.com/lgc-NB2Dev/nonebot-plugin-bawiki)
 
-感谢各位巨佬的指导🙏
-
+感谢各位巨佬的指导🙏<br/>
+感谢各位巨佬帮忙测试🙏<br/>
 感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏
 
 ba聊天水群：662889478
