@@ -1,22 +1,33 @@
-/*抽卡实现*/
+/*抽卡实现模块*/
 /*可能实现功能 UP池独立设置  井(图片处理过于耗费时间)*/
 import { Context, Eval, Random, Schema, h } from 'koishi'
-import { Config } from '../index'
 import { gachaImageOne, gachaImageTen } from './ps'
-declare module '../gacha/index' {
-    interface Config {
-        'UP★★★': number
-        '★★★': number
-        '★★': number
-        '★': number
-    }
+export interface gachaConfig {
+    '日服默认UP角色': string
+    '国际服默认UP角色': string
+    'UP★★★': number
+    '★★★': number
+    '★★': number
+    '★': number
 }
+export const gachaConfig: Schema<gachaConfig> = Schema.intersect([
+    Schema.object({
+        '日服默认UP角色': Schema.string().default("").description('默认日服UP的学生'),
+        '国际服默认UP角色': Schema.string().default("").description('默认日服UP的学生'),
+    }).description('卡池设置'),
+    Schema.object({
+        'UP★★★': Schema.number().min(0).default(0.7).max(100).description('UP学生的概率'),
+        '★★★': Schema.number().min(0).default(2.3).max(100).description('★★★学生的概率'),
+        '★★': Schema.number().min(0).default(18.5).max(100).description('★★学生的概率'),
+        '★': Schema.number().min(0).default(78.5).max(100).description('★学生的概率'),
+    }).description('卡池概率设置(双服通用))')]
+)
 //概率设置
 interface Probability {
     [key: string]: number
 }
 const PB: Probability = {}
-export function gachaProbability(config: Config) {
+export function gachaProbability(config: gachaConfig) {
     PB['UP'] = config['UP★★★']
     PB['SSR'] = config['★★★']
     PB['SR'] = config['★★']
@@ -72,13 +83,12 @@ export async function gacha(ctx: Context, args: string[], user: string, UP) {
     const GACHAFUNCTION = args[1] === '十连' ? gacha10 : gacha1;
     const GACHAIMAGEFUNCTION = args[1] === '十连' ? gachaImageTen : gachaImageOne;
     const NSTAT = args[0] === '日服' ? 'Jstat' : 'Istat';
-    const USTAT = args[0] === '日服' ? temporary.UPGacha ? 'JNUPstat' : 'JNstat' : temporary.UPGacha ? 'INUPstat' : 'INstat';
+    const USTAT = args[0] === '日服' ? temporary.UPGacha ? 'JUPstat' : 'JNstat' : temporary.UPGacha ? 'IUPstat' : 'INstat';
     await ctx.database.set('bauser', { userid: user }, { [NSTAT]: { $add: [{ $: NSTAT }, GACHACOUNT] } as Eval<Number>, [USTAT]: { $add: [{ $: USTAT }, GACHACOUNT] } as Eval<Number> });
     const STAT = await ctx.database.get('bauser', { userid: user });
     await GACHAFUNCTION(temporary, cardArray, ctx, user);
     let image = await GACHAIMAGEFUNCTION(temporary, cardArray, STAT[0][USTAT], RPool, SRPool);
-    path = temporary.raindow ? 'node_modules/koishi-plugin-ba-plugin/lib/assets/color.gif' : 
-    'node_modules/koishi-plugin-ba-plugin/lib/assets/blue.gif';
+    path = temporary.raindow ? 'external/bagacha/assets/color.gif' : 'external/bagacha/assets/blue.gif';
     resetPool();
     return image;
 }
@@ -151,10 +161,4 @@ async function pickup(temporary, ctx: Context, user) {
         temporary.card = SSRPool[Random.int(SSRPool.length)]
     }
 
-}
-//整活   
-export async function gachaGroup(session, config) {
-    let groupPool = await session.bot.getGuildMemberList(config.guild);
-    let groupCard = groupPool[Random.int(0, groupPool.length)];
-    session.send('随便抽个群友撅:\n' + h.image(groupCard.avatar) + '\n他的名字是 ' + groupCard.username);
 }

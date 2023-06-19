@@ -1,4 +1,4 @@
-/*数据库操作*/
+/*数据库操作模块*/
 import { Context } from 'koishi'
 import { Config } from '..'
 import { StudentPool } from './data'
@@ -23,10 +23,10 @@ export interface BAUser {
     userid: string
     Istat: number       //国际总抽卡次数
     INstat: number      //国际普通池次数
-    INUPstat: number    //国际UP池次数
+    IUPstat: number    //国际UP池次数
     Jstat: number       //日服总抽卡次数
     JNstat: number      //日服普通池次数
-    JNUPstat: number    //日服当前UP池次数
+    JUPstat: number    //日服当前UP池次数
     Istar: number       //国际累计获得⭐⭐⭐
     INstar: number      //国际普通池⭐⭐⭐
     IUPstar: number     //国际UP池⭐⭐⭐
@@ -42,7 +42,7 @@ export module DB {
         ctx.model.extend('student', { name: 'string', rare: 'integer', IUP: { type: 'boolean', initial: false }, JUP: { type: 'boolean', initial: false }, url: { type: 'string', initial: 'null' }, id: 'integer', limit: { type: 'integer', initial: 0 }, server: { type: 'integer', initial: 0 } }, { unique: ['name'] });
     }
     //更新学生表
-   export async function stuUpdate(ctx: Context) {
+    export async function stuUpdate(ctx: Context) {
         let connected = false;
         while (!connected) {
             if (ctx.database == null) {
@@ -51,9 +51,9 @@ export module DB {
             } else {
                 connected = true;
                 for (let stu of StudentPool) {
-                    const StUDENT = await ctx.database.get('student', { name: stu.name });
-                    if (StUDENT.length === 0) {
-                        ctx.database.create('student', { name: stu.name, rare: stu.rare, limit: stu.limit, server: stu.server });
+                    const STUDENT = await ctx.database.get('student', { name: stu.name })
+                    if (STUDENT.length === 0) {
+                        ctx.database.create('student', { name: stu.name, rare: stu.rare, limit: stu.limit, server: stu.server })
                     }
                 }
             }
@@ -63,8 +63,8 @@ export module DB {
     export async function BAUserTable(ctx: Context) {
         ctx.model.extend('bauser', {
             name: 'string', userid: 'string',
-            Istat: { type: 'integer', initial: 0 }, INstat: { type: 'integer', initial: 0 }, INUPstat: { type: 'integer', initial: 0 },
-            Jstat: { type: 'integer', initial: 0 }, JNstat: { type: 'integer', initial: 0 }, JNUPstat: { type: 'integer', initial: 0 },
+            Istat: { type: 'integer', initial: 0 }, INstat: { type: 'integer', initial: 0 }, IUPstat: { type: 'integer', initial: 0 },
+            Jstat: { type: 'integer', initial: 0 }, JNstat: { type: 'integer', initial: 0 }, JUPstat: { type: 'integer', initial: 0 },
             Istar: { type: 'integer', initial: 0 }, INstar: { type: 'integer', initial: 0 }, IUPstar: { type: 'integer', initial: 0 }, IUUPstar: { type: 'integer', initial: 0 },
             Jstar: { type: 'integer', initial: 0 }, JNstar: { type: 'integer', initial: 0 }, JUPstar: { type: 'integer', initial: 0 }, JUUPstar: { type: 'integer', initial: 0 }
         }, { primary: ['userid'], unique: ['userid'], autoInc: false })
@@ -168,17 +168,16 @@ export module DB {
     }
     //删除学生
     export async function delStu(ctx: Context, args: any[]) {
-        
         const TIP_MESSAGE = "删除学生\t delstu 名字 \n示例：\ndelstu 日奈\n使用-h 获取详细帮助"
         const LENGTH_ERROR_MESSAGE = '请输入正确的参数列表.'
         if (args.length == 0) {
             return TIP_MESSAGE
-        }
-        if (args.length !== 1) {
+        } else if (args.length > 1) {
             return LENGTH_ERROR_MESSAGE
+        } else {
+            await ctx.database.remove('student', { name: [args[0]] });
+            return ('已清空名为：' + args[0] + ' 的学生档案');
         }
-        await ctx.database.remove('student', { name: [args[0]] });
-        return ('已清空名为：' + args[0] + ' 的学生档案');
     }
     //获取抽卡统计数据
     export async function bastat(ctx: Context, user) {
@@ -194,9 +193,13 @@ export module DB {
             }
         } catch (error) {
             await ctx.model.create('bauser', { name: session.author.username, userid: session.userId });
-            session.send(error);
-            session.send('执行用户初始化');
+            await session.send(error+'\n执行用户初始化');
+            //session.send('执行用户初始化');
         }
     }
+    //重置表
+    export async function clearTable(ctx: Context) {
+        ctx.database.drop('student')
+        ctx.database.drop('bauser')
+    }
 }
-

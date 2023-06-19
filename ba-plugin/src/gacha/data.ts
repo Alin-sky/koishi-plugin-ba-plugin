@@ -1,4 +1,5 @@
-/*数据初始化*/
+/*数据初始化模块*/
+/*可能实现功能，爬取Wiki角色列表自动更新*/
 class stu {
     name: string;
     rare: number;
@@ -14,6 +15,7 @@ class stu {
 function createStu(name: string, rare: number, limit: number, server: number) {
     return new stu(name, rare, limit, server);
 }
+//国际服实装    
 let InterStudentPool = [
     createStu("白子", 3, 0, 0), createStu("芹香", 2, 0, 0), createStu("星野", 3, 0, 0), createStu("绫音", 2, 0, 0), createStu("佳代子", 2, 0, 0), createStu("阿露", 3, 0, 0), createStu("千夏", 1, 0, 0), createStu("伊织", 3, 0, 0),
     createStu("日奈", 3, 0, 0), createStu("淳子", 2, 0, 0), createStu("泉", 3, 0, 0), createStu("明里", 2, 0, 0), createStu("晴奈", 3, 0, 0), createStu("枫香", 2, 0, 0), createStu("日富美", 3, 0, 0), createStu("好美", 1, 0, 0),
@@ -32,6 +34,7 @@ let InterStudentPool = [
     createStu("诺亚", 3, 0, 0), createStu("响(应援团)", 1, 1, 0), createStu("朱音(兔女郎)", 3, 0, 0), createStu("优香(体操服)", 3, 2, 0), createStu("玛丽(体操服)", 3, 2, 0), createStu("莲见(体操服)", 1, 1, 0), createStu("日鞠", 3, 0, 0), createStu("时雨", 3, 0, 0),
     createStu("芹娜(圣诞)", 3, 0, 0), createStu("花绘(圣诞)", 3, 0, 0)
 ]
+//国际服未实装  定期更新数组
 let JPStudentPool = [
     createStu("晴奈(正月)", 3, 2, 1), createStu("淳子(正月)", 1, 1, 1), createStu("枫香(正月)", 3, 2, 1), createStu("美弥", 3, 0, 1), createStu("未花", 3, 2, 1), createStu("惠", 3, 0, 1),
     createStu("康娜", 3, 0, 1), createStu("樱子", 3, 0, 1), createStu("时", 3, 2, 1), createStu("渚", 3, 2, 1), createStu("小雪", 3, 0, 1), createStu("佳代子(正月)", 3, 0, 1), createStu("遥香(正月)", 3, 0, 1), createStu("果穗", 3, 0, 1),

@@ -1,47 +1,47 @@
-/*图片处理*/
+/*图形处理模块*/
 import fs from 'fs'
 import path from 'path'
 import Jimp from 'jimp'
 //学生头像处理 
 async function stuCardmaker(card, RPool, SRPool) {
     if (RPool.some((item: { name: any; }) => item.name === card)) {
-        const CARDSTAR1 = await Jimp.read(path.resolve(__dirname, '../assets/☆card.png'))
-        const CARDSTAR2 = await Jimp.read(path.resolve(__dirname, '../assets/card☆1.png'))
+        const CARDSTAR1 = await Jimp.read(path.resolve(__dirname, '../../assets/☆card.png'))
+        const CARDSTAR2 = await Jimp.read(path.resolve(__dirname, '../../assets/card☆1.png'))
         return await cardmaker(CARDSTAR1, CARDSTAR2, card)
     } else if (SRPool.some((item: { name: any; }) => item.name === card)) {
-        const CARDSTAR1 = await Jimp.read(path.resolve(__dirname, '../assets/☆☆card.png'))
-        const CARDSTAR2 = await Jimp.read(path.resolve(__dirname, '../assets/card☆2.png'))
+        const CARDSTAR1 = await Jimp.read(path.resolve(__dirname, '../../assets/☆☆card.png'))
+        const CARDSTAR2 = await Jimp.read(path.resolve(__dirname, '../../assets/card☆2.png'))
         return await cardmaker(CARDSTAR1, CARDSTAR2, card)
     } else {
-        const CARDSTAR1 = await Jimp.read(path.resolve(__dirname, '../assets/☆☆☆card.png'))
-        const CARDSTAR2 = await Jimp.read(path.resolve(__dirname, '../assets/card☆3.png'))
+        const CARDSTAR1 = await Jimp.read(path.resolve(__dirname, '../../assets/☆☆☆card.png'))
+        const CARDSTAR2 = await Jimp.read(path.resolve(__dirname, '../../assets/card☆3.png'))
         return await cardmaker(CARDSTAR1, CARDSTAR2, card)
     }
     //头像处理
     async function cardmaker(CARDSTAR1, CARDSTAR2, card) {
         let cache = new Map()
-        const CARDSTAR3 = await Jimp.read(path.resolve(__dirname, '../assets/Student/' + card + '.png'))
-        const CARDSTAR4 = await Jimp.read(path.resolve(__dirname, '../assets/margin.png'))
-        const composedImage = await CARDSTAR1.scan(0, 0, CARDSTAR1.getWidth(), CARDSTAR1.getHeight(), function (_x, _y, index) {
+        const CARDSTAR3 = await Jimp.read(path.resolve(__dirname, '../../assets/Student/' + card + '.png'))
+        const CARDSTAR4 = await Jimp.read(path.resolve(__dirname, '../../assets/margin.png'))
+        const TEMPIMAGE = await CARDSTAR1.scan(0, 0, CARDSTAR1.getWidth(), CARDSTAR1.getHeight(), function (_x, _y, index) {
             head(CARDSTAR1, CARDSTAR3.resize(CARDSTAR1.getWidth(), CARDSTAR1.getHeight()), index)
         }).composite(CARDSTAR2, 0, 0, {
             mode: Jimp.BLEND_SOURCE_OVER,
             opacitySource: 0.9,
             opacityDest: 1,
         }).composite(CARDSTAR4, 0, 0)
-        composedImage.writeAsync(path.resolve(__dirname, '../assets/temp/' + card + '.png'))
-        const BUFFER = await composedImage.getBufferAsync(Jimp.MIME_PNG)
+        TEMPIMAGE.writeAsync(path.resolve(__dirname, '../../assets/temp/' + card + '.png'))
+        const BUFFER = await TEMPIMAGE.getBufferAsync(Jimp.MIME_PNG)
         cache.set('buffer1', BUFFER)
         return cache
     }
     //位图处理
     function head(CARDSTAR1, CARDSTAR3, index) {
-        const pacity1 = CARDSTAR1.bitmap.data[index + 3]
-        if (pacity1 === 0) {
+        const PACITY1 = CARDSTAR1.bitmap.data[index + 3]
+        if (PACITY1 === 0) {
             return
         } else {
-            const pacity3 = CARDSTAR3.bitmap.data[index + 3]
-            if (pacity3 !== 0) {
+            const PACITY3 = CARDSTAR3.bitmap.data[index + 3]
+            if (PACITY3 !== 0) {
                 const [r, g, b] = [
                     CARDSTAR3.bitmap.data[index],
                     CARDSTAR3.bitmap.data[index + 1],
@@ -50,7 +50,7 @@ async function stuCardmaker(card, RPool, SRPool) {
                 CARDSTAR1.bitmap.data[index] = r;
                 CARDSTAR1.bitmap.data[index + 1] = g;
                 CARDSTAR1.bitmap.data[index + 2] = b;
-                CARDSTAR1.bitmap.data[index + 3] = pacity3;
+                CARDSTAR1.bitmap.data[index + 3] = PACITY3;
             }
         }
     }
@@ -58,8 +58,8 @@ async function stuCardmaker(card, RPool, SRPool) {
 //添加UP标签
 async function setpickup(stuCard, font) {
     let cache = new Map()
-    const buffer = await stuCard.print(font, 15, -10, "Pick Up!").getBufferAsync(Jimp.MIME_PNG)
-    cache.set('buffer2', buffer)
+    const BUFFER = await stuCard.print(font, 15, -10, "Pick Up!").getBufferAsync(Jimp.MIME_PNG)
+    cache.set('buffer2', BUFFER)
     return cache
 }
 //单抽结算图 
@@ -67,12 +67,12 @@ export async function gachaImageOne(_temporary, cardArray, stat, RPool, SRPool) 
     let outputImage = new Map()
     const CARD = cardArray[0].name
     const PICKUP = cardArray[0].pickup
-    const FONT = await Jimp.loadFont(path.resolve(__dirname, '../assets/font/ArialBlack.fnt'))
-    const FONT2 = await Jimp.loadFont(path.resolve(__dirname, '../assets/font/BA2.fnt'))
-    let gachaBG = await Jimp.read(path.resolve(__dirname, '../assets/gachaBG.png'))
-    const ISEXIST = fs.existsSync(path.resolve(__dirname, '../assets/temp/' + CARD + '.png'))
+    const FONT = await Jimp.loadFont(path.resolve(__dirname, '../../assets/font/ArialBlack.fnt'))
+    const FONT2 = await Jimp.loadFont(path.resolve(__dirname, '../../assets/font/BA2.fnt'))
+    let gachaBG = await Jimp.read(path.resolve(__dirname, '../../assets/gachaBG.png'))
+    const ISEXIST = fs.existsSync(path.resolve(__dirname, '../../assets/temp/' + CARD + '.png'))
     if (ISEXIST) {//存在
-        var stuCard = await Jimp.read(path.resolve(__dirname, '../assets/temp/' + CARD + '.png'))
+        var stuCard = await Jimp.read(path.resolve(__dirname, '../../assets/temp/' + CARD + '.png'))
     } else {
         let cache = await stuCardmaker(CARD, RPool, SRPool)
         var stuCard = await Jimp.read(cache.get('buffer1'))
@@ -93,17 +93,17 @@ export async function gachaImageOne(_temporary, cardArray, stat, RPool, SRPool) 
 export async function gachaImageTen(_temporary, cardArray, stat, RPool, SRPool) {
     let cache = new Map()
     let outputImage = new Map()
-    const FONT = await Jimp.loadFont(path.resolve(__dirname, '../assets/font/ArialBlack.fnt'))
-    const FONT2 = await Jimp.loadFont(path.resolve(__dirname, '../assets/font/BA2.fnt'))
-    let gachaBG = await Jimp.read(path.resolve(__dirname, '../assets/gachaBG.png'))
-    let tempCard = await Jimp.read(path.resolve(__dirname, '../assets/☆card.png'))
+    const FONT = await Jimp.loadFont(path.resolve(__dirname, '../../assets/font/ArialBlack.fnt'))
+    const FONT2 = await Jimp.loadFont(path.resolve(__dirname, '../../assets/font/BA2.fnt'))
+    let gachaBG = await Jimp.read(path.resolve(__dirname, '../../assets/gachaBG.png'))
+    let tempCard = await Jimp.read(path.resolve(__dirname, '../../assets/☆card.png'))
     let stuPromises = cardArray.map(async (cardtemp) => {
         let card = cardtemp.name
         const PICKUP = cardtemp.pickup
-        const ISEXIST = fs.existsSync(path.resolve(__dirname, '../assets/temp/' + card + '.png'))
+        const ISEXIST = fs.existsSync(path.resolve(__dirname, '../../assets/temp/' + card + '.png'))
         let stuCard
         if (ISEXIST) {
-            stuCard = await Jimp.read(path.resolve(__dirname, '../assets/temp/' + card + '.png'))
+            stuCard = await Jimp.read(path.resolve(__dirname, '../../assets/temp/' + card + '.png'))
         } else {
             cache = await stuCardmaker(card, RPool, SRPool)
             stuCard = await Jimp.read(cache.get('buffer1'))
@@ -112,7 +112,7 @@ export async function gachaImageTen(_temporary, cardArray, stat, RPool, SRPool) 
             let cache2 = await setpickup(stuCard, FONT)
             return await Jimp.read(cache2.get('buffer2'))
         } else {
-            let pathtemp = '../assets/temp/' + card + '.png'
+            let pathtemp = '../../assets/temp/' + card + '.png'
             return await Jimp.read(path.resolve(__dirname, pathtemp))
         }
     })
