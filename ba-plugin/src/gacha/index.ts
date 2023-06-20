@@ -28,7 +28,7 @@ export const gachaplugin = ({
                 let UP = false;
                 let user = session.userId;
                 let result = await gacha(ctx, args, user, UP)
-                session.send(h('message', [session.author.username + '的抽卡结果：\n', h.image(pathToFileURL(path).href), h.image(result.get('buffer3'), 'image/png')]))
+                session.send(h('message', [session.author.username + '的抽卡结果：\n', h.image(pathToFileURL(path).href), h.image(result.get('buffer'), 'image/png')]))
             })
         ctx.command('ba.up', 'UP池抽卡').example('ba.up 日服 单抽')
             .usage('说明：用于执行UP池抽取')
@@ -50,7 +50,7 @@ export const gachaplugin = ({
                 const UP = true;
                 let user = session.userId;
                 let result = await gacha(ctx, args, user, UP);
-                session.send(h('message', [session.author.username + '的抽卡结果：\n', h.image(pathToFileURL(path).href), h.image(result.get('buffer3'), 'image/png')]));
+                session.send(h('message', [session.author.username + '的抽卡结果：\n', h.image(pathToFileURL(path).href), h.image(result.get('buffer'), 'image/png')]));
             })
         ctx.command('ba.setup', '设置UP学生').example('ba.setup 日服 梓')
             .usage('说明：设置池UP学生\n参数：日服/国际服 名字')
@@ -78,7 +78,7 @@ export const gachaplugin = ({
                 await DB.setbauser(ctx, session);
                 if (args.length > 0) { return '保留实现' }
                 let user = session.userId;
-                let data = await DB.bastat(ctx, user);
+                let data = await DB.baStat(ctx, user);
                 session.send('用户:' + session.author.username +
                     '\n日服卡池抽卡次数:' + data[0].Jstat + '\n日服UP池抽卡次数:' + data[0].JUPstat + '\n日服普池抽卡次数:' + data[0].JNstat +
                     '\n累计获得⭐⭐⭐学生：' + data[0].Jstar + '\n获得UP⭐⭐⭐学生：' + data[0].JUUPstar + '\nUP池获得⭐⭐⭐学生：' + data[0].JUPstar + '\n普池获得⭐⭐⭐学生：' + data[0].JNstar +
@@ -89,6 +89,11 @@ export const gachaplugin = ({
         ctx.command('重置插件数据库', '重置数据库', { hidden: true } as Partial<Command.Config>)
             .action(async ({ session }, args) => {
                 await DB.clearTable(ctx)
+            })
+        ctx.command('ba.卡池查询', '展示当前卡池所有角色')
+            .action(async ({ session }) => {
+                let result = await DB.showStu(ctx)
+                session.send(h('message', ['目前国际服卡池实装3星：\n',h.image(result[0].get('buffer'), 'image/png'),'日服实装国际服未实装：\n',h.image(result[1].get('buffer'), 'image/png')]));
             })
     }
 })

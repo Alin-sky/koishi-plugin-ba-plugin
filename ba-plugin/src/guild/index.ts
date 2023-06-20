@@ -1,7 +1,3 @@
-/** 
- * q
- */
-
 
 import { clearInterval } from "timers"
 import { Command, Context, Random, Schema, h } from "koishi"
@@ -9,6 +5,7 @@ import path, { resolve } from "path"
 import { pathToFileURL } from "url"
 import { Config } from ".."
 import Jimp from "jimp"
+import { gachaImage } from "../gacha/ps"
 export interface guildConfig {
   hour: number
   整活用群号: string
@@ -89,7 +86,8 @@ export const guildPlugin = ({
     ctx.command('抽群U', '(beta版)群组隔离', { hidden: true } as Partial<Command.Config>)
       .action(async ({ session }, ...args) => {
         if (session.guildId === config.guild.整活用群号) {
-          await gachaGroup(session, config)
+          let result = await gachaGroup(session, config)
+          session.send(h('message', [session.author.username + '的抽卡结果：\n', h.image(result.get('buffer'), 'image/png')]))
         } else {
           return '群限定指令.'
         }
@@ -120,42 +118,23 @@ export async function gachaGroup(session, config: Config) {
     adminPB: ADMIN.length,
     memberPB: MEMBER.length
   }
-  let cards = []
-  let outputImage = new Map()
+  const cards = []
   for (let i = 0; i < 10; i++) {
-    const CARD = Random.weightedPick(PB);
-    switch (CARD) {
-      case 'ownerPB':
-        let ownercard = OWNER[Random.int(OWNER.length)].avatar
-        cards.push(ownercard)
-        break;
-      case 'adminPB':
-        let admincard = ADMIN[Random.int(ADMIN.length)].avatar
-        cards.push(admincard)
-        break
-      case 'memberPB':
-        let membercard = MEMBER[Random.int(MEMBER.length)].avatar
-        cards.push(membercard)
-        break
-      default:
-        return '出故障了捏'
+    let qunU
+    const CARD = Random.weightedPick(PB)
+    if(CARD ==='ownerPB'){
+      qunU = OWNER[Random.int(OWNER.length)]
+      qunU.name = qunU.username
     }
+    else if (CARD ==='adminPB'){
+      qunU = ADMIN[Random.int(ADMIN.length)]
+      qunU.name = qunU.username
+    }
+    else{
+      qunU = MEMBER[Random.int(MEMBER.length)]
+      qunU.name = qunU.username
+    }
+    cards.push(qunU);
   }
-  let gachaBG = await Jimp.read(path.resolve(__dirname, '../../assets/gachaBG.png'))
-  let tempCard = await Jimp.read(path.resolve(__dirname, '../../assets/☆card.png'))
-  let cardsImage = cards.map(async (cardtemp) => {
-    return await Jimp.read(cardtemp)
-  })
-  await Promise.all(cardsImage).then(async (img) => {
-    let width = (gachaBG.getWidth() - (tempCard.getWidth() * 5)) / 2
-    let height1 = gachaBG.getHeight() / 4 - tempCard.getHeight() / 2
-    let height2 = gachaBG.getHeight() / 2 - tempCard.getHeight() / 3
-    img.forEach((img, index) => {
-      if (index < 5) { gachaBG.composite(img, width + tempCard.getWidth() * index, height1) }
-      else { gachaBG.composite(img, width + tempCard.getWidth() * (index - 5), height2) }
-    })
-  })
-  const BUFFER = await gachaBG.getBufferAsync(Jimp.MIME_PNG)
-  let image = await outputImage.set('buffer3', BUFFER)
-  await session.send(h('message', [session.author.username + '的抽卡结果：\n', h.image(image.get('buffer3'), 'image/png')]))
+  return await gachaImage.result(cards, -1, MEMBER, ADMIN) 
 }

@@ -1,7 +1,10 @@
 /*数据库操作模块*/
+import fs from 'fs'
 import { Context } from 'koishi'
 import { Config } from '..'
 import { StudentPool } from './data'
+import Jimp from 'jimp'
+import path from 'path'
 declare module 'koishi' {
     interface Tables {
         student: Student
@@ -80,6 +83,7 @@ export module DB {
         const DUP = args[0] === '日服' ? '日服默认UP角色' : '国际服默认UP角色';
         const SUP = args[0] === '日服' ? 'JUP' : 'IUP'
         const SUUP = args[0] === '日服' ? 'JUUP' : 'IUUP'
+        const SERVERN = args[0] === '日服' ? 1 : 0
         let oldUP = await ctx.database.get('student', { [SUP]: { $eq: true } }, ['name']);
         if (args.length !== 2) {
             return LENGTH_ERROR_MESSAGE
@@ -180,7 +184,7 @@ export module DB {
         }
     }
     //获取抽卡统计数据
-    export async function bastat(ctx: Context, user) {
+    export async function baStat(ctx: Context, user) {
         return await ctx.database.get('bauser', { userid: user });
     }
     //初始化用户数据
@@ -193,7 +197,7 @@ export module DB {
             }
         } catch (error) {
             await ctx.model.create('bauser', { name: session.author.username, userid: session.userId });
-            await session.send(error+'\n执行用户初始化');
+            await session.send(error + '\n执行用户初始化');
             //session.send('执行用户初始化');
         }
     }
@@ -201,5 +205,56 @@ export module DB {
     export async function clearTable(ctx: Context) {
         ctx.database.drop('student')
         ctx.database.drop('bauser')
+    }
+    //展示目前卡池
+    export async function showStu(ctx: Context) {
+        let cardpool = []
+        let IServer = await ctx.database.get('student', { server: 0, rare: 3 }, ['name'])
+        let JServer = await ctx.database.get('student', { server: 1, rare: 3 }, ['name'])
+        let JP = '日服'
+        let IN = '国际服'
+        cardpool.push(await maker(IServer, IN))
+        cardpool.push(await maker(JServer, JP))
+        async function maker(server: any[], S) {
+            const SIZE = 150
+            const COLS = 15
+            const ROWS = Math.floor(server.length / COLS)
+            const tempImagePath = path.resolve(__dirname, '../../assets/temp/' + S + '.png')
+            if (fs.existsSync(tempImagePath)) {
+                let temp = await Jimp.read(tempImagePath)
+                let isEmpty = true
+                temp.scan(((server.length % COLS) * SIZE + 1), (ROWS * SIZE + 1), SIZE, SIZE, (_x, _y, index) => {
+                    const ALPHA = temp.bitmap.data[index + 3];
+                    if (ALPHA === 0 || ALPHA === undefined) {
+                    } else {
+                        isEmpty = false
+                        return
+                    }
+                })
+                if (isEmpty) {
+                    return new Map().set('buffer', (await temp.getBase64Async(Jimp.MIME_PNG)))
+                }else{
+                    return maker2(server,COLS,ROWS,SIZE,S)
+                }
+            } else {
+                    return maker2(server,COLS,ROWS,SIZE,S)
+            }
+        }
+        async function maker2(server,COLS,ROWS,SIZE,S) {
+            let Promises = server.map(async (cardtemp) => {
+                return (await Jimp.read(path.resolve(__dirname, '../../assets/student/' + cardtemp.name + '.png'))).resize(SIZE, SIZE)
+            })
+            let tableImage = new Jimp(COLS * SIZE, (ROWS + 1) * SIZE)
+            await Promise.all(Promises).then(async (img) => {
+                img.forEach((img, index) => {
+                    let col = index % COLS
+                    let row = Math.floor(index / COLS)
+                    tableImage.composite(img, col * SIZE, row * SIZE)
+                })
+            })
+            await tableImage.writeAsync(path.resolve(__dirname, '../../assets/temp/' + S + '.png'))
+            return new Map().set('buffer', (await tableImage.getBase64Async(Jimp.MIME_PNG)))   
+        }
+        return cardpool
     }
 }
