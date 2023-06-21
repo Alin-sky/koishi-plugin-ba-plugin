@@ -1,7 +1,10 @@
 /*抽卡实现模块*/
-/*可能实现功能 UP池独立设置 */
-import { Context, Eval, Random, Schema } from 'koishi'
-import { gachaImage } from './ps'
+/*可能实现功能 UP池独立设置  井(图片处理过于耗费时间)*/
+import { Context, Eval, Random, Schema, h } from 'koishi'
+import { gachaImageOne, gachaImageTen } from './ps'
+import { pathToFileURL } from 'url'
+import { resolve } from 'path'
+import { alincloud } from '../ba-alin'
 export interface gachaConfig {
     '日服默认UP角色': string
     '国际服默认UP角色': string
@@ -74,30 +77,62 @@ export async function gacha(ctx: Context, args: string[], user: string, UP) {
         pickup: false, //UP判断
         raindow: false, //出彩判断
         UPGacha: false, //UP池判断
-        server: true,//服务器判断
+        server: true
     }
     temporary.UPGacha = UP;
     temporary.server = args[0] === '日服' ? true : false;
     await gachaPool(ctx, temporary);
     const GACHACOUNT = args[1] === '十连' ? 10 : 1;
-    const STAT = await ctx.database.get('bauser', { userid: user });
+    const GACHAFUNCTION = args[1] === '十连' ? gacha10 : gacha1;
+    const GACHAIMAGEFUNCTION = args[1] === '十连' ? gachaImageTen : gachaImageOne;
     const NSTAT = args[0] === '日服' ? 'Jstat' : 'Istat';
     const USTAT = args[0] === '日服' ? temporary.UPGacha ? 'JUPstat' : 'JNstat' : temporary.UPGacha ? 'IUPstat' : 'INstat';
     await ctx.database.set('bauser', { userid: user }, { [NSTAT]: { $add: [{ $: NSTAT }, GACHACOUNT] } as Eval<Number>, [USTAT]: { $add: [{ $: USTAT }, GACHACOUNT] } as Eval<Number> });
-    await baGacha(temporary, cardArray, ctx, user, GACHACOUNT);
-    let image = await gachaImage.result(cardArray, STAT[0][USTAT], RPool, SRPool);
-    resetPool();//重置卡池
-    path = temporary.raindow ? 'external/bagacha/assets/color.gif' : 'external/bagacha/assets/blue.gif';
-    return image
+    const STAT = await ctx.database.get('bauser', { userid: user });
+    await GACHAFUNCTION(temporary, cardArray, ctx, user);
+    let image = await GACHAIMAGEFUNCTION(temporary, cardArray, STAT[0][USTAT], RPool, SRPool);
+    path = temporary.raindow ?
+    (pathToFileURL(resolve(__dirname, '../assets/color.gif')).href):
+    (pathToFileURL(resolve(__dirname, '../assets/blue.gif')).href) ;
+    resetPool();
+    return image;
 }
-//抽卡启动时
-async function baGacha(temporary, cardArray, ctx: Context, user, GACHACOUNT) {
-    for (let i = 0; i < GACHACOUNT; i++) {
-        cardArray.push({ name: await gachaNormal(i, temporary, ctx, user), pickup: temporary.pickup })
+//单抽
+async function gacha1(temporary, cardArray, ctx: Context, user) {
+    cardArray.push({ name: await gachaNormal(temporary, ctx, user), pickup: temporary.pickup })
+}
+//十抽
+async function gacha10(temporary, cardArray, ctx: Context, user) {
+    for (let i = 0; i < 10; i++) {
+        if (i < 9) {
+            cardArray.push({ name: await gachaNormal(temporary, ctx, user), pickup: temporary.pickup })
+        } else {
+            cardArray.push({ name: await gachaFloor(temporary, ctx, user), pickup: temporary.pickup })
+        }
     }
 }
-//抽卡进行时
-async function gachaNormal(i, temporary, ctx: Context, user) {
+//保底
+async function gachaFloor(temporary, ctx: Context, user) {
+    temporary.pickup = false;
+    const CARD = Random.weightedPick(PB);
+    if (CARD === 'SSR' || CARD === 'UP') {//⭐⭐⭐
+        temporary.raindow = true;
+        const STAR = temporary.server ? 'Jstar' : 'Istar';
+        await ctx.model.set('bauser', { userid: user }, { [STAR]: { $add: [{ $: STAR }, 1] } as Eval<Number> });
+        if (CARD === 'UP') {
+            await pickup(temporary, ctx, user)//UP判断
+        } else {
+            const USTAR = temporary.UPGacha ? temporary.server ? 'JUPstar' : 'IUPstar' : temporary.server ? 'JNstar' : 'INstar';
+            await ctx.model.set('bauser', { userid: user }, { [USTAR]: { $add: [{ $: USTAR }, 1] } as Eval<Number> });
+            temporary.card = SSRPool[Random.int(SSRPool.length)]
+        }
+    } else {//⭐⭐
+        temporary.card = SRPool[Random.int(RPool.length)]
+    }
+    return temporary.card.name
+}
+//普通
+async function gachaNormal(temporary, ctx: Context, user) {
     temporary.pickup = false;
     const CARD = Random.weightedPick(PB);
     if (CARD === 'SSR' || CARD === 'UP') {//⭐⭐⭐
@@ -113,12 +148,8 @@ async function gachaNormal(i, temporary, ctx: Context, user) {
         }
     } else if (CARD === 'SR') {//⭐⭐
         temporary.card = SRPool[Random.int(SRPool.length)]
-    } else { //⭐
-        if (i == 9) {
-            temporary.card = SRPool[Random.int(SRPool.length)]
-        } else {
-            temporary.card = RPool[Random.int(RPool.length)]
-        }
+    } else {//⭐
+        temporary.card = RPool[Random.int(RPool.length)]
     }
     return temporary.card.name
 }

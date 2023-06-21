@@ -224,6 +224,7 @@ export module DB {
             const COLS = 15
             const ROWS = Math.floor(server.length / COLS)
             const tempImagePath = path.resolve(__dirname, '../../assets/temp/' + S + '.png')
+            console.log(tempImagePath)
             if (fs.existsSync(tempImagePath)) {
                 let temp = await Jimp.read(tempImagePath)
                 let isEmpty = true

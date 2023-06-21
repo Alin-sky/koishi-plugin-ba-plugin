@@ -3,7 +3,7 @@ import { Context, Schema } from 'koishi';
 import { guildConfig, guildPlugin } from './guild/index';
 import { gachaplugin } from './gacha';
 import { sanaefight } from './sanae-fight';
-import { alinConfig, alinplugin } from './ba-alin';
+import {  alinplugin } from './ba-alin';
 import { gachaConfig } from './gacha/gacha';
 
 
@@ -15,7 +15,6 @@ export const usage = "## 数据来源于[bawiki](https://ba.gamekee.com/)和大�
   "上提[issue](https://github.com/Alin-sky/koishi-plugin-ba-plugin/issues)\n" +
   '\n' +
   "交互和功能设计灵感借鉴了[arona](https://github.com/diyigemt/arona)和[NoneBot-Plugin-BAWiki](https://github.com/lgc-NB2Dev/nonebot-plugin-bawiki)\n" +
-  " ## 此版本为alpha版\n" +
   " ## 目前有以下功能:" + "\n" +
   " - 群友エルル的新抽卡模拟器（ba）\n" +
   " - 群友早苗写的模拟总力战(总力)\n" +
@@ -27,13 +26,13 @@ export const usage = "## 数据来源于[bawiki](https://ba.gamekee.com/)和大�
 
 
 export interface Config {
-  alin: alinConfig
+  //alin: alinConfig
   gacha: gachaConfig
   guild: guildConfig
 }
 //koishi控制台
 export const Config: Schema<Config> = Schema.object({
-  alin: alinConfig,
+ // alin: alinConfig,
   gacha: gachaConfig,
   guild: guildConfig,
 })

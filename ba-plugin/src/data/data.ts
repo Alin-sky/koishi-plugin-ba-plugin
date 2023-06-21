@@ -570,10 +570,31 @@ export const data = [
     //SRT，阿拜多斯
     //SRT
     { name: "宫子", link: ["miyako"] },
+    //新角色
+    { name: "宫子（泳装）", link: ["miyako (swimsuit)"] },
+    { name: "宫子泳装", link: ["miyako (swimsuit)"] },
+    { name: "都子泳装", link: ["miyako (swimsuit)"] },
+    { name: "泳装宫子", link: ["miyako (swimsuit)"] },
+    { name: "泳装都子", link: ["miyako (swimsuit)"] },
+    { name: "都子（泳装）", link: ["miyako (swimsuit)"] },
+    { name: "水都子", link: ["miyako (swimsuit)"] },
+    { name: "水宫子", link: ["miyako (swimsuit)"] },
     { name: "都子", link: ["miyako"] },
     { name: "miyako", link: ["miyako"] },
     { name: "我们最讨厌你这样的大人了", link: ["miyako"] },
     { name: "我们最讨厌你这样的大人", link: ["miyako"] },
+    //ddd
+    { name: "水美游", link: ["miyu (swimsuit)"] },
+    { name: "水美优", link: ["miyu (swimsuit)"] },
+    { name: "美优（泳装）", link: ["miyu (swimsuit)"] },
+    { name: "美游（泳装）", link: ["miyu (swimsuit)"] },
+    { name: "美游泳装", link: ["miyu (swimsuit)"] },
+    { name: "美游泳装", link: ["miyu (swimsuit)"] },
+    { name: "水垃圾兔", link: ["miyu (swimsuit)"] },
+    { name: "水垃姬兔", link: ["miyu (swimsuit)"] },
+    { name: "水垃姬桶", link: ["miyu (swimsuit)"] },
+    { name: "水垃圾桶", link: ["miyu (swimsuit)"] },
+    //
     { name: "垃圾桶", link: ["miyu"] },
     { name: "miyu", link: ["miyu"] },
     { name: "垃圾兔", link: ["miyu"] },
@@ -584,9 +605,19 @@ export const data = [
     { name: "萌", link: ["moe"] },
     { name: "萌绘", link: ["moe"] },
     { name: "moe", link: ["moe"] },
+    //
     { name: "咲", link: ["saki"] },
     { name: "咲希", link: ["saki"] },
     { name: "saki", link: ["saki"] },
+    //
+    { name: "水咲希", link: ["saki (swimsuit)"] },
+    { name: "水咲", link: ["saki (swimsuit)"] },
+    { name: "咲希（泳装）", link: ["saki (swimsuit)"] },
+    { name: "咲（泳装）", link: ["saki (swimsuit)"] },
+    { name: "咲泳装", link: ["saki (swimsuit)"] },
+    { name: "咲希泳装", link: ["saki (swimsuit)"] },
+    { name: "泳装咲", link: ["saki (swimsuit)"] },
+    { name: "泳装咲希", link: ["saki (swimsuit)"] },
     //阿拜多斯
     //星野，绫音
     { name: "绫音", link: ["ayane"] },
@@ -844,6 +875,7 @@ export const data1 = [
     { name: '礼物', link: ['https://cdnimg.gamekee.com/wiki2.0/images/w_3068/h_2952/829/43637/2022/7/19/662759.png'] },
 
     { name: '千里眼', link: ['https://cdnimg.gamekee.com/wiki2.0/images/w_2456/h_5304/829/43637/2023/5/2/228349.png'] },
+    { name: '国际服千里眼', link: ['https://cdnimg.gamekee.com/wiki2.0/images/w_2456/h_5304/829/43637/2023/5/2/228349.png'] },
 
     { name: '总评分', link: ['https://cdnimg.gamekee.com/wiki2.0/images/w_3892/h_4472/829/43637/2023/4/11/520780.png'] },
 

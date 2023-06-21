@@ -12,7 +12,7 @@ import { Config } from '..';
   国际服常驻十连, 日服常驻十连,
   cardPool,
 } from './data/test';
-import { output103, nocai, } from './data/test';*/
+import { output103, nocai, } from './data/test';
 
 export interface alinConfig {
   [x: string]: any;
@@ -30,9 +30,11 @@ export const alinConfig: Schema<alinConfig> = Schema.intersect([
 )
 export var jaup
 export var inup
+*/
+
 var uurl = ''
 //声明服务器
-const alincloud = 'http://124.221.99.85:8088/'
+export const alincloud = 'http://124.221.99.85:8088/'
 const laocdn = 'https://bawiki.lgc.cyberczy.xyz/img/'
 const laocloud = 'https://bawiki.lgc2333.top/img/'
 
@@ -44,7 +46,7 @@ export const alinplugin = ({
 
     //阿林代码区
 
-    //抽卡系统
+    //废弃的抽卡系统
 
     /*
       var alingroup = [//存储阿林群整活角色
@@ -554,36 +556,6 @@ export const alinplugin = ({
     */
 
 
-    //控制台参数初始化
-    ctx.on('ready', async () => {
-
-
-
-      //sever设置
-      if (config.alin.serve === 1) {
-        uurl = alincloud
-        console.log('已设置1服务器')
-      }
-      if (config.alin.serve === 2) {
-        uurl = laocdn
-        console.log('已设置2服务器')
-      }
-      if (config.alin.serve === 3) {
-        uurl = laocloud
-        console.log('已设置3服务器')
-      }
-      //防整活
-      if (config.alin.server > 3 || config.alin.serve < 1) {
-        uurl = alincloud
-        console.log('已自动设置1服务器')
-      }
-
-    }
-
-    );
-
-
-
 
     //攻略系统&&角色评分系统
     ctx.command('攻略', "bawiki的攻略图和角色评分")
@@ -597,6 +569,9 @@ export const alinplugin = ({
       .usage("发送“攻略”查看具体使用方法")
       .example('攻略 千里眼')
       .action(async ({ session }, ...args) => {
+        uurl = alincloud
+        console.log(uurl)
+        console.log('已设置1服务器')
 
         if ((args[0]) == null) {
           return '使用方法：攻略+空格+内容\n' +
