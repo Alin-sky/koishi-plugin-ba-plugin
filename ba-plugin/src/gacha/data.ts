@@ -15,7 +15,7 @@ class stu {
 function createStu(name: string, rare: number, limit: number, server: number) {
     return new stu(name, rare, limit, server);
 }
-//国际服实装    
+//国际服实装 定期更新数组    
 let InterStudentPool = [
     createStu("白子", 3, 0, 0), createStu("芹香", 2, 0, 0), createStu("星野", 3, 0, 0), createStu("绫音", 2, 0, 0), createStu("佳代子", 2, 0, 0), createStu("阿露", 3, 0, 0), createStu("千夏", 1, 0, 0), createStu("伊织", 3, 0, 0),
     createStu("日奈", 3, 0, 0), createStu("淳子", 2, 0, 0), createStu("泉", 3, 0, 0), createStu("明里", 2, 0, 0), createStu("晴奈", 3, 0, 0), createStu("枫香", 2, 0, 0), createStu("日富美", 3, 0, 0), createStu("好美", 1, 0, 0),

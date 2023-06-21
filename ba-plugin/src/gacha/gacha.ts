@@ -1,6 +1,6 @@
 /*抽卡实现模块*/
-/*可能实现功能 UP池独立设置  井(图片处理过于耗费时间)*/
-import { Context, Eval, Random, Schema, h } from 'koishi'
+/*可能实现功能 UP池独立设置 */
+import { Context, Eval, Random, Schema } from 'koishi'
 import { gachaImage } from './ps'
 export interface gachaConfig {
     '日服默认UP角色': string

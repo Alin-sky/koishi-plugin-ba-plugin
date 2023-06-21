@@ -75,10 +75,11 @@ export module DB {
     //设置UP
     export async function setUP(ctx: Context, args: any[], config: Config) {
         const LENGTH_ERROR_MESSAGE = '请输入正确的参数列表.'
-        const SERVER_ERROR_MESSAGE = '请输入正确的服名.'
+        const NOSERVER_ERROR_MESSAGE = '请输入正确的服名.'
         const SAME_ERROR_MESSAGE = '检测到与当前UP学生名字相同,UP不变'
         const NOTFOUND_ERROR_MESSAGE = '找不到该学生,UP不变'
         const NOTSSR_ERROR_MESSAGE = '此学生非⭐⭐⭐学生,UP不变'
+        const SERVER_ERROR_MESSAGE = '当前学生在国际服未实装,UP不变'
         const SERVER = args[0] === '日服' ? '日服' : '国际服';
         const DUP = args[0] === '日服' ? '日服默认UP角色' : '国际服默认UP角色';
         const SUP = args[0] === '日服' ? 'JUP' : 'IUP'
@@ -89,7 +90,7 @@ export module DB {
             return LENGTH_ERROR_MESSAGE
         }
         if (args[0] !== '日服' && args[0] !== '国际服') {
-            return SERVER_ERROR_MESSAGE
+            return NOSERVER_ERROR_MESSAGE
         }
         if (args[1] === '重置') {
             await ctx.database.set('student', {}, { [SUP]: false });
@@ -102,6 +103,9 @@ export module DB {
         }
         if (newUP[0].rare !== 3) {
             return NOTSSR_ERROR_MESSAGE
+        }
+        if  (args[0]==='国际服'&&newUP[0].server===1){
+            return SERVER_ERROR_MESSAGE
         }
         if (oldUP.length == 0) {
             up()
