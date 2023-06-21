@@ -85,9 +85,10 @@ export async function gacha(ctx: Context, args: string[], user: string, UP) {
     const USTAT = args[0] === '日服' ? temporary.UPGacha ? 'JUPstat' : 'JNstat' : temporary.UPGacha ? 'IUPstat' : 'INstat';
     await ctx.database.set('bauser', { userid: user }, { [NSTAT]: { $add: [{ $: NSTAT }, GACHACOUNT] } as Eval<Number>, [USTAT]: { $add: [{ $: USTAT }, GACHACOUNT] } as Eval<Number> });
     await baGacha(temporary, cardArray, ctx, user, GACHACOUNT);
+    let image = await gachaImage.result(cardArray, STAT[0][USTAT], RPool, SRPool);
     resetPool();//重置卡池
     path = temporary.raindow ? 'external/bagacha/assets/color.gif' : 'external/bagacha/assets/blue.gif';
-    return await gachaImage.result(cardArray, STAT[0][USTAT], RPool, SRPool);
+    return image
 }
 //抽卡启动时
 async function baGacha(temporary, cardArray, ctx: Context, user, GACHACOUNT) {

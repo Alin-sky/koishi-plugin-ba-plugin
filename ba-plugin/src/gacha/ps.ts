@@ -6,6 +6,7 @@ export module gachaImage {
     async function stuCardMaker(stat, cardtemp, RPool, SRPool) {
         let cardStar
         let cardStar2
+        console.log(RPool)
         if (RPool.some((item: { name: any; }) => item.name === cardtemp.name)) {
             cardStar = await Jimp.read(path.resolve(__dirname, '../../assets/☆card.png'))
             cardStar2 = await Jimp.read(path.resolve(__dirname, '../../assets/card☆1.png'))
@@ -65,7 +66,7 @@ export module gachaImage {
         const GACHABG = await Jimp.read(path.resolve(__dirname, '../../assets/gachaBG.png'));
         let tempCard = await Jimp.read(path.resolve(__dirname, '../../assets/☆card.png'))
         let stuPromises = cardArray.map(async (cardtemp) => {
-            if (stat == -1) {
+            if (stat === -1) {
                 return await Jimp.read((await stuCardMaker(stat, cardtemp, RPool, SRPool)).get('buffer'))
             } else {
                 let stuCard
