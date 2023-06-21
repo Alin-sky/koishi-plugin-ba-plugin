@@ -611,6 +611,7 @@ export const data = [
     { name: "saki", link: ["saki"] },
     //
     { name: "水咲希", link: ["saki (swimsuit)"] },
+    { name: "水saki", link: ["saki (swimsuit)"] },
     { name: "水咲", link: ["saki (swimsuit)"] },
     { name: "咲希（泳装）", link: ["saki (swimsuit)"] },
     { name: "咲（泳装）", link: ["saki (swimsuit)"] },
