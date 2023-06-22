@@ -5,6 +5,7 @@ import { Config } from '..'
 import { StudentPool } from './data'
 import Jimp from 'jimp'
 import path from 'path'
+import { alincloud } from '../ba-alin'
 declare module 'koishi' {
     interface Tables {
         student: Student
@@ -104,7 +105,7 @@ export module DB {
         if (newUP[0].rare !== 3) {
             return NOTSSR_ERROR_MESSAGE
         }
-        if  (args[0]==='国际服'&&newUP[0].server===1){
+        if (args[0] === '国际服' && newUP[0].server === 1) {
             return SERVER_ERROR_MESSAGE
         }
         if (oldUP.length == 0) {
@@ -202,7 +203,6 @@ export module DB {
         } catch (error) {
             await ctx.model.create('bauser', { name: session.author.username, userid: session.userId });
             await session.send(error + '\n执行用户初始化');
-            //session.send('执行用户初始化');
         }
     }
     //重置表
@@ -215,8 +215,8 @@ export module DB {
         let cardpool = []
         let IServer = await ctx.database.get('student', { server: 0, rare: 3 }, ['name'])
         let JServer = await ctx.database.get('student', { server: 1, rare: 3 }, ['name'])
-        let JP = '日服'
         let IN = '国际服'
+        let JP = '日服'
         cardpool.push(await maker(IServer, IN))
         cardpool.push(await maker(JServer, JP))
         async function maker(server: any[], S) {
@@ -224,33 +224,52 @@ export module DB {
             const COLS = 15
             const ROWS = Math.floor(server.length / COLS)
             const tempImagePath = path.resolve(__dirname, '../../assets/temp/' + S + '.png')
-            console.log(tempImagePath)
             if (fs.existsSync(tempImagePath)) {
                 let temp = await Jimp.read(tempImagePath)
                 let isEmpty = true
-                temp.scan(((server.length % COLS) * SIZE + 1), (ROWS * SIZE + 1), SIZE, SIZE, (_x, _y, index) => {
+                temp.scan(((server.length % COLS - 1) * SIZE), (ROWS * SIZE), SIZE, SIZE, (_x, _y, index) => {
                     const ALPHA = temp.bitmap.data[index + 3];
                     if (ALPHA === 0 || ALPHA === undefined) {
                     } else {
-                        isEmpty = false
-                        return
+                        return isEmpty = false
                     }
                 })
                 if (isEmpty) {
+                    return maker2(server, COLS, ROWS, SIZE, S)
+                } else {
                     return new Map().set('buffer', (await temp.getBase64Async(Jimp.MIME_PNG)))
-                }else{
-                    return maker2(server,COLS,ROWS,SIZE,S)
                 }
             } else {
-                    return maker2(server,COLS,ROWS,SIZE,S)
+                return maker2(server, COLS, ROWS, SIZE, S)
             }
         }
-        async function maker2(server,COLS,ROWS,SIZE,S) {
-            let Promises = server.map(async (cardtemp) => {
-                return (await Jimp.read(path.resolve(__dirname, '../../assets/student/' + cardtemp.name + '.png'))).resize(SIZE, SIZE)
-            })
+        async function maker2(server, COLS, ROWS, SIZE, S) {
+            const BATCH_SIZE = 15
+            const MAX_RETRIES = 3
+            const PROMISES = []
+            const RETRY_DELAY = 1000
+            for (let i = 0; i < server.length; i += BATCH_SIZE) {
+                const BATCH = server.slice(i, i + BATCH_SIZE)
+                let batchPromises = BATCH.map(async (cardtemp) => {
+                    const imageUrl = alincloud + 'stuimg' + '/assets/Student/' + cardtemp.name + '.png'
+                    let retries = 0
+                    while (retries < MAX_RETRIES) {
+                        try {
+                            const image = await Jimp.read(imageUrl);
+                            return image.resize(SIZE, SIZE);
+                        } catch (error) {
+                            console.error(`获取图片出错: (${imageUrl})`, error);
+                            retries++;
+                            await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
+                        }
+                    }
+                    throw new Error(`重试${MAX_RETRIES}次后依旧获取不到(${imageUrl})`);
+                })
+                PROMISES.push(...batchPromises)
+                await new Promise((resolve) => setTimeout(resolve, 1000))
+            }
             let tableImage = new Jimp(COLS * SIZE, (ROWS + 1) * SIZE)
-            await Promise.all(Promises).then(async (img) => {
+            await Promise.all(PROMISES).then(async (img) => {
                 img.forEach((img, index) => {
                     let col = index % COLS
                     let row = Math.floor(index / COLS)
@@ -258,7 +277,7 @@ export module DB {
                 })
             })
             await tableImage.writeAsync(path.resolve(__dirname, '../../assets/temp/' + S + '.png'))
-            return new Map().set('buffer', (await tableImage.getBase64Async(Jimp.MIME_PNG)))   
+            return new Map().set('buffer', (await tableImage.getBase64Async(Jimp.MIME_PNG)))
         }
         return cardpool
     }

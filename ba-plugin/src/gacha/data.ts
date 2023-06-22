@@ -157,7 +157,7 @@ let JPStudentPool = [
     createStu("遥香(正月)", 3, 0, 1),
     createStu("果穗", 3, 0, 1),
     createStu("时(兔女郎)", 3, 0, 1),
-    createStu("柚子(女仆)", 1, 1, 0),
+    createStu("柚子(女仆)", 1, 1, 1),
     createStu("爱丽丝(女仆)", 3, 0, 1),
     createStu("玲纱", 3, 0, 1),
     createStu("瑠美", 3, 0, 1),

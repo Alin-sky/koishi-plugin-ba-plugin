@@ -30,8 +30,7 @@ export const gachaplugin = ({
                 let UP = false;
                 let user = session.userId;
                 let result = await gacha(ctx, args, user, UP)
-                session.send(h('message', [session.author.username + '的抽卡结果：\n', h('image',{url:path}), 
-                h.image(result.get('buffer3'), 'image/png')]))
+                session.send(h('message', [session.author.username + '的抽卡结果：\n', h.image(pathToFileURL(path).href), h.image(result.get('buffer'), 'image/png')]))
             })
         ctx.command('ba.up', 'UP池抽卡').example('ba.up 日服 单抽')
             .usage('说明：用于执行UP池抽取')
@@ -49,14 +48,13 @@ export const gachaplugin = ({
                 if (args.length !== 2) { return SECOND_ERROR_MESSAGE }
                 if (args[0] !== '日服' && args[0] !== '国际服') { return THIRD_ERROR_MESSAGE }
                 if ((args[1] !== '十连') && (args[1] !== '单抽')) { return FOURTH_ERROR_MESSAGE }
-                if (student.length < 1) { return FIFTH_ERROR_MESSAGE }
                 const Message = await session.send('抽卡中...')
                 setTimeout(() => { session.bot.deleteMessage(session.channelId, Message[0]) }, 30000)
+                if (student.length < 1) { return FIFTH_ERROR_MESSAGE }
                 const UP = true;
                 let user = session.userId;
                 let result = await gacha(ctx, args, user, UP);
-                session.send(h('message', [session.author.username + '的抽卡结果：\n',  h('image',{url:path}), 
-                h.image(result.get('buffer3'), 'image/png')]));
+                session.send(h('message', [session.author.username + '的抽卡结果：\n', h.image(pathToFileURL(path).href), h.image(result.get('buffer'), 'image/png')]));
             })
         ctx.command('ba.setup', '设置UP学生').example('ba.setup 日服 梓')
             .usage('说明：设置池UP学生\n参数：日服/国际服 名字')
@@ -95,6 +93,11 @@ export const gachaplugin = ({
         ctx.command('重置插件数据库', '重置数据库', { hidden: true } as Partial<Command.Config>)
             .action(async ({ session }, args) => {
                 await DB.clearTable(ctx)
+            })
+        ctx.command('ba.卡池查询', '展示当前卡池所有角色')
+            .action(async ({ session }) => {
+                let result = await DB.showStu(ctx)
+                session.send(h('message', ['目前国际服卡池实装3星：\n',h.image(result[0].get('buffer'), 'image/png'),'日服实装国际服未实装：\n',h.image(result[1].get('buffer'), 'image/png')]));
             })
     }
 })
