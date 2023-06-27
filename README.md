@@ -43,6 +43,16 @@ ba聊天水群：662889478
 
 数据目前来源于[bawiki](https://ba.gamekee.com/entry)和[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)
 
+---
+## 感谢（按首字母排序）
+| 贡献者                                                       | 主要内容                                     |
+| :----------------------------------------------------------- | :--------------------------------------- |
+| [エルル](https://github.com/erurusion)  |抽卡模拟、抽群u等功能                                              |
+| [lgc-NB2Dev](https://github.com/lgc-NB2Dev) | 提供[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库 |
+| [Sanaene](https://github.com/Sanaene)      | 攒钻算法和总力模拟                                            |
+                         
+
+
 ## 更新日志
 
 ### 0.8.3
