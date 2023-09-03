@@ -52,16 +52,20 @@ ba聊天水群：662889478
 | [lgc-NB2Dev](https://github.com/lgc-NB2Dev) | 提供[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库 |
 | [Sanaene](https://github.com/Sanaene)      | 攒钻算法和总力模拟                                            |
                          
-
+---
 
 ## 更新日志
+
+### 0.9.0(beta)
+  - 重构了攻略系统
+  - 摸了一个暑假的鱼
 
 ### 0.9.0(Alpha)
   - **接入了[Arona](https://github.com/diyigemt/arona)的公开数据**
   - 例行更新数据
   - 略微优化了旧代码
   - 其他小修小补
-  - 
+   
 ### 0.8.4
   - 例行更新数据
   - 其他小修补
