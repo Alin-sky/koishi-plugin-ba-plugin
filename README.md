@@ -56,15 +56,18 @@ ba聊天水群：662889478
 
 ## 更新日志
 
-### 0.9.0(beta1)
+### 0.9.5-rc
+  - *[早苗](https://github.com/Sanaene)佬发布的新功能好感计算和等级计算*
+
+### 0.9.0-beta1
   - [早苗](https://github.com/Sanaene)佬更新了攒钻
   - 例行数据更新
 
-### 0.9.0(beta)
+### 0.9.0-beta
   - 重构了攻略系统
   - 摸了一个暑假的鱼
 
-### 0.9.0(Alpha)
+### 0.9.0-Alpha
   - **接入了[Arona](https://github.com/diyigemt/arona)的公开数据**
   - 例行更新数据
   - 略微优化了旧代码
