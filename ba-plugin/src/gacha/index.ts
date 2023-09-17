@@ -14,9 +14,9 @@ export const gachaplugin = ({
     apply(ctx: Context, config: Config) {
         ctx.on('ready', async () => {
             gachaProbability(config.gacha)
-            DB.stuTable(ctx)
-            DB.stuUpdate(ctx)
-            DB.BAUserTable(ctx)
+            await DB.stuTable(ctx)
+            await DB.stuUpdate(ctx)
+            await DB.BAUserTable(ctx)
         })
         ctx.on('command/before-execute',
             ({ session }, ...args) => {
