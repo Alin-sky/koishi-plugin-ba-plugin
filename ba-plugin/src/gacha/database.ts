@@ -43,7 +43,7 @@ export interface BAUser {
 export module DB {
     //初始化学生表
     export async function stuTable(ctx: Context) {
-        ctx.model.extend('student', { name: 'string', rare: 'integer', IUP: { type: 'boolean', initial: false }, JUP: { type: 'boolean', initial: false }, url: { type: 'string', initial: 'null' }, id: 'integer', limit: { type: 'integer', initial: 0 }, server: { type: 'integer', initial: 0 } }, { unique: ['name'] });
+        ctx.model.extend('student', { name: 'string', rare: 'integer', IUP: { type: 'boolean', initial: false }, JUP: { type: 'boolean', initial: false }, url: { type: 'string', initial: 'null' }, id: 'integer', limit: { type: 'integer', initial: 0 }, server: { type: 'integer', initial: 0 } }, { unique: ['name'],primary:['id'] });
     }
     //更新学生表
     export async function stuUpdate(ctx: Context) {
