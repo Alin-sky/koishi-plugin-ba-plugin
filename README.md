@@ -1,4 +1,4 @@
-<div align="center">
+![image](https://github.com/Alin-sky/koishi-plugin-ba-plugin/)<div align="center">
   
 # koishi-plugin-ba-plugin
 
@@ -9,19 +9,50 @@
  
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-ba-plugin?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
-## koishi插件，bluearchive.碧蓝档案工具箱，正在不断开发新功能
+## koishi插件，bluearchive.碧蓝档案工具箱
 </div>
 
 ## 功能
-- 抽卡模拟器
-- 角色评分
-- 国际服千里眼
-- 总力战模拟
-- 攻略图查询
-- 随机表情和漫画
-- 青辉石计算器
-- 等级需求计算
-- 好感度需求计算
+
+<details>
+<summary> 抽卡模拟器 </summary>
+   <img src="" width="345" >
+</details>
+
+<details>
+<summary> 角色评分，攻略图查询 </summary>
+   <img src="" width="345">
+</details>
+
+<details>
+<summary> 千里眼 </summary>
+   <img src="" width="145" height="196">
+</details>
+
+<details>
+<summary> 总力模拟 </summary>
+   <img src="" width="145" height="196">
+</details>
+
+<details>
+<summary> 随机漫画和表情 </summary>
+   <img src="" width="145" height="196">
+</details>
+
+<details>
+<summary> 青辉石计算器 </summary>
+   <img src="" width="145" height="196">
+</details>
+
+<details>
+<summary> 升级计算器 </summary>
+   <img src="" width="145" height="196">
+</details>
+
+<details>
+<summary> 好感度需求计算器 </summary>
+   <img src="" width="145" height="196">
+</details>
 
 ## 使用方法
 在koishi内使用“帮助”指令查询使用方法喵
@@ -57,6 +88,13 @@ ba聊天水群：662889478
 ---
 
 ## 更新日志
+
+### 0.9.75-rc
+  - *添加了抽卡功能开关*
+  - 减少了攻略系统别名（[issue](https://github.com/Alin-sky/koishi-plugin-ba-plugin/issues/10)）
+  - 添加了自定义撤回时间
+  - [e佬](https://github.com/erurusion)修复koishi数据库更新引起的bug
+  - 例行更新数据
 
 ### 0.9.6-rc
   - *添加了抽卡功能群组黑名单*
