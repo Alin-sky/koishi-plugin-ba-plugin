@@ -1,57 +1,58 @@
-![image](https://github.com/Alin-sky/koishi-plugin-ba-plugin/)<div align="center">
-  
-# koishi-plugin-ba-plugin
 
-      
- <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/logo2.png" width="145" height="196">
-
-  
- 
+<div align="center">
+  <h1> koishi-plugin-ba-plugin
+  </h1>
+<br>     
+ <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/logo2.png" width="145" height="196">
+<br>
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-ba-plugin?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
-## koishi插件，bluearchive.碧蓝档案工具箱
+<h1>koishi插件，bluearchive-碧蓝档案工具箱</h1> 
+
 </div>
+
+
 
 ## 功能
 
 <details>
 <summary> 抽卡模拟器 </summary>
-   <img src="" width="345" >
+   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/ba.png" width="700" >
 </details>
 
 <details>
 <summary> 角色评分，攻略图查询 </summary>
-   <img src="" width="345">
+   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/gl.png" width="700">
 </details>
 
 <details>
 <summary> 千里眼 </summary>
-   <img src="" width="145" height="196">
+   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/qly.png" width="700">
 </details>
 
 <details>
 <summary> 总力模拟 </summary>
-   <img src="" width="145" height="196">
+   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/zl.png" width="700">
 </details>
 
 <details>
 <summary> 随机漫画和表情 </summary>
-   <img src="" width="145" height="196">
+   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/mh.png" width="700">
 </details>
 
 <details>
 <summary> 青辉石计算器 </summary>
-   <img src="" width="145" height="196">
+   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/zz.png" width="700">
 </details>
 
 <details>
 <summary> 升级计算器 </summary>
-   <img src="" width="145" height="196">
+   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/sj.png" width="700">
 </details>
 
 <details>
 <summary> 好感度需求计算器 </summary>
-   <img src="" width="145" height="196">
+   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/hg.png" width="700">
 </details>
 
 ## 使用方法
@@ -60,6 +61,8 @@
 
 ## 介绍
 ### **我正在学代码，这个项目相当于练手和学习的工程，肯定有很多不完善、不规范的地方，还请各位大佬轻喷**
+
+还在不断开发新功能
 
 这个是[koishi](https://github.com/koishijs/koishi)机器人的插件，需要在koishi的插件市场安装
 
