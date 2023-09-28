@@ -97,7 +97,7 @@ export const alinplugin = ({
 
 
           if ((args[0]) === '随机漫画' || (args[0]) === '抽漫画') {
-            let random = Math.floor(Math.random() * 267) + 1
+            let random = Math.floor(Math.random() * 270) + 1
             let random1 = random.toString().padStart(4, '1');
             return (h('image', { url: alincloud + 'comic/' + random1 + '.jpg' }))
           }

@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-ba-plugin",
   "description": "blueArchive.碧蓝档案游戏工具箱,拥有多种ba小功能,正在不断更新",
-  "version": "0.10.0-beta",
+  "version": "0.10.0",
   "contributors": [
     "alin <lvdonglin514@qq.com>",
     "eruru <eruru.sion@gmail.com>",

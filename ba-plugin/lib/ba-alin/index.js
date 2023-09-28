@@ -78,7 +78,7 @@ exports.alinplugin = ({
                     return ((0, koishi_1.h)('image', { url: exports.alincloud + 'emoji/' + random1 + '.jpg' }));
                 }
                 if ((args[0]) === '随机漫画' || (args[0]) === '抽漫画') {
-                    let random = Math.floor(Math.random() * 267) + 1;
+                    let random = Math.floor(Math.random() * 270) + 1;
                     let random1 = random.toString().padStart(4, '1');
                     return ((0, koishi_1.h)('image', { url: exports.alincloud + 'comic/' + random1 + '.jpg' }));
                 }
