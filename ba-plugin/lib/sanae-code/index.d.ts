@@ -1,7 +1,11 @@
-import { Context, Schema } from 'koishi';
+import { Context } from 'koishi';
 export declare const name = "haoganjisuan";
-export interface Config {
-}
-export declare const Config: Schema<Config>;
-export declare const haoganjisuan: (ctx: Context) => void;
-export declare const levcom: (ctx: Context) => void;
+export declare const sanae_code_favora: {
+    apply(ctx: Context): void;
+};
+export declare const sanae_code_zanzuan: {
+    apply(ctx: Context): void;
+};
+export declare const sanae_code_level: {
+    apply(ctx: Context): void;
+};

@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-ba-plugin",
   "description": "blueArchive.碧蓝档案游戏工具箱,拥有多种ba小功能,正在不断更新",
-  "version": "0.9.75-rc",
+  "version": "0.10.0-beta",
   "contributors": [
     "alin <lvdonglin514@qq.com>",
     "eruru <eruru.sion@gmail.com>",
@@ -34,13 +34,20 @@
     "koishi": "^4.12.0"
   },
   "dependencies": {
+    "koishi-plugin-puppeteer": "^3.4.11",
     "lodash": "^4.17.21",
     "jimp": "^0.22.8"
 
   },
   "devDependencies": {
+    "koishi-plugin-puppeteer": "^3.4.11",
     "@types/lodash": "^4.14.194",
     "jimp": "^0.22.8"
+  },
+  "service": {
+    "required": [
+      "puppeteer"
+    ]
   }
 
 }

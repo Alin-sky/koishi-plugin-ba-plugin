@@ -23,7 +23,7 @@ export const gachaConfig: Schema<gachaConfig> = Schema.intersect([
         '★★★': Schema.number().min(0).default(2.3).max(100).description('★★★学生的概率'),
         '★★': Schema.number().min(0).default(18.5).max(100).description('★★学生的概率'),
         '★': Schema.number().min(0).default(78.5).max(100).description('★学生的概率'),
-    }).description('卡池概率设置(双服通用)'),
+    }).description('抽卡模拟器设置(双服通用)'),
 ]
 )
 

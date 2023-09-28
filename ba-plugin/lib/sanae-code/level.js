@@ -204,28 +204,28 @@ function levelCalculate(mark, startLevel, startExp, endLevel, endExp, cafe, jjc,
                 cardCost_sum = cardCost_count * 25;
             }
             if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`·${plan.name}:需要${dayCost}天。\n`);
+                result.push(`🟢${plan.name}:需要${dayCost}天。\n`);
             }
             else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`·${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个。\n`);
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个。\n`);
             }
             else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`·${plan.name}:需要${dayCost}天，共消耗青辉石${diaCost_sum}个。\n`);
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗青辉石${diaCost_sum}个。\n`);
             }
             else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`·${plan.name}:需要${dayCost}天，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
             }
             else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`·${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。\n`);
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。\n`);
             }
             else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`·${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
             }
             else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
-                result.push(`·${plan.name}:需要${dayCost}天，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
             }
             else {
-                result.push(`·${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
             }
         }
     }

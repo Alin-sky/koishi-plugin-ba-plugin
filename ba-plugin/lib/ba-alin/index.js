@@ -18,7 +18,8 @@ const logger = new koishi_1.Logger(log1);
 exports.alinConfig = koishi_1.Schema.intersect([
     koishi_1.Schema.object({
         time: koishi_1.Schema.number().default(20000).description('攻略、抽卡系统撤回消息的等待时间（单位：毫秒）'),
-    }).description('撤回时间'),
+        return: koishi_1.Schema.string().default('呜呜，没有找到对应攻略\n sensei要找的是这些吗？发送以下名称的序号来查看').description('模糊匹配的回复文本'),
+    }).description('攻略系统设置'),
 ]);
 //配置项
 var uurl = '';
@@ -42,17 +43,20 @@ exports.alinplugin = ({
             .alias('角评')
             .usage("发送“攻略”查看具体使用方法")
             .example('攻略 爱丽丝')
+            .shortcut('千里眼', { args: ['国际服未来视'], })
+            .shortcut('国服千里眼', { args: ['国服未来视'], })
             .action(async ({ session }, ...args) => {
             if ((args[0]) == null) {
                 return '使用方法：\n' +
-                    '·发送：攻略+空格+内容 调用AronaBot的数据\n' +
-                    '·发送：攻略+空格+随机表情 随机抽取社团聊天表情\n' +
-                    '·发送：攻略+空格+随机漫画 随机抽取ba官方漫画\n' +
+                    '🟢发送：攻略+空格+内容 调用AronaBot的数据\n' +
+                    '🟢发送：攻略+空格+随机表情 随机抽取社团聊天表情\n' +
+                    '🟢发送：攻略+空格+随机漫画 随机抽取ba官方漫画\n' +
                     "攻略数据来源于：\n" +
-                    '-doc.arona.diyigemt.com 【AronaBot】\n' +
-                    "-ba.gamekee.com 【bawiki】\n" +
-                    "-nonebot-plugin-bawiki的数据库\n" +
-                    "角色名称缺失和错误可以去GitHub反馈喵 \n";
+                    '【AronaBot】\n' +
+                    '-doc.arona.diyigemt.com \n' +
+                    '【bawiki】\n' +
+                    "-ba.gamekee.com \n" +
+                    "-nonebot-plugin-bawiki的数据库\n";
             }
             else {
                 if ((args[0]) === '1') {
@@ -119,8 +123,7 @@ exports.alinplugin = ({
                 else if (outstu.status == 101) {
                     //模糊匹配返回内容
                     const Message = await session.send((0, koishi_1.h)('at', { id: session.userId }) +
-                        '呜呜，没有找到对应攻略，\n'
-                        + '你要找的是这些吗？可以发送以下名称的序号来查看\n'
+                        config.alin.return + '\n'
                         + '1 ' + outstu.data[0].name + '\n'
                         + '2 ' + outstu.data[1].name + '\n'
                         + '3 ' + outstu.data[2].name + '\n'

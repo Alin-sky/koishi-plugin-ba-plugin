@@ -10,15 +10,16 @@ const expRequirement: {[key: number]: number} = {
     99:7215, 100:7365
 };
 // 从不同途径获得的好感度
+
 const expSupply: {[key: string]: number} = {
-    "摸头": 15, 
-    "课程表（满级期望值）": 31.25, 
-    "金色礼物（普通）": 20, 
-    "金色礼物（笑脸）": 40, 
-    "金色礼物（大笑脸）": 60, 
-    "紫色礼物（笑脸）": 60, 
-    "紫色礼物（大笑脸）": 180, 
-    "紫色礼物（爱心脸）": 240, 
+    "  -摸头": 15, 
+    "  -课程表（满级期望值）": 31.25, 
+    "  -金色礼物（普通）": 20, 
+    "  -金色礼物（笑脸）": 40, 
+    "  -金色礼物（大笑脸）": 60, 
+    "  -紫色礼物（笑脸）": 60, 
+    "  -紫色礼物（大笑脸）": 180, 
+    "  -紫色礼物（爱心脸）": 240, 
 };
 // 升级所需好感度计算
 function sumFavorablility(startLevel: number, endLevel: number) {
@@ -31,12 +32,29 @@ function sumFavorablility(startLevel: number, endLevel: number) {
     }
     return [sum, startLevel, endLevel]
 }
+
 // 好感度获取计算
+function calculate(exp: number[]) {
+    let result: string[] = [`好感度从${exp[1]}级到${exp[2]}级，总计经验${exp[0]}，共需：\n`];
+    const keys = Object.keys(expSupply);
+    for (let i = 0; i < keys.length; i++) {
+        let key = keys[i];
+        let count = Math.ceil(exp[0]/expSupply[key]);
+        if (key =="  -摸头" || key == "  -课程表（满级期望值）") {
+            result.push(`${key}:${count}次${i < keys.length - 1 ? '  或者' : ''}\n`);
+        } else {
+            result.push(`${key}:${count}个${i < keys.length - 1 ? '  或者' : ''}\n`);
+        }
+    }
+    return result;
+}
+// 好感度获取计算
+/*
 function calculate(exp: number[]) {
     let result: string[] = [`好感度从${exp[1]}级到${exp[2]}级，总计经验${exp[0]}，共需：\n`];
     for (let key in expSupply) {
         let count = Math.ceil(exp[0]/expSupply[key]);
-        if (key =="摸头" || key == "课程表（满级期望值）") {
+        if (key =="  -摸头" || key == "  -课程表（满级期望值）") {
             result.push(`${key}:${count}次  或者\n`)
         } else {
             result.push(`${key}:${count}个  或者\n`)
@@ -44,7 +62,7 @@ function calculate(exp: number[]) {
     }
     return result
 }
-
+*/
 // 读取输入信息
 export function getFavorLv(input: string) {
     let startLevel = 1;
@@ -72,7 +90,7 @@ export function getFavorLv(input: string) {
                     if (parseInt(levelMatch[0]) <= 100) {
                         startLevel = parseInt(levelMatch[0]);
                     } else {
-                        return "最高好感度无法超过100级！"
+                        return "哼～最高好感度无法超过100级！"
                     }
                 } else {
                     return "好感度最低为1级！"
@@ -85,7 +103,7 @@ export function getFavorLv(input: string) {
                     if (parseInt(levelMatch[1]) <= 100) {
                         endLevel = parseInt(levelMatch[1]);
                     } else {
-                        return "最高好感度无法超过100级！"
+                        return "哼～最高好感度无法超过100级！"
                     }
                 } else {
                     return "目标好感度必须高于起始好感度！"

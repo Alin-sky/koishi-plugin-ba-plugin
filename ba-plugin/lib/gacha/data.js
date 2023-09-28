@@ -149,11 +149,11 @@ let InterStudentPool = [
     createStu("时", 3, 2, 1),
     createStu("渚", 3, 2, 1),
     createStu("小雪", 3, 0, 1),
+    createStu("佳代子(正月)", 3, 0, 1),
+    createStu("遥香(正月)", 3, 0, 1),
 ];
 //国际服未实装  定期更新数组
 let JPStudentPool = [
-    createStu("佳代子(正月)", 3, 0, 1),
-    createStu("遥香(正月)", 3, 0, 1),
     createStu("果穗", 3, 0, 1),
     createStu("时(兔女郎)", 3, 0, 1),
     createStu("柚子(女仆)", 1, 1, 1),
@@ -174,5 +174,7 @@ let JPStudentPool = [
     createStu("红叶", 2, 0, 0),
     createStu("梅露", 3, 0, 1),
     createStu("柯托莉(应援团)", 3, 0, 1),
+    createStu("一花", 3, 0, 1),
+    createStu("霞", 3, 0, 1),
 ];
 exports.StudentPool = InterStudentPool.concat(JPStudentPool);

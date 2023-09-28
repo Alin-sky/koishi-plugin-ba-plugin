@@ -13,18 +13,19 @@ import { resolve } from 'path'
 
 
 
-
 const log1 = "ba-plugin"
 const logger: Logger = new Logger(log1)
 
 //配置项
 export interface alinConfig {
   time: number
+  return:string
 }
 export const alinConfig: Schema<alinConfig> = Schema.intersect([
   Schema.object({
     time: Schema.number().default(20000).description('攻略、抽卡系统撤回消息的等待时间（单位：毫秒）'),
-  }).description('撤回时间'),
+    return: Schema.string().default('呜呜，没有找到对应攻略\n sensei要找的是这些吗？发送以下名称的序号来查看').description('模糊匹配的回复文本'),
+  }).description('攻略系统设置'),
 ]
 )
 //配置项
@@ -59,18 +60,21 @@ export const alinplugin = ({
       .alias('角评')
       .usage("发送“攻略”查看具体使用方法")
       .example('攻略 爱丽丝')
+      .shortcut('千里眼', { args: ['国际服未来视'],})
+      .shortcut('国服千里眼', { args: ['国服未来视'],})
       .action(async ({ session }, ...args) => {
 
         if ((args[0]) == null) {
           return '使用方法：\n' +
-            '·发送：攻略+空格+内容 调用AronaBot的数据\n' +
-            '·发送：攻略+空格+随机表情 随机抽取社团聊天表情\n' +
-            '·发送：攻略+空格+随机漫画 随机抽取ba官方漫画\n' +
+            '🟢发送：攻略+空格+内容 调用AronaBot的数据\n' +
+            '🟢发送：攻略+空格+随机表情 随机抽取社团聊天表情\n' +
+            '🟢发送：攻略+空格+随机漫画 随机抽取ba官方漫画\n' +
             "攻略数据来源于：\n" +
-            '-doc.arona.diyigemt.com 【AronaBot】\n' +
-            "-ba.gamekee.com 【bawiki】\n" +
-            "-nonebot-plugin-bawiki的数据库\n" +
-            "角色名称缺失和错误可以去GitHub反馈喵 \n"
+            '【AronaBot】\n'+
+            '-doc.arona.diyigemt.com \n' +
+            '【bawiki】\n'+
+            "-ba.gamekee.com \n" +
+            "-nonebot-plugin-bawiki的数据库\n" 
         } else {
           if ((args[0]) === '1') {
             uurl = alincloud
@@ -139,9 +143,7 @@ export const alinplugin = ({
               }
               );
             }
-
           };
-
 
           if (outstu.status == 200) {
             await downloadImage(url, filename).catch(console.error);
@@ -153,8 +155,7 @@ export const alinplugin = ({
             //模糊匹配返回内容
             const Message = await session.send(
               h('at', { id: session.userId }) +
-              '呜呜，没有找到对应攻略，\n'
-              + '你要找的是这些吗？可以发送以下名称的序号来查看\n'
+              config.alin.return +'\n'
               + '1 ' + outstu.data[0].name + '\n'
               + '2 ' + outstu.data[1].name + '\n'
               + '3 ' + outstu.data[2].name + '\n'
@@ -190,12 +191,10 @@ export const alinplugin = ({
               setTimeout(() => { session.bot.deleteMessage(session.channelId, message2[0]) }, time1)
             }
           } 
-
           
           //攻略功能函数尾巴1
         }
       })
-
 
     //插件函数尾巴2
   }
