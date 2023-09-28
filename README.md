@@ -55,6 +55,11 @@
    <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/hg.png" width="700">
 </details>
 
+<details>
+<summary> 计算内容转图片 </summary>
+   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/puppe.png" width="700">
+</details>
+
 ## 使用方法
 在koishi内使用“帮助”指令查询使用方法喵
 
@@ -75,7 +80,7 @@
 感谢各位巨佬帮忙测试🙏<br/>
 感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏
 
-ba聊天水群：662889478
+### ba聊天水群：662889478，快来卷总力(bushi
 
 数据目前来源于[bawiki](https://ba.gamekee.com/entry)和[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)
 
@@ -91,6 +96,19 @@ ba聊天水群：662889478
 ---
 
 ## 更新日志
+
+### 0.10.0
+  - *添加了puppeteer依赖*
+  - *添加了将好感计算、攒钻、升级的输出转图片的功能，并支持自定义样式，提供了三个样式*
+  - 添加了自定义模糊匹配回复文本
+  - 优化调用，可发送“千里眼”直接返回国际服千里眼图
+  - 例行更新数据
+  - 早苗的计算功能改动：
+    - 好感计算修改了微量的文字
+    - 攒钻更新到日服最近的运动会二期复刻活动，更新了计算代码，增加了日期检测，防倒算，以及缺少信息的报错
+  - ~~早苗关闭了总力模拟功能~~
+
+
 
 ### 0.9.75-rc
   - *添加了抽卡功能开关*
