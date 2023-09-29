@@ -5,7 +5,7 @@ import { gachaplugin } from './gacha';
 import { alinConfig, alinplugin } from './ba-alin';
 import { gachaConfig } from './gacha/gacha';
 
-import { alin_puppe, calculate_puppe } from './ba-alin/puppe';
+import { alin_activ, alin_puppe, calculate_puppe } from './ba-alin/puppe';
 import { } from "koishi-plugin-puppeteer";
 import { sanae_code_favora, sanae_code_level, sanae_code_zanzuan, } from './sanae-code/index';
 

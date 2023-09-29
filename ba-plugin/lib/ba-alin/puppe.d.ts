@@ -8,4 +8,5 @@ export interface alin_puppe {
 }
 export declare const alin_puppe: Schema<alin_puppe>;
 export declare const using: readonly ["puppeteer"];
+export declare const alin_activ: (ctx: Context, config: Config) => void;
 export declare const calculate_puppe: (ctx: Context, config: Config) => void;

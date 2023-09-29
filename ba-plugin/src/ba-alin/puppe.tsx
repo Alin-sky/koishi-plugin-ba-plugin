@@ -36,9 +36,37 @@ const logger: Logger = new Logger(log1)
 
 export const using = ['puppeteer'] as const;
 
+export const alin_activ =
+    function apply(ctx: Context, config: Config) {
+        async function scrapePage() {
+                // 启动并连接浏览器
+                await ctx.puppeteer;
+                // 创建一个新页面
+                const page = await ctx.puppeteer.page();
+                // 打开目标网页
+                await page.goto('https://schale.gg/');
+                
+                // 等待特定元素出现或等待一定时间
+                // 例如，等待一个具有特定 ID 的元素出现
+                await page.waitForSelector('#specific-element-id');
+                // 或者等待一定时间（例如 3000 毫秒）
+                // await page.waitForTimeout(3000);
+
+                // 获取网页的HTML内容
+                const content = await page.content();
+                console.log(content);
+        }
+        ctx.command('test')
+            .action(() => {
+                scrapePage();
+            })
+    }
 
 
-//输出框样式区
+
+
+
+
 
 
 export const calculate_puppe =
@@ -101,12 +129,12 @@ export const calculate_puppe =
         var img = []
 
         function textoutf(lengths, img, hi_i, headimg) {
-            indexs = [];
-            
+            indexs = [''];
+            indexs1 = ''
             var pushstatus = true
             var hi = -450
             var u = 0
-            
+
             for (let i = 0; i < lengths; i++) {
                 let b = i
                 hi += hi_i;
@@ -135,11 +163,11 @@ export const calculate_puppe =
                         </h1>
                     </div >
                 );//头部
-                
-                headimg =''
+                headimg = ''
+
                 if (pushstatus === true) {
                     indexs.push(indexs1)
-                    hi+=28
+                    hi += 28
                     pushstatus = false//单次循环
                 } else {
                     indexs.push(
@@ -192,7 +220,7 @@ export const calculate_puppe =
                             width: '50px',
                             zIndex: '10'
                         }
-                        
+
                         let heaurl = <img src={imgpath + "./puppedata/level.png"} style={typeiogo} />
                         textoutf(l, '', 110, heaurl)
                         logger.info("🟢--渲染图片中")
@@ -209,8 +237,8 @@ export const calculate_puppe =
                     }
                 }
             })
-       
-        ctx.command("好感计算 <message:text>" ,"好感度需求计算器")
+
+        ctx.command("好感计算 <message:text>", "好感度需求计算器")
             .action((_, message) => {
                 indexs = []
                 indexs1 = ''
@@ -254,9 +282,9 @@ export const calculate_puppe =
                             width: '50px',
                             zIndex: '10'
                         }
-                        
+
                         let heaurl = <img src={imgpath + "./puppedata/favologo.png"} style={typeiogo1} />
-                        textoutf(l, img, 90,heaurl)
+                        textoutf(l, img, 90, heaurl)
                     }
                     logger.info("🟢--渲染图片中")
                     return (
@@ -293,7 +321,7 @@ export const calculate_puppe =
                 }
                 let zzMessage = getZZMessage(message);
                 if (typeof zzMessage === "string") {
-                   return zzMessage
+                    return zzMessage
                 } else {
 
 
@@ -310,10 +338,9 @@ export const calculate_puppe =
                     )
                     let l = index.length;
                     const imgpath = path.join(__dirname,);
-                    img = [
-                        <img src={imgpath + "./puppedata/qhs.png"} style={typeiogo} />
-                    ]
-                    textoutf(l, '', 97,img)
+                    let img1 = <img src={imgpath + "./puppedata/qhs.png"} style={typeiogo} />
+
+                    textoutf(l, '', 97, img1)
                     logger.info("🟢--渲染图片中")
                     return (
                         <html>
@@ -324,7 +351,7 @@ export const calculate_puppe =
                             </div>
                         </html>
                     )
-                    
+
 
                 }
             })

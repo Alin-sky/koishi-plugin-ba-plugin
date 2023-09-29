@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.calculate_puppe = exports.using = exports.alin_puppe = void 0;
+exports.calculate_puppe = exports.alin_activ = exports.using = exports.alin_puppe = void 0;
 const jsx_runtime_1 = require("@satorijs/element/jsx-runtime");
 const koishi_1 = require("koishi");
 const favorability_1 = require("../sanae-code/favorability");
@@ -23,7 +23,29 @@ exports.alin_puppe = koishi_1.Schema.intersect([
 const log1 = "ba-plugin-puppeteer";
 const logger = new koishi_1.Logger(log1);
 exports.using = ['puppeteer'];
-//输出框样式区
+const alin_activ = function apply(ctx, config) {
+    async function scrapePage() {
+        // 启动并连接浏览器
+        await ctx.puppeteer;
+        // 创建一个新页面
+        const page = await ctx.puppeteer.page();
+        // 打开目标网页
+        await page.goto('https://schale.gg/');
+        // 等待特定元素出现或等待一定时间
+        // 例如，等待一个具有特定 ID 的元素出现
+        await page.waitForSelector('#specific-element-id');
+        // 或者等待一定时间（例如 3000 毫秒）
+        // await page.waitForTimeout(3000);
+        // 获取网页的HTML内容
+        const content = await page.content();
+        console.log(content);
+    }
+    ctx.command('test')
+        .action(() => {
+        scrapePage();
+    });
+};
+exports.alin_activ = alin_activ;
 const calculate_puppe = function apply1(ctx, config) {
     console.log(config.alin_puppe.type);
     //样式
@@ -77,7 +99,8 @@ const calculate_puppe = function apply1(ctx, config) {
     var index;
     var img = [];
     function textoutf(lengths, img, hi_i, headimg) {
-        indexs = [];
+        indexs = [''];
+        indexs1 = '';
         var pushstatus = true;
         var hi = -450;
         var u = 0;
@@ -226,10 +249,8 @@ const calculate_puppe = function apply1(ctx, config) {
             index = (0, clairvoyant_2.accumulateDia)(zzMessage[0], zzMessage[1], zzMessage[2], zzMessage[3], zzMessage[4]);
             let l = index.length;
             const imgpath = path_1.default.join(__dirname);
-            img = [
-                (0, jsx_runtime_1.jsx)("img", { src: imgpath + "./puppedata/qhs.png", style: typeiogo })
-            ];
-            textoutf(l, '', 97, img);
+            let img1 = (0, jsx_runtime_1.jsx)("img", { src: imgpath + "./puppedata/qhs.png", style: typeiogo });
+            textoutf(l, '', 97, img1);
             logger.info("🟢--渲染图片中");
             return ((0, jsx_runtime_1.jsx)("html", { children: (0, jsx_runtime_1.jsxs)("div", { children: [(0, jsx_runtime_1.jsx)("img", { src: srcurl, style: Style1 }), (0, jsx_runtime_1.jsx)("div", { style: appStyle }), indexs] }) }));
         }
