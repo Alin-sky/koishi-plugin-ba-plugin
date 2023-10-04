@@ -1,121 +1,149 @@
 /*图形处理模块*/
 import fs from 'fs'
 import path from 'path'
-import Jimp from 'jimp'
 import { alincloud } from '../ba-alin'
+import { createCanvas, loadImage } from 'canvas'
 export module gachaImage {
     const MAX_RETRIES = 3
-    async function stuCardMaker(stat, cardtemp, RPool, SRPool) {
-        let CARDSTAR
-        let CARDSTAR2
-        if (RPool.some((item: { name: any; }) => item.name === cardtemp.name)) {
-            CARDSTAR = alincloud + 'stuimg' + '/assets/☆card.png'
-            CARDSTAR2 = alincloud + 'stuimg' + '/assets/card☆1.png'
-        } else if (SRPool.some((item: { name: any; }) => item.name === cardtemp.name)) {
-            CARDSTAR = alincloud + 'stuimg' + '/assets/☆☆card.png'
-            CARDSTAR2 = alincloud + 'stuimg' + '/assets/card☆2.png'
-        } else {
-            CARDSTAR = alincloud + 'stuimg' + '/assets/☆☆☆card.png'
-            CARDSTAR2 = alincloud + 'stuimg' + '/assets/card☆3.png'
-        }
-        let cardStar = await getImage(CARDSTAR)
-        let cardStar2 = await getImage(CARDSTAR2)
-        return await headMaker(stat, cardStar, cardStar2, cardtemp)
-    }
-    //头像处理
-    async function headMaker(stat, cardStar, cardStar2, cardtemp) {
-        let stuImage
-        const MARGIN = alincloud + 'stuimg' + '/assets/margin.png'
-        if (stat == -1) { stuImage = await Jimp.read(cardtemp.avatar) }
-        else {
-            const STUIMAGEURL = alincloud + 'stuimg' + '/assets/Student/' + cardtemp.name + '.png'
-            stuImage = await getImage(STUIMAGEURL)
-        }
-        let margin = await getImage(MARGIN)
-        const TEMPIMAGE = await cardStar.scan(0, 0, cardStar.getWidth(), cardStar.getHeight(), function (_x, _y, index) {
-            bitmapMaker(cardStar, stuImage.resize(cardStar.getWidth(), cardStar.getHeight()), index)
-        }).composite(cardStar2, 0, 0, {
-            mode: Jimp.BLEND_SOURCE_OVER,
-            opacitySource: 0.9,
-            opacityDest: 1,
-        }).composite(margin, 0, 0)
-        TEMPIMAGE.writeAsync(path.resolve(__dirname, '../assets/temp/' + cardtemp.name + '.png'))
-        return new Map().set('buffer', (await TEMPIMAGE.getBufferAsync(Jimp.MIME_PNG)))
-    }
-    //位图处理
-    function bitmapMaker(CARDSTAR1, CARDSTAR3, index) {
-        const PACITY1 = CARDSTAR1.bitmap.data[index + 3]
-        if (PACITY1 === 0) {
-            return
-        } else {
-            const PACITY3 = CARDSTAR3.bitmap.data[index + 3]
-            if (PACITY3 !== 0) {
-                const [r, g, b] = [
-                    CARDSTAR3.bitmap.data[index],
-                    CARDSTAR3.bitmap.data[index + 1],
-                    CARDSTAR3.bitmap.data[index + 2]
-                ]
-                CARDSTAR1.bitmap.data[index] = r;
-                CARDSTAR1.bitmap.data[index + 1] = g;
-                CARDSTAR1.bitmap.data[index + 2] = b;
-                CARDSTAR1.bitmap.data[index + 3] = PACITY3;
-            }
-        }
-    }
-    //UP标签
-    async function setPickUp(stuCard, font) {
-        return new Map().set('buffer', (await stuCard.print(font, 15, -10, "Pick Up!").getBufferAsync(Jimp.MIME_PNG)))
-    }
     //结算图
-    export async function result(cardArray, stat, RPool, SRPool) {
-        const GACHABG = alincloud + 'stuimg' + '/assets/gachaBG.png'
-        const TEMPCARD = alincloud + 'stuimg' + '/assets/☆card.png'
-        const FONT = await Jimp.loadFont(path.resolve(__dirname, '../font/ArialBlack.fnt'))
-        const FONT2 = await Jimp.loadFont(path.resolve(__dirname, '../font/BA2.fnt'))
-        let gachaBG = await getImage(GACHABG)
-        let tempCard = await getImage(TEMPCARD)
-        let stuPromises = cardArray.map(async (cardtemp) => {
+    export async function result(ctx, cardArray, stat, RPool, SRPool) {
+        const gachaBG = alincloud + 'stuimg/assets/gachaBG.png';
+        const star = encodeURIComponent('☆');
+        const tempCard = alincloud + 'stuimg/assets/' + star + 'Card.png';
+        let BG = await getImage(gachaBG);
+        let card = await getImage(tempCard);
+        const canvas = createCanvas(BG.width, BG.height);
+        const context = canvas.getContext('2d');
+        context.drawImage(BG, 0, 0);
+        let stuPromises = await Promise.all(cardArray.map(async (cardtemp) => {
+            let stuCard
             if (stat === -1) {
-                return await Jimp.read((await stuCardMaker(stat, cardtemp, RPool, SRPool)).get('buffer'))
+                const ImgUrl = cardtemp.avatar;
+                stuCard = (await stuCardMaker(stat, cardtemp, RPool, SRPool, ImgUrl)).get('buffer');
+
             } else {
-                let stuCard
-                if (fs.existsSync(path.resolve(__dirname, '../assets/temp/' + cardtemp.name + '.png'))) {
-                    stuCard = await Jimp.read(path.resolve(__dirname, '../assets/temp/' + cardtemp.name + '.png'))
+                if (fs.existsSync(path.join(__dirname, '..', 'assets', 'temp' + cardtemp.name + '.png'))) {
+                    console.log(path.join(__dirname, '..', 'assets', 'temp' + cardtemp.name + '.png'));
+                    let photo = await loadImage(path.join(__dirname, '..', 'assets', 'temp' + cardtemp.name + '.png'));
+                    const photoCanvas = createCanvas(photo.width, photo.height);
+                    stuCard = photoCanvas.toBuffer();
                 } else {
-                    stuCard = await Jimp.read((await stuCardMaker(stat, cardtemp, RPool, SRPool)).get('buffer'))
+                    const stuData = await ctx.database.get('student', { name: cardtemp.name });
+                    const ImgUrl = 'https:' + stuData[0].url
+                    stuCard = (await stuCardMaker(stat, cardtemp, RPool, SRPool, ImgUrl)).get('buffer');
                 }
                 if (cardtemp.pickup) {
-                    return await Jimp.read((await setPickUp(stuCard, FONT)).get('buffer'))
-                } else {
-                    return await Jimp.read(path.resolve(__dirname, '../assets/temp/' + cardtemp.name + '.png'))
+                    const dataUrl = 'data:image/png;base64,' + stuCard.toString('base64');
+                    const image = await loadImage(dataUrl);
+                    const canvasUP = createCanvas(card.width, card.height);
+                    const contextUP = canvasUP.getContext('2d');
+                    contextUP.drawImage(image, 0, 0);
+                    contextUP.save();
+                    contextUP.font = 'bold italic 35px Arial';
+                    contextUP.shadowColor = 'rgba(0, 0, 0, 1)';
+                    contextUP.shadowBlur = 5;
+                    contextUP.strokeStyle = '#000000';
+                    contextUP.lineWidth = 5;
+                    contextUP.strokeStyle = "#000000";
+                    contextUP.fillStyle = "#ffffff";
+                    contextUP.fillText("Pick Up!", 0, 35);
+                    contextUP.restore();
+                    stuCard = canvasUP.toBuffer('image/png');
                 }
             }
-        })
-
-        await Promise.all(stuPromises).then(async (img) => {
+            return stuCard
+        }))
+        stuPromises.forEach(async (img, index) => {
+            const dataUrl = 'data:image/png;base64,' + img.toString('base64');
+            const image = await loadImage(dataUrl);
             if (cardArray.length === 1) {
-                let width = (gachaBG.getWidth() - tempCard.getWidth()) / 2
-                let height = (gachaBG.getHeight() - tempCard.getHeight()) / 2
-                img.forEach((img) => { gachaBG.composite(img, width, height) })
+                let width = (BG.width - card.width) / 2;
+                let height = (BG.height - card.height) / 2;
+                context.drawImage(image, width, height);
             } else if (cardArray.length === 10) {
-                let width = (gachaBG.getWidth() - (tempCard.getWidth() * 5)) / 2
-                let height1 = gachaBG.getHeight() / 4 - tempCard.getHeight() / 2
-                let height2 = gachaBG.getHeight() / 2 - tempCard.getHeight() / 3
-                img.forEach((img, index) => {
-                    if (index < 5) {
-                        gachaBG.composite(img, width + tempCard.getWidth() * index, height1)
-                    } else {
-                        gachaBG.composite(img, width + tempCard.getWidth() * (index - 5), height2)
-                    }
-                })
+                let width = (BG.width - (card.width * 5)) / 2;
+                let height1 = BG.height / 4 - card.height / 2;
+                let height2 = BG.height / 2 - card.height / 3;
+                if (index < 5) {
+                    context.drawImage(image, width + card.width * index, height1);
+                } else {
+                    context.drawImage(image, width + card.width * (index - 5), height2);
+                }
             }
-        })
-        return new Map().set('buffer', (await gachaBG.print(FONT2, gachaBG.getWidth() - 250, gachaBG.getHeight() - 140, stat).getBase64Async(Jimp.MIME_PNG)))
+        });
+        context.font = 'bold 35px Arial';
+        context.fillStyle = "#ffffff";
+        context.fillText(stat, BG.width - 250, BG.height - 100);
+        return new Map().set('buffer', canvas.toBuffer('image/png').toString('base64'));
+    }
+    async function stuCardMaker(stat, cardtemp, RPool, SRPool, ImgUrl) {
+        console.log(ImgUrl)
+        let cardStar;
+        let cardStar2;
+        let star = encodeURIComponent('☆');
+        if (RPool.some((item: { name: any; }) => item.name === cardtemp.name)) {
+            cardStar = alincloud + 'stuimg' + '/assets/' + star + 'card.png';
+            cardStar2 = alincloud + 'stuimg' + '/assets/card' + star + '1.png';
+        } else if (SRPool.some((item: { name: any; }) => item.name === cardtemp.name)) {
+            cardStar = alincloud + 'stuimg' + '/assets/' + star + star + 'card.png';
+            cardStar2 = alincloud + 'stuimg' + '/assets/card' + star + '2.png';
+        } else {
+            cardStar = alincloud + 'stuimg' + '/assets/' + star + star + star + 'card.png';
+            cardStar2 = alincloud + 'stuimg' + '/assets/card' + star + '3.png';
+        }
+        let card = await getImage(cardStar);
+        let card2 = await getImage(cardStar2);
+        return await headMaker(stat, card, card2, ImgUrl, cardtemp);
+    }
+    //头像处理
+    async function headMaker(stat, cardStar, cardStar2, ImgUrl, cardtemp) {
+        let stuImage;
+        const MARGIN = alincloud + 'stuimg' + '/assets/margin.png';
+        if (stat == -1) {
+            stuImage = await loadImage(ImgUrl)
+        } else {
+            stuImage = await getImage(ImgUrl);
+        }
+        let margin = await getImage(MARGIN);
+        const tempCanvas = createCanvas(cardStar.width, cardStar.height);
+        const tempContext = tempCanvas.getContext('2d');
+        const tempContext2 = tempCanvas.getContext('2d');
+        tempContext.drawImage(cardStar, 0, 0, cardStar.width, cardStar.height);
+        const imageData1 = tempContext.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        tempContext2.drawImage(stuImage, 0, 0, cardStar.width, cardStar.height);
+        const imageData2 = tempContext2.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        for (let i = 0; i < imageData1.data.length; i += 4) {
+            const alpha1 = imageData1.data[i + 3];
+            const alpha2 = imageData2.data[i + 3];
+
+            if (alpha1 > 0 && alpha2 > 0) {
+                imageData1.data[i] = imageData2.data[i];
+                imageData1.data[i + 1] = imageData2.data[i + 1];
+                imageData1.data[i + 2] = imageData2.data[i + 2];
+                imageData1.data[i + 3] = alpha2;
+            }
+        }
+        tempContext.putImageData(imageData1, 0, 0);
+        tempContext.globalCompositeOperation = 'source-over';
+        tempContext.globalAlpha = 0.9;
+        tempContext.drawImage(cardStar2, 0, 0, cardStar2.width, cardStar2.height);
+        tempContext.drawImage(margin, 0, 0, cardStar.width, cardStar.height);
+        const save = fs.createWriteStream(path.resolve(__dirname, `../assets/temp/${cardtemp.name}.png`));
+        const stream = tempCanvas.createPNGStream();
+        stream.pipe(save);
+        const bufferData = tempCanvas.toBuffer('image/png').toString('base64');
+        const resultMap = new Map().set('buffer', bufferData);
+        new Promise((resolve) => {
+            save.on('finish', () => {
+                resolve(resultMap);
+            });
+        });
+        return new Map().set('buffer', bufferData);
     }
     //获取url图片
     async function getImage(imageUrl, retries = 0) {
         try {
-            const image = await Jimp.read(imageUrl);
+            let image = await loadImage(imageUrl);
             return image;
         } catch (error) {
             if (retries < MAX_RETRIES) {

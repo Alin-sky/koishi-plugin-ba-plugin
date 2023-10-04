@@ -3,11 +3,12 @@ import { Context, Schema, } from 'koishi';
 import { guildConfig, guildPlugin } from './guild/index';
 import { gachaplugin } from './gacha';
 import { alinConfig, alinplugin } from './ba-alin';
-import { gachaConfig } from './gacha/gacha';
+import { GachaConfig } from './gacha/gacha';
 
 import { alin_activ, alin_puppe, calculate_puppe } from './ba-alin/puppe';
 import { } from "koishi-plugin-puppeteer";
 import { sanae_code_favora, sanae_code_level, sanae_code_zanzuan, } from './sanae-code/index';
+import { jingConfig, jingziqi } from './chess/jing';
 
 
 
@@ -33,46 +34,47 @@ export const usage = "## 数据来源于[bawiki](https://ba.gamekee.com/)、[Aro
 
 
 export interface Config {
-  alin: alinConfig
-  gacha: gachaConfig
-  guild: guildConfig
-  alin_puppe: alin_puppe
-  group: string[]
-  text: string
-  swit: boolean
-
-
+  jing: jingConfig,
+  alin: alinConfig,
+  alin_puppe: alin_puppe,
+  GachaGuild: {
+    swit: boolean
+    抽卡模拟器: GachaConfig,
+    guild: guildConfig,
+  }
 }
 //koishi控制台
 export const Config: Schema<Config> = Schema.object({
   alin: alinConfig,
   alin_puppe: alin_puppe,
-  gacha: gachaConfig,
-  guild: guildConfig,
-  swit: Schema.boolean().default(true).description('抽卡模拟器全局开关'),
-  group: Schema.array(String).role('table').description('抽卡模拟器黑名单群组'),
-  text: Schema.string().description('黑名单群组回复内容')
+  GachaGuild: Schema.object({
+    swit: Schema.boolean().default(true).description('模拟器开关'),
+    guild: guildConfig.collapse().description('群组整活设置'),
+    抽卡模拟器: GachaConfig.collapse().description('抽卡模拟器设置'),
+  }).description('抽卡和整活相关配置'),
+  jing: jingConfig.description('井字棋设置'),
 })
+
 
 
 
 //代码区
 
 export async function apply(ctx: Context, config: Config) {
-
-  //ctx.plugin(guildPlugin, config)
+  ctx.plugin(jingziqi, config)
+  ctx.plugin(guildPlugin, config)
   ctx.plugin(gachaplugin, config)
   ctx.plugin(alinplugin, config)
   if (config.alin_puppe.levelswit === true) {
     ctx.plugin(calculate_puppe, config)
-  }else {
+
+  } else {
     ctx.plugin(sanae_code_favora)
     ctx.plugin(sanae_code_level)
     ctx.plugin(sanae_code_zanzuan)
   }
-
-  if (config.swit === false) { 
-    ctx.dispose(gachaplugin) 
+  if (config.GachaGuild.swit === false) {
+    ctx.dispose(gachaplugin)
   } else {
     ctx.plugin(gachaplugin, config)
   }

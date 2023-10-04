@@ -1,4 +1,3 @@
-
 import { clearInterval } from "timers"
 import { Command, Context, Random, Schema, h } from "koishi"
 import { resolve } from "path"
@@ -26,7 +25,7 @@ export const guildPlugin = ({
       clearTimeout(timeOut)
     });
     ctx.on('message-deleted', async (session) => {
-      if (session.channelId === config.guild.整活用群号) {
+      if (session.channelId === config.GachaGuild.guild.整活用群号) {
         tempMessage = await session.bot.getMessage(session.channelId, session.messageId)
         if (tempMessage2.length < 5) {
           tempMessage2.push(tempMessage)
@@ -38,7 +37,7 @@ export const guildPlugin = ({
     });
     ctx.command('穿山甲到底说了什么', '防撤回', { hidden: true } as Partial<Command.Config>)
       .action(async ({ session }, ...args) => {
-        if (session.guildId !== config.guild.整活用群号) {
+        if (session.guildId !== config.GachaGuild.guild.整活用群号) {
           return '群限定指令，请检查插件配置'
         }
         if (args.length !== 1) {
@@ -61,12 +60,12 @@ export const guildPlugin = ({
       })
     ctx.command('提醒小助手', '提醒睡觉小助手', { hidden: true } as Partial<Command.Config>)
       .action(({ session }, ...args) => {
-        if (config.guild.整活用群号 == '') { return '请先设置信息' }
+        if (config.GachaGuild.guild.整活用群号 == '') { return '请先设置信息' }
         if (args.length !== 1) { return ('参数数量不对') }
         if (args[0] === '启动') {
           let nowTime = new Date()
           let nextTime = new Date(nowTime)
-          let nextHour = nowTime.getHours() + (config.guild.hour - nowTime.getHours() % config.guild.hour)
+          let nextHour = nowTime.getHours() + (config.GachaGuild.guild.hour - nowTime.getHours() % config.GachaGuild.guild.hour)
           nextTime.setHours(nextHour, 0, 0, 0)
           const TIMEDIFF = nextTime.getTime() - nowTime.getTime()
           const SECONDS = Math.floor(TIMEDIFF / 1000)
@@ -84,8 +83,8 @@ export const guildPlugin = ({
       })
     ctx.command('抽群U', '(beta版)群组隔离', { hidden: true } as Partial<Command.Config>)
       .action(async ({ session }, ...args) => {
-        if (session.guildId === config.guild.整活用群号) {
-          let result = await gachaGroup(session, config)
+        if (session.guildId === config.GachaGuild.guild.整活用群号) {
+          let result = await gachaGroup(ctx,session, config)
           session.send(h('message', [session.author.username + '的抽卡结果：\n', h.image(result.get('buffer'), 'image/png')]))
         } else {
           return '群限定指令.'
@@ -96,19 +95,19 @@ export const guildPlugin = ({
       let time = new Date().getTime();
       interval = setInterval(() => {
         let time2 = new Date().getTime();
-        ctx.bots[0].sendMessage(config.guild.整活用群号, h.image(pathToFileURL(resolve(__dirname, '../../assets/提醒睡觉.jpg')).href));
+        ctx.bots[0].sendMessage(config.GachaGuild.guild.整活用群号, h.image(pathToFileURL(resolve(__dirname, '../../assets/提醒睡觉.jpg')).href));
         console.log('执行一次');
-        if ((time2 - time) < (config.guild.hour * 1000 * 60 * 60)) {
+        if ((time2 - time) < (config.GachaGuild.guild.hour * 1000 * 60 * 60)) {
           clearInterval(interval);
           console.log('计时异常');
         };
-      }, (config.guild.hour * 1000 * 60 * 60));
+      }, (config.GachaGuild.guild.hour * 1000 * 60 * 60));
     };
   }
 })
 //整活   
-export async function gachaGroup(session, config: Config) {
-  let groupPool = await session.bot.getGuildMemberList(config.guild.整活用群号);
+export async function gachaGroup(ctx,session, config: Config) {
+  let groupPool = await session.bot.getGuildMemberList(config.GachaGuild.guild.整活用群号);
   const OWNER = groupPool.filter(member => member.roles[0] === 'owner');
   const ADMIN = groupPool.filter(member => member.roles[0] === 'admin');
   const MEMBER = groupPool.filter(member => member.roles[0] === 'member');
@@ -135,5 +134,5 @@ export async function gachaGroup(session, config: Config) {
     }
     cards.push(qunU);
   }
-  return await gachaImage.result(cards, -1, MEMBER, ADMIN) 
+  return await gachaImage.result(ctx,cards, -1, MEMBER, ADMIN) 
 }

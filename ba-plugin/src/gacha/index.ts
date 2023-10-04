@@ -1,129 +1,108 @@
 /*BA插件模块 */
-import { Command, Context, h, } from 'koishi'
+import { Context, h, } from 'koishi'
 import { gacha, gachaProbability, path } from '../gacha/gacha'
 import { DB } from '../gacha/database'
 import { Config } from '..'
 
-
-
-
-
 export const gachaplugin = ({
-    // 黑名单拦截
-
     apply(ctx: Context, config: Config) {
         ctx.on('ready', async () => {
-            gachaProbability(config.gacha)
+            gachaProbability(config.GachaGuild.抽卡模拟器)
             await DB.stuTable(ctx)
             await DB.stuUpdate(ctx)
             await DB.BAUserTable(ctx)
         })
         ctx.on('command/before-execute',
-            ({ session }, ...args) => {
-                if (config.group.some(guildId => guildId === session.guildId)) {
+            ({ session }) => {
+                if (config.GachaGuild.抽卡模拟器.group.some(guildId => guildId === session.guildId)) {
                     if (session.content.startsWith('ba')) {
-                        return config.text
+                        return config.GachaGuild.抽卡模拟器.text
                     }
-
                 }
             }
         )
+        ctx.command("ba", '抽卡模拟器').example("ba 日服 十连").option('pickup', ' <up>池子选择', { fallback: 'pt' }).shortcut('up', { options: { pickup: 'up' }, fuzzy: true })
+            .usage('使用说明：\nba调用普池,UP调用UP池.')
+            .action(async ({ session, options }, ...args) => {
+                const FIRST_ERROR_MESSAGE = "输入的参数个数不对";
+                const SECOND_ERROR_MESSAGE = '没选对服';
+                const THIRD_ERROR_MESSAGE = '抽卡参数错误';
+                const FOURTH_ERROR_MESSAGE = '当前未设置对应UP学生，暂时关闭对应UP池';
+                await DB.setbauser(ctx, session, args)
+                if (args.length == 0) {
+                    return
+                }
+                if (args.length !== 2) {
+                    return FIRST_ERROR_MESSAGE
+                }
 
-        ctx.command("ba", '抽卡模拟器').example("ba 日服 十连")
-            .usage('使用说明：\n主指令默认调用普池,子指令ba.UP调用UP池.\n使用子指令 -h获取子指令详细说明')
-            .action(async ({ session }, ...args) => {
-                const FIRST_ERROR_MESSAGE = "抽卡模拟器普池\n示例：\nba 日服 十连\nba 国际服 单抽";
-                const SECOND_ERROR_MESSAGE = "输入的参数个数不对";
-                const THIRD_ERROR_MESSAGE = '没选对服';
-                const FOURTH_ERROR_MESSAGE = '抽卡参数错误';
-                await DB.setbauser(ctx, session)
-                if (args.length == 0) { return '发送help ba获得帮助' }
-                if (args.length !== 2) { return SECOND_ERROR_MESSAGE }
-                if (args[0] == null) { return FIRST_ERROR_MESSAGE }
-                if (args[0] !== '日服' && args[0] !== '国际服') { return THIRD_ERROR_MESSAGE }
-                if ((args[1] !== '十连') && (args[1] !== '单抽')) { return FOURTH_ERROR_MESSAGE }
-                //运行
-
+                if (args[0] !== '日服' && args[0] !== '国际服' && args[0] !== '国服') {
+                    return SECOND_ERROR_MESSAGE
+                }
+                if ((args[1] !== '十连') && (args[1] !== '单抽')) {
+                    return THIRD_ERROR_MESSAGE
+                }
+                let UP
+                if (options.pickup == 'up') {
+                    const NUP = args[0] === '日服' ? 'JUP' : args[0] === '国际服' ? 'IUP' : 'CUP';
+                    let student = await ctx.database.get('student', { [NUP]: { $eq: true } }, ['name']);
+                    if (student.length < 1) {
+                        return FOURTH_ERROR_MESSAGE
+                    }
+                    UP = true;
+                } else {
+                    UP = false;
+                }
                 const Message = await session.send('抽卡中...')
+                let result = await gacha(ctx, args, session, UP);
+        
                 setTimeout(() => { session.bot.deleteMessage(session.channelId, Message[0]) }, config.alin.time)
-                let UP = false;
-                let user = session.userId;
-                let result = await gacha(ctx, args, user, UP)
                 session.send(h('message', [session.author.username + '的抽卡结果：\n',
-                h.image(path),
-                h.image(result.get('buffer'), 'image/png')]))
-
-
+                h.image(path),h.image(result.get('buffer'), 'image/png')])); 
             })
-        ctx.command('ba.up', 'UP池抽卡').example('ba.up 日服 单抽')
-            .usage('说明：用于执行UP池抽取')
+        ctx.command('ba.setup', '学生管理').example('ba.setup 日服 梓').option('queryA', '<queryA> UP学生设置和获取当前UP').option('queryB', '<queryB> 学生管理', { authority: 3 })
+            .shortcut('up学生获取', { options: { queryA: 'get' }, fuzzy: true })
+            .shortcut('UP学生获取', { options: { queryA: 'get' }, fuzzy: true })
+            .shortcut('学生添加', { options: { queryB: 'add' }, fuzzy: true })
+            .shortcut('学生删除', { options: { queryB: 'remove' }, fuzzy: true })
+            .alias('UP学生设置').usage(`说明：学生管理，默认为设置UP池学生.\n快捷指令：
+up学生获取--获取当前UP学生(参数列表：服务器 )
+UP学生设置--设置当前UP学生(参数列表：服务器 学生名)
+学生添加--添加学生到数据库(需权限)(参数列表:学生名 稀有度 限定值 服务器)
+学生删除--从数据库删除学生(需权限)(参数列表:学生名)`)
+            .action(async ({ session, options }, ...args) => {
+                if (args.length == 0) {
+                    return
+                }
+                if (options.queryA == 'get') {
+                    return await DB.getUP(ctx, args, session);
+                } else if (options.queryB == 'add') {
+                    return await DB.addStu(ctx, args);
+                } else if (options.queryB == 'remove') {
+                    return await DB.delStu(ctx, args);
+                } else {
+                    return await DB.setUP(ctx, args, config);
+                }
+            })
+        ctx.command('ba.stat', '统计抽卡记录').example('ba.stat').alias('模拟抽卡记录')
             .action(async ({ session }, ...args) => {
-                const FIRST_ERROR_MESSAGE = "抽卡模拟器UP池\n示例：\nba.up 日服 十连\nba.up 国际服 单抽";
-                const SECOND_ERROR_MESSAGE = "输入的参数个数不对";
-                const THIRD_ERROR_MESSAGE = '没选对服';
-                const FOURTH_ERROR_MESSAGE = '抽卡参数错误';
-                const FIFTH_ERROR_MESSAGE = '当前未设置对应UP学生，暂时关闭对应UP池';
-                await DB.setbauser(ctx, session);
-                if (args.length == 0) { return '使用help获得帮助' }
-                const NUP = args[0] == '日服' ? 'JUP' : 'IUP';
-                let student = await ctx.database.get('student', { [NUP]: { $eq: true } }, ['name']);
-                if (args[0] == null) { return FIRST_ERROR_MESSAGE }
-                if (args.length !== 2) { return SECOND_ERROR_MESSAGE }
-                if (args[0] !== '日服' && args[0] !== '国际服') { return THIRD_ERROR_MESSAGE }
-                if ((args[1] !== '十连') && (args[1] !== '单抽')) { return FOURTH_ERROR_MESSAGE }
-                const Message = await session.send('抽卡中...')
-                setTimeout(() => { session.bot.deleteMessage(session.channelId, Message[0]) }, 20000)
-                if (student.length < 1) { return FIFTH_ERROR_MESSAGE }
-                const UP = true;
-                let user = session.userId;
-                let result = await gacha(ctx, args, user, UP);
-                session.send(h('message', [session.author.username + '的抽卡结果：\n',
-                h.image(path),
-                h.image(result.get('buffer'), 'image/png')]));
+                await DB.baStat(ctx, session, args);
             })
-        ctx.command('ba.setup', '设置UP学生').example('ba.setup 日服 梓')
-            .usage('说明：设置池UP学生\n参数：日服/国际服 名字')
-            .action(async ({ }, ...args) => {
-                if (args.length == 0) { return '使用help获得帮助' }
-                return await DB.setUP(ctx, args, config);
-            })
-        ctx.command('ba.getup', '获取当前UP学生').example('ba.getup')
-            .action(async ({ session }, ...args) => {
-                return await DB.getUP(ctx, args, session);
-            })
-        ctx.command('ba.addstu', '添加新学生').example('ba.addstu 梓 3 2 1')
-            .usage('说明：添加新学生到数据库\n参数列表：\n名字：任意 稀有度：1-3(⭐) 限定：0/1/2(常/活/限) 服务器：1/0(日/国际)')
-            .action(async ({ }, ...args) => {
-                if (args.length == 0) { return '使用help获得帮助' }
-                return await DB.addStu(ctx, args);
-            })
-        ctx.command('ba.delstu', '删除学生').example('ba.delstu 梓')
-            .action(async ({ }, ...args) => {
-                if (args.length == 0) { return '使用help获得帮助' }
-                return await DB.delStu(ctx, args);
-            })
-        ctx.command('ba.stat', '统计抽卡记录').example('ba.stat')
-            .action(async ({ session }, ...args) => {
-                await DB.setbauser(ctx, session);
-                if (args.length > 0) { return '保留实现' }
-                let user = session.userId;
-                let data = await DB.baStat(ctx, user);
-                session.send('用户:' + session.author.username +
-                    '\n日服卡池抽卡次数:' + data[0].Jstat + '\n日服UP池抽卡次数:' + data[0].JUPstat + '\n日服普池抽卡次数:' + data[0].JNstat +
-                    '\n累计获得⭐⭐⭐学生：' + data[0].Jstar + '\n获得UP⭐⭐⭐学生：' + data[0].JUUPstar + '\nUP池获得⭐⭐⭐学生：' + data[0].JUPstar + '\n普池获得⭐⭐⭐学生：' + data[0].JNstar +
-                    '\n国际服卡池抽卡次数:' + data[0].Istat + '\n国际服UP池抽卡次数:' + data[0].IUPstat + '\n国际服普池抽卡次数:' + data[0].INstat +
-                    '\n累计获得⭐⭐⭐学生：' + data[0].Istar + '\n获得UP⭐⭐⭐学生：' + data[0].IUUPstar + '\nUP池获得⭐⭐⭐学生：' + data[0].IUPstar + '\n普池获得⭐⭐⭐学生：' + data[0].INstar
-                )
-            })
-        ctx.command('重置插件数据库', '重置数据库', { hidden: true } as Partial<Command.Config>)
-            .action(async ({ session }, args) => {
+        ctx.command('清除抽卡数据库', '清除数据库', { hidden: true, authority: 3 })
+            .action(async ({ session }) => {
                 await DB.clearTable(ctx)
+                session.send('已删除学生表')
             })
         ctx.command('ba.卡池查询', '展示当前卡池所有角色')
-            .action(async ({ session }) => {
-                let result = await DB.showStu(ctx)
-                session.send(h('message', ['目前国际服卡池实装3星：\n', h.image(result[0].get('buffer'), 'image/png'), '日服实装国际服未实装：\n', h.image(result[1].get('buffer'), 'image/png')]));
+            .action(async ({ session },...args) => {
+                if(args.length==0){
+                    return
+                }
+                if (args[0] !== '日服' && args[0] !== '国际服' && args[0] !== '国服') {
+                    return '请输入目标服务器'
+                }
+                let result = await DB.showStu(ctx,args)
+                session.send(h('message', ['目前'+args[0]+'卡池实装3星：\n', h.image(result[0].get('buffer'), 'image/png')]));
             })
     }
-
 })

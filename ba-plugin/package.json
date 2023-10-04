@@ -36,13 +36,14 @@
   "dependencies": {
     "koishi-plugin-puppeteer": "^3.4.11",
     "lodash": "^4.17.21",
-    "jimp": "^0.22.8"
+    "canvas":"^2.11.2"
 
   },
   "devDependencies": {
     "koishi-plugin-puppeteer": "^3.4.11",
     "@types/lodash": "^4.14.194",
-    "jimp": "^0.22.8"
+    "canvas":"^2.11.2"
+    
   },
   "service": {
     "required": [
