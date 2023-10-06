@@ -96,27 +96,27 @@ export async function gacha(ctx: Context, args: string[], session, UP: boolean) 
         server: args[0]//服务器判断
     }
     const gachaMap = {
-        '日服': { table: 'bauserJP', Nstat: 'Jstat', Ustat: UP ? 'JUPstat' : 'JNstat', Ustar: UP ? 'JUPstar' : 'JNstar', UPstar: UP ? 'JUUPstar' : "" },
-        '国际服': { table: 'bauserIN', Nstat: 'Istat', Ustat: UP ? 'IUPstat' : 'INstat', Ustar: UP ? 'IUPstar' : 'INstar', UPstar: UP ? 'IUUPstar' : "" },
-        '国服': { table: 'bauserCN', Nstat: 'Cstat', Ustat: UP ? 'CUPstat' : 'CNstat', Ustar: UP ? 'CUPstar' : 'CNstar', UPstar: UP ? 'CUUPstar' : "" }
+        '日服': { table: 'bauserJP', Ustat: UP ? 'UPstat' : 'Nstat', Ustar: UP ? 'UPstar' : 'Nstar', UPstar: UP ? 'UUPstar' : "" },
+        '国际服': { table: 'bauserIN', Ustat: UP ? 'UPstat' : 'Nstat', Ustar: UP ? 'UPstar' : 'Nstar', UPstar: UP ? 'UUPstar' : "" },
+        '国服': { table: 'bauserCN', Ustat: UP ? 'UPstat' : 'Nstat', Ustar: UP ? 'UPstar' : 'Nstar', UPstar: UP ? 'UUPstar' : "" }
     }
     const user = session.userId;
     await gachaPool(ctx, args, UP);
     const gachaCount = args[1] === '十连' ? 10 : 1;
     const stat = await ctx.database.get(gachaMap[args[0]].table, { userid: session.userId });
-    await ctx.database.set(gachaMap[args[0]].table, { userid: user }, {[gachaMap[args[0]].Nstat]: { $add: [{ $: gachaMap[args[0]].Nstat  }, gachaCount] },[gachaMap[args[0]].Ustat]: { $add: [{ $: gachaMap[args[0]].Ustat }, gachaCount] }});
+    await ctx.database.set(gachaMap[args[0]].table, { userid: user }, { ['stat']: { $add: [{ $: 'stat' }, gachaCount] }, [gachaMap[args[0]].Ustat]: { $add: [{ $: gachaMap[args[0]].Ustat }, gachaCount] } });
 
     await baGacha(gachaData, cardArray, ctx, user, gachaCount, args, gachaMap);
 
-    const IMG = await gachaImage.result(ctx,cardArray, stat[0][gachaMap[args[0]].Ustat], RPool, SRPool);
- 
+    const IMG = await gachaImage.result(ctx, cardArray, stat[0][gachaMap[args[0]].Ustat], RPool, SRPool);
+
 
     resetPool();//重置卡池
 
     path = gachaData.raindow
         ? pathToFileURL(resolve(__dirname, '../assets/color.gif')).href
         : pathToFileURL(resolve(__dirname, '../assets/blue.gif')).href;
-    
+
     return IMG
 }
 //抽卡启动时
@@ -125,28 +125,30 @@ async function baGacha(gachaData, cardArray: any[], ctx: Context, user, gachaCou
         cardArray.push(
             { name: await gachaNormal(i, gachaData, ctx, user, args, gachaMap), pickup: gachaData.pickup }
         )
-        
+
     }
 }
 //抽卡进行时
 async function gachaNormal(i, gachaData, ctx: Context, user, args: string[], gachaMap) {
     gachaData.pickup = false;
     const cardtemp = Random.weightedPick(PB);
-    const star = args[0] === '日服' ? 'Jstar' : args[0] === '国际服' ? 'Istar' : 'Cstar';
     const gachaProcess = async (type, getSSR) => {
         gachaData.raindow = true;
-        await ctx.database.set(gachaMap[args[0]].table, { userid: user }, { [star]: { $add: [{ $: star }, 1] } });
+        await ctx.database.set(gachaMap[args[0]].table, { userid: user }, { ['star']: { $add: [{ $: 'star' }, 1] } });
         if (type === 'UP') {
             await pickup(gachaData, ctx, user, args, gachaMap)//UP判断
         } else {
             await ctx.database.set(gachaMap[args[0]].table, { userid: user }, { [gachaMap[args[0]].Ustar]: { $add: [{ $: gachaMap[args[0]].Ustar }, 1] } });
             gachaData.card = getSSR()
+
         }
+
     }
     if (cardtemp === 'SSR' || cardtemp === 'UP') {//⭐⭐⭐
         await gachaProcess(cardtemp, () => SSRPool[Random.int(SSRPool.length)]);
     } else if (cardtemp === 'SR') {//⭐⭐
         gachaData.card = SRPool[Random.int(SRPool.length)]
+
     } else { //⭐
         if (i == 9) {
             const lastCard = Random.weightedPick(lastPB)
@@ -154,18 +156,19 @@ async function gachaNormal(i, gachaData, ctx: Context, user, args: string[], gac
                 await gachaProcess(lastCard, () => SSRPool[Random.int(SSRPool.length)]);
             } else if (cardtemp === 'SR') {//⭐⭐
                 gachaData.card = SRPool[Random.int(SRPool.length)]
-            } else {
-                gachaData.card = RPool[Random.int(RPool.length)]
             }
+        }else {
+            gachaData.card = RPool[Random.int(RPool.length)]
         }
     }
+    console.log(gachaData)
     return gachaData.card.name
 }
 //UP判断
 async function pickup(gachaData, ctx: Context, user, args, gachaMap) {
     if (gachaData.UPGacha) {
-        await ctx.database.set(gachaMap[args[0]].table, { userid: user }, { [gachaMap[args[0]].UPstar]: { $add: [{ $: gachaMap[args[0]].UPstar }, 1] }  });
-         gachaData.pickup = true;
+        await ctx.database.set(gachaMap[args[0]].table, { userid: user }, { [gachaMap[args[0]].UPstar]: { $add: [{ $: gachaMap[args[0]].UPstar }, 1] } });
+        gachaData.pickup = true;
         gachaData.card = UPStu[0];
     } else {
         await ctx.database.set(gachaMap[args[0]].table, { userid: user }, { [gachaMap[args[0]].Ustar]: { $add: [{ $: gachaMap[args[0]].Ustar }, 1] } });

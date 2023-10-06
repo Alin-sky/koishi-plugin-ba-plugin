@@ -6,7 +6,6 @@ import { StudentPool, macthmainpage, macthnextpage } from './data'
 import path from 'path'
 import { alincloud } from '../ba-alin'
 import { createCanvas, loadImage } from 'canvas'
-import { error } from 'console'
 declare module 'koishi' {
     interface Tables {
         student: Student
@@ -29,36 +28,36 @@ export interface Student {
 export interface bauserIN {
     name: string
     userid: string
-    Istat: number       //国际总抽卡次数
-    INstat: number      //国际普通池次数
-    IUPstat: number    //国际UP池次数
-    Istar: number       //国际累计获得⭐⭐⭐
-    INstar: number      //国际普通池⭐⭐⭐
-    IUPstar: number     //国际UP池⭐⭐⭐
-    IUUPstar: number    //国际UP池UP⭐⭐⭐
+    stat: number       //国际总抽卡次数
+    Nstat: number      //国际普通池次数
+    UPstat: number    //国际UP池次数
+    star: number       //国际累计获得⭐⭐⭐
+    Nstar: number      //国际普通池⭐⭐⭐
+    UPstar: number     //国际UP池⭐⭐⭐
+    UUPstar: number    //国际UP池UP⭐⭐⭐
 
 }
 export interface bauserJP {
     name: string
     userid: string
-    Jstat: number
-    JNstat: number
-    JUPstat: number
-    Jstar: number
-    JNstar: number
-    JUPstar: number
-    JUUPstar: number
+    stat: number
+    Nstat: number
+    UPstat: number
+    star: number
+    Nstar: number
+    UPstar: number
+    UUPstar: number
 }
 export interface bauserCN {
     name: string
     userid: string
-    Cstat: number
-    CNstat: number
-    CUPstat: number
-    Cstar: number
-    CNstar: number
-    CUPstar: number
-    CUUPstar: number
+    stat: number
+    Nstat: number
+    UPstat: number
+    star: number
+    Nstar: number
+    UPstar: number
+    UUPstar: number
 }
 export module DB {
     //初始化学生表
@@ -95,7 +94,7 @@ export module DB {
                 let errors = 0;
                 for (let stu of StudentPool) {
                     const STUDENT = await ctx.database.get('student', { name: stu.name });
-                    if (STUDENT.length==0||STUDENT[0].url == '' || STUDENT[0].url == null) {
+                    if (STUDENT.length == 0 || STUDENT[0].url == '' || STUDENT[0].url == null) {
                         let nextUrl = mainPage + macthmainpage(result, stu.name);
                         let retries = 0;
                         const MAX_RETRIES = 3;
@@ -121,7 +120,7 @@ export module DB {
 
                     }
                 }
-               console.log(`学生数据表更新完毕,共有${errors}个学生的链接获取失败.`);
+                console.log(`学生数据表更新完毕,共有${errors}个学生的链接获取失败.`);
             }
         }
     }
@@ -129,13 +128,13 @@ export module DB {
     export async function BAUserTable(ctx: Context) {
         ctx.model.extend('bauserIN', {
             name: 'string', userid: 'string',
-            Istat: { type: 'integer', initial: 0 },
-            INstat: { type: 'integer', initial: 0 },
-            IUPstat: { type: 'integer', initial: 0 },
-            Istar: { type: 'integer', initial: 0 },
-            INstar: { type: 'integer', initial: 0 },
-            IUPstar: { type: 'integer', initial: 0 },
-            IUUPstar: { type: 'integer', initial: 0 },
+            stat: { type: 'integer', initial: 0 },
+            Nstat: { type: 'integer', initial: 0 },
+            UPstat: { type: 'integer', initial: 0 },
+            star: { type: 'integer', initial: 0 },
+            Nstar: { type: 'integer', initial: 0 },
+            UPstar: { type: 'integer', initial: 0 },
+            UUPstar: { type: 'integer', initial: 0 },
 
         }, {
             primary: 'userid',
@@ -144,13 +143,13 @@ export module DB {
         })
         ctx.model.extend('bauserJP', {
             name: 'string', userid: 'string',
-            Jstat: { type: 'integer', initial: 0 },
-            JNstat: { type: 'integer', initial: 0 },
-            JUPstat: { type: 'integer', initial: 0 },
-            Jstar: { type: 'integer', initial: 0 },
-            JNstar: { type: 'integer', initial: 0 },
-            JUPstar: { type: 'integer', initial: 0 },
-            JUUPstar: { type: 'integer', initial: 0 }
+            stat: { type: 'integer', initial: 0 },
+            Nstat: { type: 'integer', initial: 0 },
+            UPstat: { type: 'integer', initial: 0 },
+            star: { type: 'integer', initial: 0 },
+            Nstar: { type: 'integer', initial: 0 },
+            UPstar: { type: 'integer', initial: 0 },
+            UUPstar: { type: 'integer', initial: 0 }
         }, {
             primary: 'userid',
             unique: ['userid'],
@@ -158,13 +157,13 @@ export module DB {
         })
         ctx.model.extend('bauserCN', {
             name: 'string', userid: 'string',
-            Cstat: { type: 'integer', initial: 0 },
-            CNstat: { type: 'integer', initial: 0 },
-            CUPstat: { type: 'integer', initial: 0 },
-            Cstar: { type: 'integer', initial: 0 },
-            CNstar: { type: 'integer', initial: 0 },
-            CUPstar: { type: 'integer', initial: 0 },
-            CUUPstar: { type: 'integer', initial: 0 }
+            stat: { type: 'integer', initial: 0 },
+            Nstat: { type: 'integer', initial: 0 },
+            UPstat: { type: 'integer', initial: 0 },
+            star: { type: 'integer', initial: 0 },
+            Nstar: { type: 'integer', initial: 0 },
+            UPstar: { type: 'integer', initial: 0 },
+            UUPstar: { type: 'integer', initial: 0 }
         }, {
             primary: 'userid',
             unique: ['userid'],
@@ -274,30 +273,15 @@ export module DB {
     }
     //获取抽卡统计数据
     export async function baStat(ctx: Context, session, args) {
-        let data = {
-            dataCN: await ctx.database.get('bauserCN', { userid: session.userId }),
-            dataIN: await ctx.database.get('bauserIN', { userid: session.userId }),
-            dataJP: await ctx.database.get('bauserJP', { userid: session.userId })
+        const TABLE = args[0] === '日服' ? 'bauserJP' : args[0] === '国际服' ? 'bauserIN' : 'bauserCN'
+        let data = await ctx.database.get(TABLE, { userid: session.userId })
+        if (data.length == 0) {
+            await ctx.model.create(TABLE, { name: session.author.username, userid: session.userId });
+            data = await ctx.database.get(TABLE, { userid: session.userId });
         }
-        if (data.dataCN.length == 0) {
-            await ctx.model.create('bauserCN', { name: session.author.username, userid: session.userId });
-            data.dataCN = await ctx.database.get('bauserCN', { userid: session.userId });
-        }
-        if (data.dataIN.length == 0) {
-            await ctx.model.create('bauserIN', { name: session.author.username, userid: session.userId });
-            data.dataIN = await ctx.database.get('bauserIN', { userid: session.userId });
-        }
-        if (data.dataJP.length == 0) {
-            await ctx.model.create('bauserJP', { name: session.author.username, userid: session.userId });
-            data.dataJP = await ctx.database.get('bauserJP', { userid: session.userId });
-        }
-        let text = '用户:' + session.author.username + '模拟器抽卡记录' +
-            '\n日服\n卡池抽卡次数:' + data.dataJP[0].Jstat + '\nUP池抽卡次数:' + data.dataJP[0].JUPstat + '\n普池抽卡次数:' + data.dataJP[0].JNstat +
-            '\n累计获得⭐⭐⭐学生：' + data.dataJP[0].Jstar + '\n获得UP⭐⭐⭐学生：' + data.dataJP[0].JUUPstar + '\nUP池获得⭐⭐⭐学生：' + data.dataJP[0].JUPstar + '\n普池获得⭐⭐⭐学生：' + data.dataJP[0].JNstar +
-            '\n国际服\n卡池抽卡次数:' + data.dataIN[0].Istat + '\nUP池抽卡次数:' + data.dataIN[0].IUPstat + '\n普池抽卡次数:' + data.dataIN[0].INstat +
-            '\n累计获得⭐⭐⭐学生：' + data.dataIN[0].Istar + '\n获得UP⭐⭐⭐学生：' + data.dataIN[0].IUUPstar + '\nUP池获得⭐⭐⭐学生：' + data.dataIN[0].IUPstar + '\n普池获得⭐⭐⭐学生：' + data.dataIN[0].INstar +
-            '\n国服\n卡池抽卡次数:' + data.dataCN[0].Cstat + '\nUP池抽卡次数:' + data.dataCN[0].CUPstat + '\n普池抽卡次数:' + data.dataCN[0].CNstat +
-            '\n累计获得⭐⭐⭐学生：' + data.dataCN[0].Cstar + '\n获得UP⭐⭐⭐学生：' + data.dataCN[0].CUUPstar + '\nUP池获得⭐⭐⭐学生：' + data.dataCN[0].CUPstar + '\n普池获得⭐⭐⭐学生：' + data.dataCN[0].CNstar
+        let text = `用户:${session.author.username}的模拟器抽卡记录
+${args[0]}:\n卡池抽卡次数:${data[0].stat}\nUP池抽卡次数:${data[0].UPstat}\n普池抽卡次数:${data[0].Nstat}
+累计获得⭐⭐⭐学生：${data[0].star}\n获得UP⭐⭐⭐学生：${data[0].UUPstar}\nUP池获得⭐⭐⭐学生：${data[0].UPstar}\n普池获得⭐⭐⭐学生：${data[0].Nstar}`
         await session.send(text)
     }
     //初始化用户数据
@@ -316,8 +300,7 @@ export module DB {
     }
     //重置表
     export async function clearTable(ctx: Context) {
-
-         await ctx.database.drop('student');
+        await ctx.database.drop('student');
     }
     //展示目前卡池
     export async function showStu(ctx: Context, args) {
@@ -371,7 +354,8 @@ export module DB {
                 for (const cardtemp of batch) {
                     let imageUrl
                     if (cardtemp.url == null) {
-                        imageUrl = alincloud + 'stuimg' + '/assets/Student/' + cardtemp.name + '.png'
+                        let url = encodeURIComponent(cardtemp.name)
+                        imageUrl = alincloud + 'stuimg' + '/assets/Student/' + url+ '.png'
                     } else {
                         imageUrl = 'https:' + cardtemp.url
                     }

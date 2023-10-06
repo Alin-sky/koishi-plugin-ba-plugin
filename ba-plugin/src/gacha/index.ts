@@ -9,7 +9,7 @@ export const gachaplugin = ({
         ctx.on('ready', async () => {
             gachaProbability(config.GachaGuild.抽卡模拟器)
             await DB.stuTable(ctx)
-            await DB.stuUpdate(ctx)
+          //  await DB.stuUpdate(ctx)
             await DB.BAUserTable(ctx)
         })
         ctx.on('bot-connect', async () => {
@@ -27,8 +27,10 @@ export const gachaplugin = ({
                 }
             }
         )
-        ctx.command("ba", '抽卡模拟器').example("ba 日服 十连").option('pickup', ' <up>池子选择', { fallback: 'pt' }).shortcut('up', { options: { pickup: 'up' }, fuzzy: true })
-            .usage('使用说明：\nba调用普池,UP调用UP池.')
+        ctx.command("ba", '抽卡模拟器').example("ba 日服 十连").option('pickup', ' <up>池子选择', { fallback: 'pt' })
+            .shortcut('up', { options: { pickup: 'up' }, fuzzy: true })
+            .shortcut('UP', { options: { pickup: 'up' }, fuzzy: true })
+            .usage('使用说明：\nba：调用普池.\tup：调用UP池.\n参数列表：\n参数1：国际服/日服/国服.\n参数2：十连/单抽\n更多说明请使用子指令. -h')
             .action(async ({ session, options }, ...args) => {
                 const FIRST_ERROR_MESSAGE = "输入的参数个数不对";
                 const SECOND_ERROR_MESSAGE = '没选对服';
@@ -66,16 +68,16 @@ export const gachaplugin = ({
                 session.send(h('message', [session.author.username + '的抽卡结果：\n',
                 h.image(path), h.image(result.get('buffer'), 'image/png')]));
             })
-        ctx.command('ba.setup', '学生管理').example('ba.setup 日服 梓').option('queryA', '<queryA> UP学生设置和获取当前UP').option('queryB', '<queryB> 学生管理', { authority: 3 })
+        ctx.command('ba.set', '模拟器学生管理').example('ba.set 日服 梓').option('queryA', '<queryA> UP学生设置和获取当前UP').option('queryB', '<queryB> 学生管理', { authority: 3 })
             .shortcut('up学生获取', { options: { queryA: 'get' }, fuzzy: true })
             .shortcut('UP学生获取', { options: { queryA: 'get' }, fuzzy: true })
             .shortcut('学生添加', { options: { queryB: 'add' }, fuzzy: true })
             .shortcut('学生删除', { options: { queryB: 'remove' }, fuzzy: true })
-            .alias('UP学生设置').usage(`说明：学生管理，默认为设置UP池学生.\n快捷指令：
-up学生获取--获取当前UP学生(参数列表：服务器 )
-UP学生设置--设置当前UP学生(参数列表：服务器 学生名)
-学生添加--添加学生到数据库(需权限)(参数列表:学生名 稀有度 限定值 服务器)
-学生删除--从数据库删除学生(需权限)(参数列表:学生名)`)
+            .alias('UP学生设置').usage('说明：学生管理，默认指令为设置UP池学生.\n快捷指令：' +
+                '\nup学生获取--获取当前UP学生(参数列表：服务器 )' +
+                '\nUP学生设置--设置当前UP学生(参数列表：服务器 学生名)' +
+                '\n学生添加--添加学生到数据库(需权限)(参数列表:学生名 稀有度 限定值 服务器)' +
+                '\n学生删除--从数据库删除学生(需权限)(参数列表:学生名)')
             .action(async ({ session, options }, ...args) => {
                 if (args.length == 0) {
                     return
@@ -90,8 +92,11 @@ UP学生设置--设置当前UP学生(参数列表：服务器 学生名)
                     return await DB.setUP(ctx, args, config);
                 }
             })
-        ctx.command('ba.stat', '统计抽卡记录').example('ba.stat').alias('模拟抽卡记录')
+        ctx.command('ba.stat', '统计抽卡记录').example('ba.stat 日服').alias('抽卡记录').usage('模拟器指令均实现了无参数无响应.\n参数列表：服务器')
             .action(async ({ session }, ...args) => {
+                if (args.length == 0) {
+                    return
+                }
                 await DB.baStat(ctx, session, args);
             })
         ctx.command('清除抽卡数据库', '清除数据库', { hidden: true, authority: 3 })
@@ -99,7 +104,7 @@ UP学生设置--设置当前UP学生(参数列表：服务器 学生名)
                 await DB.clearTable(ctx)
                 session.send('已删除学生表')
             })
-        ctx.command('ba.卡池查询', '展示当前卡池所有角色')
+        ctx.command('ba.show', '展示当前卡池所有角色').alias('ba.卡池查询').alias('卡池查询').usage('参数列表：服务器').example('卡池查询 日服')
             .action(async ({ session }, ...args) => {
                 if (args.length == 0) {
                     return

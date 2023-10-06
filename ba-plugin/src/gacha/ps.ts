@@ -29,7 +29,15 @@ export module gachaImage {
                     stuCard = photoCanvas.toBuffer();
                 } else {
                     const stuData = await ctx.database.get('student', { name: cardtemp.name });
-                    const ImgUrl = 'https:' + stuData[0].url
+                    let ImgUrl
+                    if (stuData.length == 0) {
+                        console.error('数据库没有' + cardtemp.name)
+                    } else if (stuData[0].url == '' || stuData[0].url == null) {
+                        let url = encodeURIComponent(cardtemp.name)
+                        ImgUrl = alincloud + 'stuimg' + '/assets/Student/' + url + '.png'
+                    } else {
+                        ImgUrl = 'https:' + stuData[0].url
+                    }
                     stuCard = (await stuCardMaker(stat, cardtemp, RPool, SRPool, ImgUrl)).get('buffer');
                 }
                 if (cardtemp.pickup) {
@@ -77,7 +85,6 @@ export module gachaImage {
         return new Map().set('buffer', canvas.toBuffer('image/png').toString('base64'));
     }
     async function stuCardMaker(stat, cardtemp, RPool, SRPool, ImgUrl) {
-        console.log(ImgUrl)
         let cardStar;
         let cardStar2;
         let star = encodeURIComponent('☆');

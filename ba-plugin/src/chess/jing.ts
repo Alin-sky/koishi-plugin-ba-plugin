@@ -1,7 +1,7 @@
 import { Context, Schema, Session, h } from 'koishi';
 import { DB } from './database';
 import fs from 'fs'
-import Jimp from 'jimp'
+import { createCanvas, loadImage } from 'canvas'
 import path from 'path';
 import { Config } from '..';
 export interface Chess {
@@ -50,7 +50,7 @@ export const jingziqi = ({
             await DB.clearChess(ctx);
         })
         const gameMap = new Map<string, ChessGame>();
-        ctx.command("jing", '井字棋').usage('使用说明：\njing @某人邀请对战.\n使用子指令来斗应战.\n使用落子 x y进行下棋(xy为数字123).').alias("井").action(
+        ctx.command("jing", '井字棋').usage('使用说明：\njing @某人邀请对战.\n子指令：来井 应战.\n子指令：落子 x y  进行下棋(xy为数字123).').alias("井").action(
             async ({ session }, ...args) => {
                 if (args.length == 0) {
                     return;
@@ -131,9 +131,11 @@ export const jingziqi = ({
                             if (nextplay) {
                                 if (config.jing.photototext) {
                                     //图片模式 性能未优化
-                                    const BG = await Jimp.read(path.resolve(__dirname, '../assets/BG.PNG'))
-                                    const X = await Jimp.read(path.resolve(__dirname, '../assets/pulana.PNG'))
-                                    const O = await Jimp.read(path.resolve(__dirname, '../assets/arona.PNG'))
+                                    const BG = await loadImage(path.resolve(__dirname, '../assets/pulana.PNG'))
+                                    const X = await loadImage(path.resolve(__dirname, '../assets/pulana.PNG'))
+                                    const O = await loadImage(path.resolve(__dirname, '../assets/arona.PNG'))
+                                    const canvas =createCanvas(BG.width,BG.height);
+                                    const context = canvas.getContext('2d');
                                     let coordinate = [
                                         [null, null, null],
                                         [null, null, null],
@@ -153,14 +155,14 @@ export const jingziqi = ({
                                             const x = startX + j * cellSize;
                                             const y = startY + i * cellSize;
                                             try {
-                                                BG.composite(coordinate[i][j], x, y);
+                                                context.drawImage(coordinate[i][j], x, y);
                                             } catch (error) {
                                                 continue;
                                             }
 
                                         }
                                     }
-                                    const callbackImage = await BG.getBufferAsync(Jimp.MIME_PNG);
+                                    const callbackImage = await canvas.toBuffer('image/png');
                                     await session.send(h.image(callbackImage, 'image/png'))
 
                                 } else {
