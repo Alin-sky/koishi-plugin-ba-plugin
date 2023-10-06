@@ -9,15 +9,16 @@ export const gachaplugin = ({
         ctx.on('ready', async () => {
             gachaProbability(config.GachaGuild.抽卡模拟器)
             await DB.stuTable(ctx)
-          //  await DB.stuUpdate(ctx)
+            await DB.stuUpdate(ctx)
             await DB.BAUserTable(ctx)
         })
-        ctx.on('bot-connect', async () => {
+//功能为删除旧抽卡模拟器统计表，暂且保留
+/*         ctx.on('bot-connect', async () => {
             let stat = ctx.model.tables
             if ('bauser' in stat) {
                 await ctx.database.drop('bauser' as Keys<Tables, any>);
             }
-        })
+        }) */
         ctx.on('command/before-execute',
             ({ session }) => {
                 if (config.GachaGuild.抽卡模拟器.group.some(guildId => guildId === session.guildId)) {
