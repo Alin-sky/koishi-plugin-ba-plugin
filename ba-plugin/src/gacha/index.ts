@@ -1,5 +1,5 @@
 /*BA插件模块 */
-import { Context, h, } from 'koishi'
+import { Context, Keys, Tables, h, } from 'koishi'
 import { gacha, gachaProbability, path } from '../gacha/gacha'
 import { DB } from '../gacha/database'
 import { Config } from '..'
@@ -11,6 +11,12 @@ export const gachaplugin = ({
             await DB.stuTable(ctx)
             await DB.stuUpdate(ctx)
             await DB.BAUserTable(ctx)
+        })
+        ctx.on('bot-connect', async () => {
+            let stat = ctx.model.tables
+            if ('bauser' in stat) {
+                await ctx.database.drop('bauser' as Keys<Tables, any>);
+            }
         })
         ctx.on('command/before-execute',
             ({ session }) => {
@@ -55,10 +61,10 @@ export const gachaplugin = ({
                 }
                 const Message = await session.send('抽卡中...')
                 let result = await gacha(ctx, args, session, UP);
-        
+
                 setTimeout(() => { session.bot.deleteMessage(session.channelId, Message[0]) }, config.alin.time)
                 session.send(h('message', [session.author.username + '的抽卡结果：\n',
-                h.image(path),h.image(result.get('buffer'), 'image/png')])); 
+                h.image(path), h.image(result.get('buffer'), 'image/png')]));
             })
         ctx.command('ba.setup', '学生管理').example('ba.setup 日服 梓').option('queryA', '<queryA> UP学生设置和获取当前UP').option('queryB', '<queryB> 学生管理', { authority: 3 })
             .shortcut('up学生获取', { options: { queryA: 'get' }, fuzzy: true })
@@ -94,15 +100,15 @@ UP学生设置--设置当前UP学生(参数列表：服务器 学生名)
                 session.send('已删除学生表')
             })
         ctx.command('ba.卡池查询', '展示当前卡池所有角色')
-            .action(async ({ session },...args) => {
-                if(args.length==0){
+            .action(async ({ session }, ...args) => {
+                if (args.length == 0) {
                     return
                 }
                 if (args[0] !== '日服' && args[0] !== '国际服' && args[0] !== '国服') {
                     return '请输入目标服务器'
                 }
-                let result = await DB.showStu(ctx,args)
-                session.send(h('message', ['目前'+args[0]+'卡池实装3星：\n', h.image(result[0].get('buffer'), 'image/png')]));
+                let result = await DB.showStu(ctx, args)
+                session.send(h('message', ['目前' + args[0] + '卡池实装3星：\n', h.image(result[0].get('buffer'), 'image/png')]));
             })
     }
 })

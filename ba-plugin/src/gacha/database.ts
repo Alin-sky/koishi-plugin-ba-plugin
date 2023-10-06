@@ -1,11 +1,12 @@
 /*数据库操作模块*/
 import fs from 'fs'
-import { Context, h } from 'koishi'
+import { Context } from 'koishi'
 import { Config } from '..'
 import { StudentPool, macthmainpage, macthnextpage } from './data'
 import path from 'path'
 import { alincloud } from '../ba-alin'
-import { Canvas, createCanvas, loadImage } from 'canvas'
+import { createCanvas, loadImage } from 'canvas'
+import { error } from 'console'
 declare module 'koishi' {
     interface Tables {
         student: Student
@@ -69,7 +70,7 @@ export module DB {
                 IUP: { type: 'boolean', initial: false },
                 JUP: { type: 'boolean', initial: false },
                 CUP: { type: 'boolean', initial: false },
-                url: { type: 'string', initial: 'null' },
+                url: { type: 'string' },
                 id: { type: 'integer' },
                 limit: { type: 'integer', initial: 0 },
                 server: { type: 'integer', initial: 0 }
@@ -87,37 +88,40 @@ export module DB {
             if (ctx.database == null) {
                 await new Promise((resolve) => setTimeout(resolve, 500)); // 等待1秒钟
             } else {
+                console.log('开始更新学生数据表');
                 connected = true;
-                const mainPage = 'https://ba.gamekee.com'
-                let result = await ctx.http.get(mainPage)
+                const mainPage = 'https://ba.gamekee.com';
+                let result = await ctx.http.get(mainPage);
+                let errors = 0;
                 for (let stu of StudentPool) {
-                    const STUDENT = await ctx.database.get('student', { name: stu.name })
-                    if (STUDENT.length === 0) {
-                        let nextUrl = mainPage + macthmainpage(result, stu.name)
-                        let retries = 0
-                        const MAX_RETRIES = 10
+                    const STUDENT = await ctx.database.get('student', { name: stu.name });
+                    if (STUDENT.length==0||STUDENT[0].url == '' || STUDENT[0].url == null) {
+                        let nextUrl = mainPage + macthmainpage(result, stu.name);
+                        let retries = 0;
+                        const MAX_RETRIES = 3;
                         while (retries < MAX_RETRIES) {
                             try {
-
-                                let nextResult = await ctx.http.get(nextUrl)
-                                console.log(nextUrl)
-                                let lastUrl = macthnextpage(nextResult)
+                                let nextResult = await ctx.http.get(nextUrl);
+                                console.log(nextUrl);
+                                let lastUrl = macthnextpage(nextResult);
                                 if (lastUrl !== '') {
-                                    await ctx.database.create('student', { name: stu.name, rare: stu.rare, limit: stu.limit, server: stu.server, url: lastUrl })
+                                    await ctx.database.create('student', { name: stu.name, rare: stu.rare, limit: stu.limit, server: stu.server, url: lastUrl });
                                 }
                                 break;
                             } catch (error) {
-                                console.error(`获取连接出错: (${nextUrl})`, error);
+                                console.error(`从(${nextUrl})获取连接出错.`);
                                 retries++;
                                 await new Promise((resolve) => setTimeout(resolve, 1000));
                                 if (retries == MAX_RETRIES) {
-                                    throw new Error(`重试${MAX_RETRIES}次后依旧获取不到(${nextUrl})`);
+                                    console.error(`重试${MAX_RETRIES}次后依旧获取不到(${nextUrl}),预计结果为空`);
+                                    errors++;
                                 }
                             }
                         }
 
                     }
                 }
+               console.log(`学生数据表更新完毕,共有${errors}个学生的链接获取失败.`);
             }
         }
     }
@@ -312,7 +316,8 @@ export module DB {
     }
     //重置表
     export async function clearTable(ctx: Context) {
-        await ctx.database.drop('student');
+
+         await ctx.database.drop('student');
     }
     //展示目前卡池
     export async function showStu(ctx: Context, args) {
