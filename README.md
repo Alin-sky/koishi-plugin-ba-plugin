@@ -31,7 +31,7 @@
 </details>
 
 <details>
-<summary> 总力模拟 </summary>
+<summary> 总力模拟（0.10已关闭） </summary>
    <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/zl.png" width="700">
 </details>
 
