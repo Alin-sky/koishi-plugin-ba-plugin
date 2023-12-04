@@ -1,13 +1,7 @@
 {
-  "name": "koishi-plugin-ba-plugin",
-  "description": "blueArchive.碧蓝档案游戏工具箱,拥有多种ba小功能,正在不断更新",
-  "version": "0.10.1",
-  "contributors": [
-    "alin <lvdonglin514@qq.com>",
-    "eruru <eruru.sion@gmail.com>",
-    "Sanaene <22160528@zju.edu.cn>"
-    
-  ],
+  "name": "koishi-plugin-bakoishi",
+  "description": "66666",
+  "version": "0.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -15,40 +9,17 @@
     "dist"
   ],
   "license": "MIT",
-  "repository": {                          
-    "type": "git",
-    "url": "git+https://github.com/Alin-sky/koishi-plugin-ba-plugin.git"
-  },
-  
-  "scripts": {},
   "keywords": [
     "chatbot",
     "koishi",
-    "plugin",
-    "blue archive",
-    "ba",
-    "碧蓝"
-
+    "plugin"
   ],
   "peerDependencies": {
-    "koishi": "^4.12.0"
+    "koishi": "^4.14.5",
+    "koishi-plugin-skia-canvas":"^0.3.6"
   },
   "dependencies": {
-    "koishi-plugin-puppeteer": "^3.4.11",
-    "lodash": "^4.17.21",
-    "canvas":"^2.11.2"
-
-  },
-  "devDependencies": {
-    "koishi-plugin-puppeteer": "^3.4.11",
-    "@types/lodash": "^4.14.194",
-    "canvas":"^2.11.2"
-    
-  },
-  "service": {
-    "required": [
-      "puppeteer"
-    ]
+    "koishi-plugin-skia-canvas":"^0.3.6"
   }
 
 }
