@@ -1,17 +1,17 @@
 //import区域
-import { Context, Schema, } from 'koishi';
+import { App, Context, Schema, } from 'koishi';
 import { guildConfig, guildPlugin } from './guild/index';
 import { gachaplugin } from './gacha';
 import { alinConfig, alinplugin } from './ba-alin';
 import { GachaConfig } from './gacha/gacha';
-
+import { Canvas } from 'koishi-plugin-skia-canvas'//依赖导入
 import { alin_activ, alin_puppe, calculate_puppe } from './ba-alin/puppe';
 import { } from "koishi-plugin-puppeteer";
 import { sanae_code_favora, sanae_code_level, sanae_code_zanzuan, } from './sanae-code/index';
-import { jingConfig, jingziqi } from './chess/jing';
-
-
-
+import { chessplugin, chessConfig } from './chess/jing';
+export const inject = {
+  required: ['canvas', 'database'],
+}
 //koishi定义区
 export const name = "ba-plugin";
 export const usage = "## 数据来源于[bawiki](https://ba.gamekee.com/)、[AronaBot](https://doc.arona.diyigemt.com/)、[shale.gg](https://schale.gg/)和大佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库\n" +
@@ -29,17 +29,13 @@ export const usage = "## 数据来源于[bawiki](https://ba.gamekee.com/)、[Aro
   " - 升级、好感计算、攒钻转图片\n" +
   " - Aronabot的攻略图和角色评分查询(攻略)\n" +
   " - 随机漫画和表情(攻略)\n"
-
-
-
-
 export interface Config {
-  jing: jingConfig,
+  chess: chessConfig,
   alin: alinConfig,
   alin_puppe: alin_puppe,
   GachaGuild: {
     swit: boolean
-    抽卡模拟器: GachaConfig,
+    Gacha: GachaConfig,
     guild: guildConfig,
   }
 }
@@ -50,37 +46,21 @@ export const Config: Schema<Config> = Schema.object({
   GachaGuild: Schema.object({
     swit: Schema.boolean().default(true).description('模拟器开关'),
     guild: guildConfig.collapse().description('群组整活设置'),
-    抽卡模拟器: GachaConfig.collapse().description('抽卡模拟器设置'),
+    Gacha: GachaConfig.collapse().description('抽卡模拟器设置'),
   }).description('抽卡和整活相关配置'),
-  jing: jingConfig.description('井字棋设置'),
+  chess: chessConfig.description('井字棋设置'),
 })
-
-
-
-
-//代码区
-
+//程序入口
 export async function apply(ctx: Context, config: Config) {
-  ctx.plugin(jingziqi, config)
+  ctx.plugin(chessplugin, config)
   ctx.plugin(guildPlugin, config)
-  ctx.plugin(gachaplugin, config)
   ctx.plugin(alinplugin, config)
-  if (config.alin_puppe.levelswit === true) {
+  if (config.alin_puppe.levelswit) {
     ctx.plugin(calculate_puppe, config)
-
   } else {
     ctx.plugin(sanae_code_favora)
     ctx.plugin(sanae_code_level)
     ctx.plugin(sanae_code_zanzuan)
   }
-  if (config.GachaGuild.swit === false) {
-    ctx.dispose(gachaplugin)
-  } else {
-    ctx.plugin(gachaplugin, config)
-  }
-
-
-
-
-
+  config.GachaGuild.swit ? ctx.plugin(gachaplugin,config) : ctx.registry.delete(gachaplugin)
 }

@@ -2,164 +2,163 @@
 import fs from 'fs'
 import path from 'path'
 import { alincloud } from '../ba-alin'
-import { createCanvas, loadImage } from 'canvas'
+import { Context } from 'koishi'
+import { BaAssetsPath } from '.'
 export module gachaImage {
-    const MAX_RETRIES = 3
-    //结算图
-    export async function result(ctx, cardArray, stat, RPool, SRPool) {
-        const gachaBG = alincloud + 'stuimg/assets/gachaBG.png';
-        const star = encodeURIComponent('☆');
-        const tempCard = alincloud + 'stuimg/assets/' + star + 'Card.png';
-        let BG = await getImage(gachaBG);
-        let card = await getImage(tempCard);
-        const canvas = createCanvas(BG.width, BG.height);
-        const context = canvas.getContext('2d');
-        context.drawImage(BG, 0, 0);
-        let stuPromises = await Promise.all(cardArray.map(async (cardtemp) => {
+    /*
+     * 结算图
+     * 参数说明
+     * 
+     * ctx - 上下文实例
+     * stat - 累计抽卡次数
+     * cardArray - 抽卡结果
+     * RPool - 1星池
+     * SRPool - 2星池
+     */
+    export async function result(ctx: Context, cardArray: any[], stat, RPool: any[], SRPool: any[]) {
+        const star = encodeURIComponent('☆')
+        const BGPath = path.join(BaAssetsPath, 'gachaBG.png')
+        const cardPath = path.join(BaAssetsPath, star + 'Card.png')
+        const BG = await getImage(ctx, BGPath)
+        const card = await getImage(ctx, cardPath)
+        const canvas = ctx.canvas.createCanvas(BG.width, BG.height)
+        const context = canvas.getContext('2d')
+        context.drawImage(BG, 0, 0)
+        //处理每个结算卡片
+        let stuPromises = await Promise.all(cardArray.map(async (cards) => {
             let stuCard
-            if (stat === -1) {
-                const ImgUrl = cardtemp.avatar;
-                stuCard = (await stuCardMaker(stat, cardtemp, RPool, SRPool, ImgUrl)).get('buffer');
-
-            } else {
-                if (fs.existsSync(path.join(__dirname, '..', 'assets', 'temp' + cardtemp.name + '.png'))) {
-                    console.log(path.join(__dirname, '..', 'assets', 'temp' + cardtemp.name + '.png'));
-                    let photo = await loadImage(path.join(__dirname, '..', 'assets', 'temp' + cardtemp.name + '.png'));
-                    const photoCanvas = createCanvas(photo.width, photo.height);
-                    stuCard = photoCanvas.toBuffer();
-                } else {
-                    const stuData = await ctx.database.get('student', { name: cardtemp.name });
-                    let ImgUrl
-                    if (stuData.length == 0) {
-                        console.error('数据库没有' + cardtemp.name)
-                    } else if (stuData[0].url == '' || stuData[0].url == null) {
-                        let url = encodeURIComponent(cardtemp.name)
-                        ImgUrl = alincloud + 'stuimg' + '/assets/Student/' + url + '.png'
-                    } else {
-                        ImgUrl = 'https:' + stuData[0].url
-                    }
-                    stuCard = (await stuCardMaker(stat, cardtemp, RPool, SRPool, ImgUrl)).get('buffer');
-                }
-                if (cardtemp.pickup) {
-                    const dataUrl = 'data:image/png;base64,' + stuCard.toString('base64');
-                    const image = await loadImage(dataUrl);
-                    const canvasUP = createCanvas(card.width, card.height);
-                    const contextUP = canvasUP.getContext('2d');
-                    contextUP.drawImage(image, 0, 0);
-                    contextUP.save();
-                    contextUP.font = 'bold italic 35px Arial';
-                    contextUP.shadowColor = 'rgba(0, 0, 0, 1)';
-                    contextUP.shadowBlur = 5;
-                    contextUP.strokeStyle = '#000000';
-                    contextUP.lineWidth = 5;
-                    contextUP.strokeStyle = "#000000";
-                    contextUP.fillStyle = "#ffffff";
-                    contextUP.fillText("Pick Up!", 0, 35);
-                    contextUP.restore();
-                    stuCard = canvasUP.toBuffer('image/png');
-                }
+            const stuData = await ctx.model.get('stu_gacha', { name: cards.name })
+            let alinUrl = alincloud + 'stuimg' + '/assets/Student/' + encodeURIComponent(cards.name) + '.png'
+            let ImgUrl = (stuData[0].url === '' || stuData[0].url === null || stuData[0].url === 'null') ? alinUrl : 'https:' + stuData[0].url
+            const imgPath = path.join(ctx.baseDir, 'data', 'assets', 'ba-plugin', 'temp', cards.name + '.png')
+            if (stuData.length == 0) console.error('数据库没有' + cards.name)
+            if (fs.existsSync(imgPath)) stuCard = (await ctx.canvas.loadImage(imgPath)).src
+            else stuCard = (await stuCardMaker(ctx, cards, RPool, SRPool, ImgUrl, imgPath)).get('buffer')
+            if (cards.pickup) {
+                const image = await ctx.canvas.loadImage(stuCard)
+                const canvasUP = ctx.canvas.createCanvas(card.width, card.height)
+                const contextUP = canvasUP.getContext('2d')
+                contextUP.drawImage(image, 0, 0)
+                contextUP.font = 'bold italic 35px Arial'
+                contextUP.shadowColor = 'rgba(0, 0, 0, 1)'
+                contextUP.shadowBlur = 5
+                contextUP.strokeStyle = '#000000'
+                contextUP.lineWidth = 5
+                contextUP.strokeStyle = "#000000"
+                contextUP.fillStyle = "#ffffff"
+                contextUP.fillText("Pick Up!", 0, 35)
+                stuCard = canvasUP.toBuffer('image/png')
             }
             return stuCard
         }))
-        stuPromises.forEach(async (img, index) => {
-            const dataUrl = 'data:image/png;base64,' + img.toString('base64');
-            const image = await loadImage(dataUrl);
+        //绘制到BG上
+        for (const [index, img] of stuPromises.entries()) {
+            const dataUrl = `data:image/png;base64,${img.toString('base64')}`
+            let image = await ctx.canvas.loadImage(dataUrl)
             if (cardArray.length === 1) {
-                let width = (BG.width - card.width) / 2;
-                let height = (BG.height - card.height) / 2;
-                context.drawImage(image, width, height);
-            } else if (cardArray.length === 10) {
-                let width = (BG.width - (card.width * 5)) / 2;
-                let height1 = BG.height / 4 - card.height / 2;
-                let height2 = BG.height / 2 - card.height / 3;
-                if (index < 5) {
-                    context.drawImage(image, width + card.width * index, height1);
-                } else {
-                    context.drawImage(image, width + card.width * (index - 5), height2);
-                }
-            }
-        });
-        context.font = 'bold 35px Arial';
-        context.fillStyle = "#ffffff";
-        context.fillText(stat, BG.width - 250, BG.height - 100);
-        return new Map().set('buffer', canvas.toBuffer('image/png').toString('base64'));
-    }
-    async function stuCardMaker(stat, cardtemp, RPool, SRPool, ImgUrl) {
-        let cardStar;
-        let cardStar2;
-        let star = encodeURIComponent('☆');
-        if (RPool.some((item: { name: any; }) => item.name === cardtemp.name)) {
-            cardStar = alincloud + 'stuimg' + '/assets/' + star + 'card.png';
-            cardStar2 = alincloud + 'stuimg' + '/assets/card' + star + '1.png';
-        } else if (SRPool.some((item: { name: any; }) => item.name === cardtemp.name)) {
-            cardStar = alincloud + 'stuimg' + '/assets/' + star + star + 'card.png';
-            cardStar2 = alincloud + 'stuimg' + '/assets/card' + star + '2.png';
-        } else {
-            cardStar = alincloud + 'stuimg' + '/assets/' + star + star + star + 'card.png';
-            cardStar2 = alincloud + 'stuimg' + '/assets/card' + star + '3.png';
-        }
-        let card = await getImage(cardStar);
-        let card2 = await getImage(cardStar2);
-        return await headMaker(stat, card, card2, ImgUrl, cardtemp);
-    }
-    //头像处理
-    async function headMaker(stat, cardStar, cardStar2, ImgUrl, cardtemp) {
-        let stuImage;
-        const MARGIN = alincloud + 'stuimg' + '/assets/margin.png';
-        if (stat == -1) {
-            stuImage = await loadImage(ImgUrl)
-        } else {
-            stuImage = await getImage(ImgUrl);
-        }
-        let margin = await getImage(MARGIN);
-        const tempCanvas = createCanvas(cardStar.width, cardStar.height);
-        const tempContext = tempCanvas.getContext('2d');
-        const tempContext2 = tempCanvas.getContext('2d');
-        tempContext.drawImage(cardStar, 0, 0, cardStar.width, cardStar.height);
-        const imageData1 = tempContext.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-        tempContext2.drawImage(stuImage, 0, 0, cardStar.width, cardStar.height);
-        const imageData2 = tempContext2.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
-        for (let i = 0; i < imageData1.data.length; i += 4) {
-            const alpha1 = imageData1.data[i + 3];
-            const alpha2 = imageData2.data[i + 3];
-
-            if (alpha1 > 0 && alpha2 > 0) {
-                imageData1.data[i] = imageData2.data[i];
-                imageData1.data[i + 1] = imageData2.data[i + 1];
-                imageData1.data[i + 2] = imageData2.data[i + 2];
-                imageData1.data[i + 3] = alpha2;
-            }
-        }
-        tempContext.putImageData(imageData1, 0, 0);
-        tempContext.globalCompositeOperation = 'source-over';
-        tempContext.globalAlpha = 0.9;
-        tempContext.drawImage(cardStar2, 0, 0, cardStar2.width, cardStar2.height);
-        tempContext.drawImage(margin, 0, 0, cardStar.width, cardStar.height);
-        const save = fs.createWriteStream(path.resolve(__dirname, `../assets/temp/${cardtemp.name}.png`));
-        const stream = tempCanvas.createPNGStream();
-        stream.pipe(save);
-        const bufferData = tempCanvas.toBuffer('image/png').toString('base64');
-        const resultMap = new Map().set('buffer', bufferData);
-        new Promise((resolve) => {
-            save.on('finish', () => {
-                resolve(resultMap);
-            });
-        });
-        return new Map().set('buffer', bufferData);
-    }
-    //获取url图片
-    async function getImage(imageUrl, retries = 0) {
-        try {
-            let image = await loadImage(imageUrl);
-            return image;
-        } catch (error) {
-            if (retries < MAX_RETRIES) {
-                console.error(`获取不到图片：(${imageUrl}),重试中...`, error);
-                await new Promise((resolve) => setTimeout(resolve, 1000));
-                return getImage(imageUrl, retries + 1);
+                let width = (BG.width - card.width) / 2
+                let height = (BG.height - card.height) / 2
+                context.drawImage(image, width, height)
             } else {
-                throw new Error(` 重试 ${MAX_RETRIES}次后依旧获取不到图片(${imageUrl})`);
+                let width = (BG.width - (card.width * 5)) / 2
+                let height1 = BG.height / 4 - card.height / 2
+                let height2 = BG.height / 2 - card.height / 3
+                if (index < 5) context.drawImage(image, width + card.width * index, height1)
+                else context.drawImage(image, width + card.width * (index - 5), height2)
             }
+        }
+        //填上抽卡次数
+        context.font = 'bold italic 35px Arial'
+        context.fillStyle = "#ffffff"
+        context.fillText(stat.toString(), BG.width - 250, BG.height - 100)
+        return canvas.toBuffer('image/png')
+    }
+    /*
+     * 卡片合成：根据星级选择结算卡片合成
+     * 参数说明
+     * 
+     * CS - Canvas实例
+     * stat - 累计抽卡次数(-1代表非)
+     * cardtemp - 单张抽卡结果
+     * RPool - 1星池
+     * SRPool - 2星池
+     */
+    async function stuCardMaker(ctx, cardtemp: { name: any }, RPool: any[], SRPool: any[], ImgUrl: string, imgPath: string) {
+        let star = encodeURIComponent('☆')
+        let number = RPool.some((item: { name: any }) => item.name === cardtemp.name) ? 1 : SRPool.some((item: { name: any }) => item.name === cardtemp.name) ? 2 : 3
+        let stars = number === 1 ? star : number === 2 ? star + star : star + star + star
+        const cardPath = path.join(BaAssetsPath, stars + 'card.png')
+        const cardPath2 = path.join(BaAssetsPath, star + number + '.png')
+        let card = await getImage(ctx, cardPath)
+        let card2 = await getImage(ctx,  cardPath2)
+        return await headMaker(ctx, card, card2, ImgUrl, imgPath)
+    }
+    /*
+    * 头像处理:处理结算卡片合成
+    * 参数说明
+    * 
+    * CS - Canvas实例
+    * stat - 累计抽卡次数(-1代表非)
+    * cardStar - 卡的背景1
+    * cardStar2 - 卡的背景2
+    * ImgUrl - 图片地址
+    * card - 单张抽卡结果
+    */
+    async function headMaker(ctx, cardStar, cardStar2, ImgUrl, imgPath) {
+        const marginPath = path.join(BaAssetsPath, 'MARGIN.png')
+        let margin = await getImage(ctx, marginPath)
+        let stuImage = await getImage(ctx,imgPath, ImgUrl )
+        const canvas = ctx.canvas.createCanvas(cardStar.width, cardStar.height)
+        //位图处理
+        const context1 = canvas.getContext('2d')
+        context1.drawImage(cardStar, 0, 0, cardStar.width, cardStar.height)
+        const imageData1 = context1.getImageData(0, 0, canvas.width, canvas.height)
+        const context2 = canvas.getContext('2d')
+        context2.drawImage(stuImage, 0, 0, cardStar.width, cardStar.height)
+        const imageData2 = context2.getImageData(0, 0, canvas.width, canvas.height)
+        for (let i = 0; i < imageData1.data.length; i += 4) {
+            const alpha1 = imageData1.data[i + 3]
+            const alpha2 = imageData2.data[i + 3]
+            if (alpha1 > 0 && alpha2 > 0) {
+                imageData1.data[i] = imageData2.data[i]
+                imageData1.data[i + 1] = imageData2.data[i + 1]
+                imageData1.data[i + 2] = imageData2.data[i + 2]
+                imageData1.data[i + 3] = alpha2
+            }
+        }
+        context1.putImageData(imageData1, 0, 0)
+        //包装头像
+        context1.globalCompositeOperation = 'source-over'
+        context1.drawImage(cardStar2, 0, 0, cardStar2.width, cardStar2.height)
+        context1.drawImage(margin, 0, 0, cardStar.width, cardStar.height)
+        const buffer = canvas.toBuffer('image/png')
+        fs.writeFileSync(imgPath, buffer)
+        return new Map().set('buffer', buffer)
+    }
+}
+/*
+* 获取url图片
+* 参数说明
+* CS - Canvas实例
+* imageUrl - url图片来源
+* imgPath - 图片路径
+* retries - 请求次数
+*/
+export async function getImage(ctx: Context, imgPath, ...args) {
+    let retries = 0
+    const MAX_RETRIES = 3
+    if (fs.existsSync(imgPath)) return await ctx.canvas.loadImage(imgPath)
+    while (retries < MAX_RETRIES) {
+        try {
+            if(args.length<1) throw '没有传入的Url'
+            console.log("从" + args[0] + " 读取图片")
+            let image = await ctx.canvas.loadImage(args[0])
+            fs.writeFileSync(imgPath, image.src)
+            return image
+        } catch (error) {
+            retries++
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+            if (retries === MAX_RETRIES - 1) throw new Error(` 重试 ${MAX_RETRIES}次后依旧获取不到图片(${args[0]})`)
         }
     }
 }
