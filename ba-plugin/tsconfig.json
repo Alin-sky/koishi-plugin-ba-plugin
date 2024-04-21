@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "lib",
-    "target": "es2020",
+    "target": "es2022",
     "module": "commonjs",
     "declaration": true,
     "composite": true,
@@ -13,10 +13,11 @@
     "jsx": "react-jsx",
     "jsxImportSource": "@satorijs/element",
     "types": [
+      "node",
       "yml-register/types"
     ]
   },
   "include": [
-    "src",
-  ],
+    "src"
+  ]
 }

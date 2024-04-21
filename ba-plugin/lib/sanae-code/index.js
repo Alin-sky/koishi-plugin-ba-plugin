@@ -1,5 +1,3 @@
-
-
 /*
 import { Context, Schema } from 'koishi'
 import { getFavorLv } from './favorability'
@@ -96,15 +94,15 @@ export const sanae_code_level = ({
             return levelMessage
           } else {
 
-            let resultMessage = levelCalculate(levelMessage[0], 
-              levelMessage[1], 
-              levelMessage[2], 
-              levelMessage[3], 
-              levelMessage[4], 
-              levelMessage[5], 
-              levelMessage[6], 
-              levelMessage[7], 
-              levelMessage[8], 
+            let resultMessage = levelCalculate(levelMessage[0],
+              levelMessage[1],
+              levelMessage[2],
+              levelMessage[3],
+              levelMessage[4],
+              levelMessage[5],
+              levelMessage[6],
+              levelMessage[7],
+              levelMessage[8],
               levelMessage[9])
 
             return resultMessage
@@ -167,4 +165,4 @@ export const sanae_code_match = ({
 })
 
 
-*/
+*/ 

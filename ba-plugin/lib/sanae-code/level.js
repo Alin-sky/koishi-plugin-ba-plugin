@@ -1,5 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getLevelMessage = exports.levelCalculate = void 0;
 // 每级经验条（从该级升到下一级的经验）
-const expLevel: { [key: number]: number } = {
+const expLevel = {
     1: 8, 2: 10, 3: 15, 4: 21, 5: 28, 6: 36, 7: 45, 8: 55, 9: 66, 10: 79, 11: 93, 12: 108, 13: 124, 14: 141, 15: 159, 16: 178, 17: 198,
     18: 219, 19: 241, 20: 265, 21: 288, 22: 312, 23: 337, 24: 363, 25: 390, 26: 418, 27: 447, 28: 477, 29: 508, 30: 581, 31: 658, 32: 734,
     33: 814, 34: 897, 35: 982, 36: 1069, 37: 1159, 38: 1251, 39: 1346, 40: 1443, 41: 1543, 42: 1645, 43: 1750, 44: 1857, 45: 1966, 46: 2078,
@@ -9,22 +12,19 @@ const expLevel: { [key: number]: number } = {
     86: 10614, 87: 12922, 88: 17538, 89: 26770, 90: 0
 };
 // 咖啡厅每小时体力生产
-
-const max_cn_lev = 78
-const max_in_lev = 97
-const max_jp_lev = 90
-
-
-const cafe: { [key: number]: number } = { 1: 3.83, 2: 6.36, 3: 9.29, 4: 12.62, 5: 16.36, 6: 19.49, 7: 22.32, 8: 25.15 };
+const max_cn_lev = 78;
+const max_in_lev = 97;
+const max_jp_lev = 90;
+const cafe = { 1: 3.83, 2: 6.36, 3: 9.29, 4: 12.62, 5: 16.36, 6: 19.49, 7: 22.32, 8: 25.15 };
 // 日常体力获取
-const dailyMisson: { [key: string]: number } = {
+const dailyMisson = {
     "社团登录": 10,
     "每日登录": 50,
     "课程表任务": 50,
     "18点登录": 50
 };
 // 周常体力获取
-const weeklyMisson: { [key: string]: number } = {
+const weeklyMisson = {
     "课程表9次": 150,
     "登录5天": 200,
     "日常签到3": 50,
@@ -32,46 +32,50 @@ const weeklyMisson: { [key: string]: number } = {
 };
 // 每日有偿体力获取
 // jjc商店体力获取与消耗
-function jjcShop(times: number): [number, number] {
+function jjcShop(times) {
     let energy = 90 + 90 * times;
     let cost = 45 + 45 * times + 10 * times;
-    return [energy, cost]
+    return [energy, cost];
 }
 // 碎钻体力获取与消耗
-function breakDia(times: number): [number, number] {
+function breakDia(times) {
     let energy = 120 * times;
     let cost = 0;
     if (times >= 0 && times <= 3) {
         cost = 30 * times;
-    } else if (times >= 4 && times <= 6) {
+    }
+    else if (times >= 4 && times <= 6) {
         cost = 3 * 30 + 60 * (times - 3);
-    } else if (times >= 7 && times <= 9) {
+    }
+    else if (times >= 7 && times <= 9) {
         cost = 3 * 30 + 3 * 60 + 100 * (times - 6);
-    } else if (times >= 10 && times <= 12) {
+    }
+    else if (times >= 10 && times <= 12) {
         cost = 3 * 30 + 3 * 60 + 3 * 100 + 150 * (times - 9);
-    } else if (times >= 13 && times <= 15) {
+    }
+    else if (times >= 13 && times <= 15) {
         cost = 3 * 30 + 3 * 60 + 3 * 100 + 3 * 150 + 200 * (times - 12);
-    } else if (times >= 16 && times <= 20) {
+    }
+    else if (times >= 16 && times <= 20) {
         cost = 3 * 30 + 3 * 60 + 3 * 100 + 3 * 150 + 3 * 200 + 300 * (times - 15);
-    } else {
+    }
+    else {
         cost = 0;
     }
-    return [energy, cost]
+    return [energy, cost];
 }
 // 氪金道具体力获取
 // 体力月卡购买数量计算
-function countCard(days: number) {
-    return 25 * Math.ceil(days / 14)
+function countCard(days) {
+    return 25 * Math.ceil(days / 14);
 }
-
 // 每日有偿体力规划方案
 class Plan {
-    name: string;
-    jjc: number;
-    breakDia: number;
-    card: boolean;
-
-    constructor(name: string, jjc: number, breakDia: number, card: boolean) {
+    name;
+    jjc;
+    breakDia;
+    card;
+    constructor(name, jjc, breakDia, card) {
         this.name = name;
         this.jjc = jjc;
         this.breakDia = breakDia;
@@ -85,9 +89,8 @@ const plan3 = new Plan("jjc2+3管+体力月卡", 2, 3, true);
 const plan4 = new Plan("jjc2+6管+体力月卡", 2, 6, true);
 const plan5 = new Plan("jjc4+20管+体力月卡", 4, 20, true);
 const plans = [plan0, plan1, plan2, plan3, plan4, plan5];
-
 // 总计经验计算
-function sumExp(startLevel: number, startExp: number, endLevel: number, endExp: number) {
+function sumExp(startLevel, startExp, endLevel, endExp) {
     let sum = 0;
     for (let key in expLevel) {
         let level = parseInt(key, 10);
@@ -96,11 +99,10 @@ function sumExp(startLevel: number, startExp: number, endLevel: number, endExp: 
         }
     }
     sum = sum - startExp + endExp;
-    return [sum, startLevel, startExp, endLevel, endExp]
+    return [sum, startLevel, startExp, endLevel, endExp];
 }
-
 // 每日体力计算
-function dailyEnergy(cafeLv: number, jjc: number, card: boolean, breakDias: number) {
+function dailyEnergy(cafeLv, jjc, card, breakDias) {
     // 固定回体，6分钟1点
     let fixedRecovery = 24 * 60 / 6;
     // 咖啡厅体力，每隔12小时收菜一次，一天两次
@@ -114,8 +116,8 @@ function dailyEnergy(cafeLv: number, jjc: number, card: boolean, breakDias: numb
     let jjcEnergy = 0;
     let jjcCost = 0;
     if (jjc != 0) {
-        jjcEnergy = jjcShop(jjc - 1)[0]
-        jjcCost = jjcShop(jjc - 1)[1]
+        jjcEnergy = jjcShop(jjc - 1)[0];
+        jjcCost = jjcShop(jjc - 1)[1];
     }
     // 体力月卡
     let cardEnergy = 0;
@@ -125,34 +127,38 @@ function dailyEnergy(cafeLv: number, jjc: number, card: boolean, breakDias: numb
     // 碎钻买体力
     let diaEnergy = breakDia(breakDias)[0];
     let diaCost = breakDia(breakDias)[1];
-    return [fixedRecovery + cafeEnergy + normalDaily + jjcEnergy + cardEnergy + diaEnergy, jjcCost, diaCost]
+    return [fixedRecovery + cafeEnergy + normalDaily + jjcEnergy + cardEnergy + diaEnergy, jjcCost, diaCost];
 }
-
 // 升级计算
-export function levelCalculate(mark: string, startLevel: number, startExp: number, endLevel: number, endExp: number, cafe?: number, jjc?: number, card?: boolean, breakDia?: number, days?: number) {
+function levelCalculate(mark, startLevel, startExp, endLevel, endExp, cafe, jjc, card, breakDia, days) {
     let exp = sumExp(startLevel, startExp, endLevel, endExp);
     // 写入文本头
-    let result: string[] = [];
+    let result = [];
     if (exp[2] == 0) {
         if (exp[4] == 0) {
-            result.push(`玩家等级从${exp[1]}级到${exp[3]}级，总计经验${exp[0]}，规划方案如下：\n`)
-        } else {
-            result.push(`玩家等级从${exp[1]}级到${exp[3]}级满，总计经验${exp[0]}，规划方案如下：\n`)
+            result.push(`玩家等级从${exp[1]}级到${exp[3]}级，总计经验${exp[0]}，规划方案如下：\n`);
         }
-    } else {
+        else {
+            result.push(`玩家等级从${exp[1]}级到${exp[3]}级满，总计经验${exp[0]}，规划方案如下：\n`);
+        }
+    }
+    else {
         if (exp[4] == 0) {
-            result.push(`玩家等级从${exp[1]}级${exp[2]}经验到${exp[3]}级，总计经验${exp[0]}，规划方案如下：\n`)
-        } else {
-            result.push(`玩家等级从${exp[1]}级${exp[2]}经验到${exp[3]}级满，总计经验${exp[0]}，规划方案如下：\n`)
+            result.push(`玩家等级从${exp[1]}级${exp[2]}经验到${exp[3]}级，总计经验${exp[0]}，规划方案如下：\n`);
+        }
+        else {
+            result.push(`玩家等级从${exp[1]}级${exp[2]}经验到${exp[3]}级满，总计经验${exp[0]}，规划方案如下：\n`);
         }
     }
     // 区分因游戏进度不同导致的不同服务器的咖啡厅等级上限
     let cafeRank = 1;
     if (mark === "国服") {
         cafeRank = 8;
-    } else if (mark === "国际服" || mark === "日服") {
+    }
+    else if (mark === "国际服" || mark === "日服") {
         cafeRank = 8;
-    } else {
+    }
+    else {
         if (cafe !== undefined) {
             cafeRank = cafe;
         }
@@ -194,7 +200,8 @@ export function levelCalculate(mark: string, startLevel: number, startExp: numbe
                 }
                 if (exp_sum >= exp[0]) {
                     break;
-                } else {
+                }
+                else {
                     day++;
                 }
             }
@@ -204,24 +211,32 @@ export function levelCalculate(mark: string, startLevel: number, startExp: numbe
                 cardCost_sum = cardCost_count * 25;
             }
             if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`🟢${plan.name}:需要${dayCost}天。\n`)
-            } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个。\n`)
-            } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗青辉石${diaCost_sum}个。\n`)
-            } else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`)
-            } else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。\n`)
-            } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`)
-            } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
-                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`)
-            } else {
-                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`)
+                result.push(`🟢${plan.name}:需要${dayCost}天。\n`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个。\n`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗青辉石${diaCost_sum}个。\n`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。\n`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+            }
+            else {
+                result.push(`🟢${plan.name}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
             }
         }
-    } else if (mark === "自定义计算时间") {
+    }
+    else if (mark === "自定义计算时间") {
         // 自定义计算时间，并写入计算结果
         if (cafe !== undefined && jjc !== undefined && breakDia !== undefined && card !== undefined) {
             let Exp_d = dailyEnergy(cafe, jjc, card, breakDia)[0];
@@ -247,7 +262,8 @@ export function levelCalculate(mark: string, startLevel: number, startExp: numbe
                 }
                 if (exp_sum >= exp[0]) {
                     break;
-                } else {
+                }
+                else {
                     day++;
                 }
             }
@@ -257,24 +273,32 @@ export function levelCalculate(mark: string, startLevel: number, startExp: numbe
                 cardCost_sum = cardCost_count * 25;
             }
             if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，无额外购买体力:需要${dayCost}天。\n`)
-            } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个。\n`)
-            } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，${breakDia}管:需要${dayCost}天，共消耗青辉石${diaCost_sum}个。\n`)
-            } else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`咖啡厅等级${cafe}，体力月卡:需要${dayCost}天，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`)
-            } else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。\n`)
-            } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}+体力月卡:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`)
-            } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
-                result.push(`咖啡厅等级${cafe}，${breakDia}管+体力月卡:需要${dayCost}天，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`)
-            } else {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管+体力月卡:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`)
+                result.push(`咖啡厅等级${cafe}，无额外购买体力:需要${dayCost}天。\n`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个。\n`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                result.push(`咖啡厅等级${cafe}，${breakDia}管:需要${dayCost}天，共消耗青辉石${diaCost_sum}个。\n`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                result.push(`咖啡厅等级${cafe}，体力月卡:需要${dayCost}天，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。\n`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}+体力月卡:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
+                result.push(`咖啡厅等级${cafe}，${breakDia}管+体力月卡:需要${dayCost}天，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
+            }
+            else {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管+体力月卡:需要${dayCost}天，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。\n`);
             }
         }
-    } else if (mark === "自定义计算等级") {
+    }
+    else if (mark === "自定义计算等级") {
         // 清空文本头
         result = [];
         // 自定义计算等级，并写入计算结果 
@@ -331,44 +355,59 @@ export function levelCalculate(mark: string, startLevel: number, startExp: numbe
                     final_exp = expLevel[max_jp_lev];
                     certificate = exp_income;
                     if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                        result.push(`咖啡厅等级${cafe}，无额外购买体力，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个。`)
-                    } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                        result.push(`咖啡厅等级${cafe}，jjc${jjc}，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个。`)
-                    } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                        result.push(`咖啡厅等级${cafe}，${breakDia}管，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗青辉石${diaCost_sum}个。`)
-                    } else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                        result.push(`咖啡厅等级${cafe}，体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
-                    } else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                        result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。`)
-                    } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                        result.push(`咖啡厅等级${cafe}，jjc${jjc}+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
-                    } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
-                        result.push(`咖啡厅等级${cafe}，${breakDia}管+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
-                    } else {
-                        result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
+                        result.push(`咖啡厅等级${cafe}，无额外购买体力，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个。`);
                     }
-                    return result
+                    else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
+                        result.push(`咖啡厅等级${cafe}，jjc${jjc}，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个。`);
+                    }
+                    else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                        result.push(`咖啡厅等级${cafe}，${breakDia}管，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗青辉石${diaCost_sum}个。`);
+                    }
+                    else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                        result.push(`咖啡厅等级${cafe}，体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+                    }
+                    else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                        result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。`);
+                    }
+                    else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                        result.push(`咖啡厅等级${cafe}，jjc${jjc}+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+                    }
+                    else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
+                        result.push(`咖啡厅等级${cafe}，${breakDia}管+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+                    }
+                    else {
+                        result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${max_jp_lev}级${expLevel[max_jp_lev]}经验，获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+                    }
+                    return result;
                 }
             }
             if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，无额外购买体力，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验。`)
-            } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗jjc币${jjcCost_sum}个。`)
-            } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，${breakDia}管，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗青辉石${diaCost_sum}个。`)
-            } else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`咖啡厅等级${cafe}，体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
-            } else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。`)
-            } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
-            } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
-                result.push(`咖啡厅等级${cafe}，${breakDia}管+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
-            } else {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
+                result.push(`咖啡厅等级${cafe}，无额外购买体力，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验。`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗jjc币${jjcCost_sum}个。`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                result.push(`咖啡厅等级${cafe}，${breakDia}管，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗青辉石${diaCost_sum}个。`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                result.push(`咖啡厅等级${cafe}，体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
+                result.push(`咖啡厅等级${cafe}，${breakDia}管+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+            }
+            else {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管+体力月卡，${days}天可以从${exp[1]}级${exp[2]}经验升至${final_level}级${final_exp}经验，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
             }
         }
-    } else if (mark === "自定义计算熟练证书") {
+    }
+    else if (mark === "自定义计算熟练证书") {
         // 清空文本头
         result = [];
         // 自定义计算熟练证书，并写入计算结果 
@@ -401,32 +440,40 @@ export function levelCalculate(mark: string, startLevel: number, startExp: numbe
             }
             certificate = exp_income;
             if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，无额外购买体力，${days}天可以获得熟练证书${certificate}个。`)
-            } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}，${days}天可以获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个。`)
-            } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，${breakDia}管，${days}天可以获得熟练证书${certificate}个，共消耗青辉石${diaCost_sum}个。`)
-            } else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`咖啡厅等级${cafe}，体力月卡，${days}天可以获得熟练证书${certificate}个，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
-            } else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管，${days}天可以获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。`)
-            } else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}+体力月卡，${days}天可以获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
-            } else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
-                result.push(`咖啡厅等级${cafe}，${breakDia}管+体力月卡，${days}天可以获得熟练证书${certificate}个，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
-            } else {
-                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管+体力月卡，${days}天可以获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`)
+                result.push(`咖啡厅等级${cafe}，无额外购买体力，${days}天可以获得熟练证书${certificate}个。`);
             }
-            return result
+            else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count == 0) {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}，${days}天可以获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个。`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                result.push(`咖啡厅等级${cafe}，${breakDia}管，${days}天可以获得熟练证书${certificate}个，共消耗青辉石${diaCost_sum}个。`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                result.push(`咖啡厅等级${cafe}，体力月卡，${days}天可以获得熟练证书${certificate}个，共消耗体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum != 0 && cardCost_count == 0) {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管，${days}天可以获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个。`);
+            }
+            else if (jjcCost_sum != 0 && diaCost_sum == 0 && cardCost_count != 0) {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}+体力月卡，${days}天可以获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+            }
+            else if (jjcCost_sum == 0 && diaCost_sum != 0 && cardCost_count != 0) {
+                result.push(`咖啡厅等级${cafe}，${breakDia}管+体力月卡，${days}天可以获得熟练证书${certificate}个，共消耗青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+            }
+            else {
+                result.push(`咖啡厅等级${cafe}，jjc${jjc}+${breakDia}管+体力月卡，${days}天可以获得熟练证书${certificate}个，共消耗jjc币${jjcCost_sum}个，青辉石${diaCost_sum}个，体力月卡${cardCost_count}张（${cardCost_sum}元）。`);
+            }
+            return result;
         }
-    } else {
-        return result
     }
-    return result
+    else {
+        return result;
+    }
+    return result;
 }
-
+exports.levelCalculate = levelCalculate;
 // 读取输入信息
-export function getLevelMessage(input: string): string | any[] {
+function getLevelMessage(input) {
     // 初始化输出参数
     let mark = "";
     let startLevel = 1;
@@ -452,15 +499,16 @@ export function getLevelMessage(input: string): string | any[] {
         if (mark === "日服") {
             cafe = 8;
         }
-    } else {
-        return "未匹配到正确功能"
+    }
+    else {
+        return "未匹配到正确功能";
     }
     // 按功能标志进行参数匹配
     if (mark === "国服" || mark === "国际服" || mark === "日服") {
         // 不支持输入目标经验值
         const wrongRegex = /\d+(?:\.\d+)?级(?:(?:\d+(?:\.\d+)?)经验)?.*?(?:\d+(?:\.\d+)?)级(?:\d+(?:\.\d+)?)经验/;
         if (wrongRegex.test(input)) {
-            return "计算的最后一天经验值会溢出，因此请不要在目标等级后输入目标经验"
+            return "计算的最后一天经验值会溢出，因此请不要在目标等级后输入目标经验";
         }
         // 匹配xx级（xx经验）——xx级（满），匹配两个，标准输入，唯一可以计算带起始经验值的方法
         const simpleRegex1 = /(\d+(?:\.\d+)?)级(?:(\d+(?:\.\d+)?)经验)?.*?(\d+(?:\.\d+)?)级(满?)?/;
@@ -484,7 +532,8 @@ export function getLevelMessage(input: string): string | any[] {
             if (simpleMatch1[4]) {
                 endExp = expLevel[parseFloat(simpleMatch1[3])];
             }
-        } else {
+        }
+        else {
             const simpleMatch2 = input.match(simpleRegex2);
             if (simpleMatch2) {
                 if (simpleMatch2[1]) {
@@ -493,7 +542,8 @@ export function getLevelMessage(input: string): string | any[] {
                 if (simpleMatch2[2]) {
                     endExp = expLevel[simpleMatch2[1]];
                 }
-            } else {
+            }
+            else {
                 const simpleMatch3 = input.match(simpleRegex3);
                 if (simpleMatch3) {
                     if (simpleMatch3[1]) {
@@ -505,7 +555,8 @@ export function getLevelMessage(input: string): string | any[] {
                     if (simpleMatch3[3]) {
                         endExp = expLevel[parseFloat(simpleMatch3[2])];
                     }
-                } else {
+                }
+                else {
                     const simpleMatch4 = input.match(simpleRegex4);
                     if (simpleMatch4) {
                         if (simpleMatch4[1]) {
@@ -514,45 +565,47 @@ export function getLevelMessage(input: string): string | any[] {
                         if (simpleMatch4[2]) {
                             endExp = expLevel[simpleMatch4[1]];
                         }
-                    } else {
-                        return "未匹配到等级参数"
+                    }
+                    else {
+                        return "未匹配到等级参数";
                     }
                 }
             }
         }
         // 数值合理性检测
         if (!Number.isInteger(startLevel) || !Number.isInteger(startExp) || !Number.isInteger(endLevel) || !Number.isInteger(endExp)) {
-            return "检测到非整数输入，请检查输入"
+            return "检测到非整数输入，请检查输入";
         }
         if (startLevel < 1) {
-            return "等级最低为1级"
+            return "等级最低为1级";
         }
         if (mark === "国服" && endLevel > max_cn_lev) {
-            return `国服当前最高等级为${max_cn_lev}级`
+            return `国服当前最高等级为${max_cn_lev}级`;
         }
         if (mark == "国际服" && endLevel > max_in_lev) {
-            return `国际服当前最高等级为${max_in_lev}级`
+            return `国际服当前最高等级为${max_in_lev}级`;
         }
         if (mark === "日服" && endLevel > max_jp_lev) {
-            return `日服当前最高等级为${max_jp_lev}级`
+            return `日服当前最高等级为${max_jp_lev}级`;
         }
         if (endLevel < startLevel) {
-            return "目标等级不能低于初始等级"
+            return "目标等级不能低于初始等级";
         }
         if (startExp > expLevel[startLevel]) {
-            return "检测到初始经验值高出该等级经验值上限"
+            return "检测到初始经验值高出该等级经验值上限";
         }
         if (endLevel == startLevel && startExp > endExp) {
-            return "同等级时目标经验值不能低于初始经验值"
+            return "同等级时目标经验值不能低于初始经验值";
         }
         if (startLevel === undefined || startExp === undefined || endLevel === undefined || endExp === undefined) {
-            return "检测到数值缺失，请检查输入"
+            return "检测到数值缺失，请检查输入";
         }
-    } else if (mark === "自定义计算时间") {
+    }
+    else if (mark === "自定义计算时间") {
         // 不支持输入目标经验值
         const wrongRegex = /\d+(?:\.\d+)?级(?:(?:\d+(?:\.\d+)?)经验)?.*?(?:\d+(?:\.\d+)?)级(?:\d+(?:\.\d+)?)经验/;
         if (wrongRegex.test(input)) {
-            return "计算的最后一天经验值会溢出，因此请不要在目标等级后输入目标经验"
+            return "计算的最后一天经验值会溢出，因此请不要在目标等级后输入目标经验";
         }
         // 匹配现在等级与目标等级，原则与简易计算一致
         const timeRegex1 = /(\d+(?:\.\d+)?)级(?:(\d+(?:\.\d+)?)经验)?.*?(\d+(?:\.\d+)?)级(满?)?/;
@@ -573,7 +626,8 @@ export function getLevelMessage(input: string): string | any[] {
             if (timeMatch1[4]) {
                 endExp = expLevel[parseFloat(timeMatch1[3])];
             }
-        } else {
+        }
+        else {
             const timeMatch2 = input.match(timeRegex2);
             if (timeMatch2) {
                 if (timeMatch2[1]) {
@@ -582,7 +636,8 @@ export function getLevelMessage(input: string): string | any[] {
                 if (timeMatch2[2]) {
                     endExp = expLevel[timeMatch2[1]];
                 }
-            } else {
+            }
+            else {
                 const timeMatch3 = input.match(timeRegex3);
                 if (timeMatch3) {
                     if (timeMatch3[1]) {
@@ -594,7 +649,8 @@ export function getLevelMessage(input: string): string | any[] {
                     if (timeMatch3[3]) {
                         endExp = expLevel[parseFloat(timeMatch3[2])];
                     }
-                } else {
+                }
+                else {
                     const timeMatch4 = input.match(timeRegex4);
                     if (timeMatch4) {
                         if (timeMatch4[1]) {
@@ -603,33 +659,34 @@ export function getLevelMessage(input: string): string | any[] {
                         if (timeMatch4[2]) {
                             endExp = expLevel[timeMatch4[1]];
                         }
-                    } else {
-                        return "未匹配到等级参数"
+                    }
+                    else {
+                        return "未匹配到等级参数";
                     }
                 }
             }
         }
         // 角色等级经验数值合理性验证
         if (!Number.isInteger(startLevel) || !Number.isInteger(startExp) || !Number.isInteger(endLevel) || !Number.isInteger(endExp)) {
-            return "检测到角色等级/经验非整数输入，请检查输入"
+            return "检测到角色等级/经验非整数输入，请检查输入";
         }
         if (startLevel < 1) {
-            return "等级最低为1级"
+            return "等级最低为1级";
         }
         if (endLevel > max_jp_lev) {
-            return `日服当前最高等级为${max_jp_lev}级`
+            return `日服当前最高等级为${max_jp_lev}级`;
         }
         if (startExp > expLevel[startLevel]) {
-            return "检测到初始经验值高出该等级经验值上限"
+            return "检测到初始经验值高出该等级经验值上限";
         }
         if (endLevel < startLevel) {
-            return "目标等级不能低于初始等级"
+            return "目标等级不能低于初始等级";
         }
         if (endLevel == startLevel && startExp > endExp) {
-            return "同等级时目标经验值不能低于初始经验值"
+            return "同等级时目标经验值不能低于初始经验值";
         }
         if (startLevel === undefined || startExp === undefined || endLevel === undefined || endExp === undefined) {
-            return "检测到等级/经验数值缺失，请检查输入"
+            return "检测到等级/经验数值缺失，请检查输入";
         }
         // 匹配咖啡厅等级
         const cafeRegex1 = /咖啡厅(\d+(?:\.\d+)?)级/;
@@ -638,31 +695,34 @@ export function getLevelMessage(input: string): string | any[] {
         const cafeMatch1 = input.match(cafeRegex1);
         if (cafeMatch1) {
             cafe = parseFloat(cafeMatch1[1]);
-        } else {
+        }
+        else {
             const cafeMatch2 = input.match(cafeRegex2);
             if (cafeMatch2) {
                 cafe = parseFloat(cafeMatch2[1]);
-            } else {
+            }
+            else {
                 const cafeMatch3 = input.match(cafeRegex3);
                 if (cafeMatch3) {
                     cafe = parseFloat(cafeMatch3[1]);
-                } else {
-                    return "未匹配到咖啡厅等级"
+                }
+                else {
+                    return "未匹配到咖啡厅等级";
                 }
             }
         }
         // 咖啡厅等级数值合理性验证
         if (!Number.isInteger(cafe)) {
-            return "检测到咖啡厅等级非整数输入，请检查输入"
+            return "检测到咖啡厅等级非整数输入，请检查输入";
         }
         if (cafe < 1) {
-            return "咖啡厅等级最低为1级"
+            return "咖啡厅等级最低为1级";
         }
         if (cafe > 8) {
-            return "当前日服咖啡厅最高等级为8级"
+            return "当前日服咖啡厅最高等级为8级";
         }
         if (cafe === undefined) {
-            return "检测到咖啡厅等级数值缺失，请检查输入"
+            return "检测到咖啡厅等级数值缺失，请检查输入";
         }
         // 匹配jjc商店体力购买次数
         const jjcRegex1 = /jjc(?:商店)?(?:买|购买)?(\d+(?:\.\d+)?)(?:次)?/;
@@ -672,33 +732,37 @@ export function getLevelMessage(input: string): string | any[] {
         const jjcMatch1 = input.match(jjcRegex1);
         if (jjcMatch1) {
             jjc = parseFloat(jjcMatch1[1]);
-        } else {
+        }
+        else {
             const jjcMatch2 = input.match(jjcRegex2);
             if (jjcMatch2) {
                 jjc = parseFloat(jjcMatch2[1]);
-            } else {
+            }
+            else {
                 const jjcMatch3 = input.match(jjcRegex3);
                 if (jjcMatch3) {
                     jjc = parseFloat(jjcMatch3[1]) + 1;
-                } else {
+                }
+                else {
                     const jjcMatch4 = input.match(jjcRegex4);
                     if (jjcMatch4) {
                         jjc = parseFloat(jjcMatch4[1]) + 1;
-                    } else {
-                        return "未匹配到jjc商店购买体力次数"
+                    }
+                    else {
+                        return "未匹配到jjc商店购买体力次数";
                     }
                 }
             }
         }
         // jjc商店购买次数合理性验证
         if (!Number.isInteger(jjc)) {
-            return "检测到jjc商店购买体力次数非整数输入，请检查输入"
+            return "检测到jjc商店购买体力次数非整数输入，请检查输入";
         }
         if (jjc > 4) {
-            return "每日最多购买4次jjc商店"
+            return "每日最多购买4次jjc商店";
         }
         if (jjc === undefined) {
-            return "检测到jjc商店购买体力次数数值缺失，请检查输入"
+            return "检测到jjc商店购买体力次数数值缺失，请检查输入";
         }
         // 匹配碎钻次数
         const diaRegex1 = /碎钻(\d+(?:\.\d+)?)(?:管)?/;
@@ -706,23 +770,25 @@ export function getLevelMessage(input: string): string | any[] {
         const diaMatch1 = input.match(diaRegex1);
         if (diaMatch1) {
             breakDia = parseFloat(diaMatch1[1]);
-        } else {
+        }
+        else {
             const diaMatch2 = input.match(diaRegex2);
             if (diaMatch2) {
                 breakDia = parseFloat(diaMatch2[1]);
-            } else {
-                return "未匹配到碎钻购买体力次数"
+            }
+            else {
+                return "未匹配到碎钻购买体力次数";
             }
         }
         // 碎钻次数合理性验证
         if (!Number.isInteger(breakDia)) {
-            return "检测到碎钻购买体力次数非整数输入，请检查输入"
+            return "检测到碎钻购买体力次数非整数输入，请检查输入";
         }
         if (breakDia > 20) {
-            return "每日最多碎钻购买20次体力"
+            return "每日最多碎钻购买20次体力";
         }
         if (jjc === undefined) {
-            return "检测到碎钻购买体力次数数值缺失，请检查输入"
+            return "检测到碎钻购买体力次数数值缺失，请检查输入";
         }
         // 匹配体力月卡有无
         const cardRegex1 = /(?:体力)?月卡(有|无|没有)/;
@@ -732,17 +798,20 @@ export function getLevelMessage(input: string): string | any[] {
             if (cardMatch1[1] === "有") {
                 card = true;
             }
-        } else {
+        }
+        else {
             const cardMatch2 = input.match(cardRegex2);
             if (cardMatch2) {
                 if (cardMatch2[1] === "有") {
                     card = true;
                 }
-            } else {
-                return "未匹配到体力月卡信息"
+            }
+            else {
+                return "未匹配到体力月卡信息";
             }
         }
-    } else if (mark === "自定义计算等级") {
+    }
+    else if (mark === "自定义计算等级") {
         // 匹配现有等级
         const levelRegex = /(\d+(?:\.\d+)?)级(?:(\d+(?:\.\d+)?)经验)?/;
         const levelMatch = input.match(levelRegex);
@@ -753,21 +822,22 @@ export function getLevelMessage(input: string): string | any[] {
             if (levelMatch[2]) {
                 startExp = parseFloat(levelMatch[2]);
             }
-        } else {
-            return "未匹配到等级参数"
+        }
+        else {
+            return "未匹配到等级参数";
         }
         // 角色等级经验数值合理性验证
         if (!Number.isInteger(startLevel) || !Number.isInteger(startExp) || !Number.isInteger(endLevel) || !Number.isInteger(endExp)) {
-            return "检测到角色等级/经验非整数输入，请检查输入"
+            return "检测到角色等级/经验非整数输入，请检查输入";
         }
         if (startLevel < 1) {
-            return "等级最低为1级"
+            return "等级最低为1级";
         }
         if (startExp > expLevel[startLevel]) {
-            return "检测到初始经验值高出该等级经验值上限"
+            return "检测到初始经验值高出该等级经验值上限";
         }
         if (startLevel === undefined || startExp === undefined || endLevel === undefined || endExp === undefined) {
-            return "检测到等级/经验数值缺失，请检查输入"
+            return "检测到等级/经验数值缺失，请检查输入";
         }
         // 匹配咖啡厅等级
         const cafeRegex1 = /咖啡厅(\d+(?:\.\d+)?)级/;
@@ -776,31 +846,34 @@ export function getLevelMessage(input: string): string | any[] {
         const cafeMatch1 = input.match(cafeRegex1);
         if (cafeMatch1) {
             cafe = parseFloat(cafeMatch1[1]);
-        } else {
+        }
+        else {
             const cafeMatch2 = input.match(cafeRegex2);
             if (cafeMatch2) {
                 cafe = parseFloat(cafeMatch2[1]);
-            } else {
+            }
+            else {
                 const cafeMatch3 = input.match(cafeRegex3);
                 if (cafeMatch3) {
                     cafe = parseFloat(cafeMatch3[1]);
-                } else {
-                    return "未匹配到咖啡厅等级"
+                }
+                else {
+                    return "未匹配到咖啡厅等级";
                 }
             }
         }
         // 咖啡厅等级数值合理性验证
         if (!Number.isInteger(cafe)) {
-            return "检测到咖啡厅等级非整数输入，请检查输入"
+            return "检测到咖啡厅等级非整数输入，请检查输入";
         }
         if (cafe < 1) {
-            return "咖啡厅等级最低为1级"
+            return "咖啡厅等级最低为1级";
         }
         if (cafe > 8) {
-            return "当前日服咖啡厅最高等级为8级"
+            return "当前日服咖啡厅最高等级为8级";
         }
         if (cafe === undefined) {
-            return "检测到咖啡厅等级数值缺失，请检查输入"
+            return "检测到咖啡厅等级数值缺失，请检查输入";
         }
         // 匹配jjc商店体力购买次数
         const jjcRegex1 = /jjc(?:商店)?(?:买|购买)?(\d+(?:\.\d+)?)(?:次)?/;
@@ -810,33 +883,37 @@ export function getLevelMessage(input: string): string | any[] {
         const jjcMatch1 = input.match(jjcRegex1);
         if (jjcMatch1) {
             jjc = parseFloat(jjcMatch1[1]);
-        } else {
+        }
+        else {
             const jjcMatch2 = input.match(jjcRegex2);
             if (jjcMatch2) {
                 jjc = parseFloat(jjcMatch2[1]);
-            } else {
+            }
+            else {
                 const jjcMatch3 = input.match(jjcRegex3);
                 if (jjcMatch3) {
                     jjc = parseFloat(jjcMatch3[1]) + 1;
-                } else {
+                }
+                else {
                     const jjcMatch4 = input.match(jjcRegex4);
                     if (jjcMatch4) {
                         jjc = parseFloat(jjcMatch4[1]) + 1;
-                    } else {
-                        return "未匹配到jjc商店购买体力次数"
+                    }
+                    else {
+                        return "未匹配到jjc商店购买体力次数";
                     }
                 }
             }
         }
         // jjc商店购买次数合理性验证
         if (!Number.isInteger(jjc)) {
-            return "检测到jjc商店购买体力次数非整数输入，请检查输入"
+            return "检测到jjc商店购买体力次数非整数输入，请检查输入";
         }
         if (jjc > 4) {
-            return "每日最多购买4次jjc商店"
+            return "每日最多购买4次jjc商店";
         }
         if (jjc === undefined) {
-            return "检测到jjc商店购买体力次数数值缺失，请检查输入"
+            return "检测到jjc商店购买体力次数数值缺失，请检查输入";
         }
         // 匹配碎钻次数
         const diaRegex1 = /碎钻(\d+(?:\.\d+)?)(?:管)?/;
@@ -844,23 +921,25 @@ export function getLevelMessage(input: string): string | any[] {
         const diaMatch1 = input.match(diaRegex1);
         if (diaMatch1) {
             breakDia = parseFloat(diaMatch1[1]);
-        } else {
+        }
+        else {
             const diaMatch2 = input.match(diaRegex2);
             if (diaMatch2) {
                 breakDia = parseFloat(diaMatch2[1]);
-            } else {
-                return "未匹配到碎钻购买体力次数"
+            }
+            else {
+                return "未匹配到碎钻购买体力次数";
             }
         }
         // 碎钻次数合理性验证
         if (!Number.isInteger(breakDia)) {
-            return "检测到碎钻购买体力次数非整数输入，请检查输入"
+            return "检测到碎钻购买体力次数非整数输入，请检查输入";
         }
         if (breakDia > 20) {
-            return "每日最多碎钻购买20次体力"
+            return "每日最多碎钻购买20次体力";
         }
         if (jjc === undefined) {
-            return "检测到碎钻购买体力次数数值缺失，请检查输入"
+            return "检测到碎钻购买体力次数数值缺失，请检查输入";
         }
         // 匹配体力月卡有无
         const cardRegex1 = /(?:体力)?月卡(有|无|没有)/;
@@ -870,14 +949,16 @@ export function getLevelMessage(input: string): string | any[] {
             if (cardMatch1[1] === "有") {
                 card = true;
             }
-        } else {
+        }
+        else {
             const cardMatch2 = input.match(cardRegex2);
             if (cardMatch2) {
                 if (cardMatch2[1] === "有") {
                     card = true;
                 }
-            } else {
-                return "未匹配到体力月卡信息"
+            }
+            else {
+                return "未匹配到体力月卡信息";
             }
         }
         // 匹配执行天数
@@ -885,156 +966,170 @@ export function getLevelMessage(input: string): string | any[] {
         const dayMatch = input.match(dayRegex);
         if (dayMatch) {
             days = parseFloat(dayMatch[1]);
-        } else {
-            return "未匹配到执行天数"
+        }
+        else {
+            return "未匹配到执行天数";
         }
         // 天数合理性验证
         if (!Number.isInteger(days)) {
-            return "检测到执行天数非整数输入，请检查输入"
+            return "检测到执行天数非整数输入，请检查输入";
         }
         if (days == 0) {
-            return "至少执行1天"
+            return "至少执行1天";
         }
         if (days >= 10000) {
-            return `已经肝了${Math.floor(days / 365)}年多了，休息一下吧(*^▽^*)`
+            return `已经肝了${Math.floor(days / 365)}年多了，休息一下吧(*^▽^*)`;
         }
         if (days === undefined) {
-            return "检测到执行天数数值缺失，请检查输入"
-        }
-    } else if (mark == "自定义计算熟练证书") {
-        // 匹配咖啡厅等级
-        const cafeRegex1 = /咖啡厅(\d+(?:\.\d+)?)级/;
-        const cafeRegex2 = /(\d+(?:\.\d+)?)级咖啡厅/;
-        const cafeRegex3 = /咖啡厅(\d+(?:\.\d+)?)/;
-        const cafeMatch1 = input.match(cafeRegex1);
-        if (cafeMatch1) {
-            cafe = parseFloat(cafeMatch1[1]);
-        } else {
-            const cafeMatch2 = input.match(cafeRegex2);
-            if (cafeMatch2) {
-                cafe = parseFloat(cafeMatch2[1]);
-            } else {
-                const cafeMatch3 = input.match(cafeRegex3);
-                if (cafeMatch3) {
-                    cafe = parseFloat(cafeMatch3[1]);
-                } else {
-                    return "未匹配到咖啡厅等级"
-                }
-            }
-        }
-        // 咖啡厅等级数值合理性验证
-        if (!Number.isInteger(cafe)) {
-            return "检测到咖啡厅等级非整数输入，请检查输入"
-        }
-        if (cafe < 1) {
-            return "咖啡厅等级最低为1级"
-        }
-        if (cafe > 8) {
-            return "当前日服咖啡厅最高等级为8级"
-        }
-        if (cafe === undefined) {
-            return "检测到咖啡厅等级数值缺失，请检查输入"
-        }
-        // 匹配jjc商店体力购买次数
-        const jjcRegex1 = /jjc(?:商店)?(?:买|购买)?(\d+(?:\.\d+)?)(?:次)?/;
-        const jjcRegex2 = /(?:买|购买)(\d+(?:\.\d+)?)次jjc(?:商店)?/;
-        const jjcRegex3 = /jjc(?:商店)?(?:刷新|刷)(\d+(?:\.\d+)?)(?:次)?/;
-        const jjcRegex4 = /(?:刷新|刷)(\d+(?:\.\d+)?)次jjc(?:商店)?/;
-        const jjcMatch1 = input.match(jjcRegex1);
-        if (jjcMatch1) {
-            jjc = parseFloat(jjcMatch1[1]);
-        } else {
-            const jjcMatch2 = input.match(jjcRegex2);
-            if (jjcMatch2) {
-                jjc = parseFloat(jjcMatch2[1]);
-            } else {
-                const jjcMatch3 = input.match(jjcRegex3);
-                if (jjcMatch3) {
-                    jjc = parseFloat(jjcMatch3[1]) + 1;
-                } else {
-                    const jjcMatch4 = input.match(jjcRegex4);
-                    if (jjcMatch4) {
-                        jjc = parseFloat(jjcMatch4[1]) + 1;
-                    } else {
-                        return "未匹配到jjc商店购买体力次数"
-                    }
-                }
-            }
-        }
-        // jjc商店购买次数合理性验证
-        if (!Number.isInteger(jjc)) {
-            return "检测到jjc商店购买体力次数非整数输入，请检查输入"
-        }
-        if (jjc > 4) {
-            return "每日最多购买4次jjc商店"
-        }
-        if (jjc === undefined) {
-            return "检测到jjc商店购买体力次数数值缺失，请检查输入"
-        }
-        // 匹配碎钻次数
-        const diaRegex1 = /碎钻(\d+(?:\.\d+)?)(?:管)?/;
-        const diaRegex2 = /(\d+(?:\.\d+)?)管/;
-        const diaMatch1 = input.match(diaRegex1);
-        if (diaMatch1) {
-            breakDia = parseFloat(diaMatch1[1]);
-        } else {
-            const diaMatch2 = input.match(diaRegex2);
-            if (diaMatch2) {
-                breakDia = parseFloat(diaMatch2[1]);
-            } else {
-                return "未匹配到碎钻购买体力次数"
-            }
-        }
-        // 碎钻次数合理性验证
-        if (!Number.isInteger(breakDia)) {
-            return "检测到碎钻购买体力次数非整数输入，请检查输入"
-        }
-        if (breakDia > 20) {
-            return "每日最多碎钻购买20次体力"
-        }
-        if (jjc === undefined) {
-            return "检测到碎钻购买体力次数数值缺失，请检查输入"
-        }
-        // 匹配体力月卡有无
-        const cardRegex1 = /(?:体力)?月卡(有|无|没有)/;
-        const cardRegex2 = /(有|无|没有)(?:体力)?月卡/;
-        const cardMatch1 = input.match(cardRegex1);
-        if (cardMatch1) {
-            if (cardMatch1[1] === "有") {
-                card = true;
-            }
-        } else {
-            const cardMatch2 = input.match(cardRegex2);
-            if (cardMatch2) {
-                if (cardMatch2[1] === "有") {
-                    card = true;
-                }
-            } else {
-                return "未匹配到体力月卡信息"
-            }
-        }
-        // 匹配执行天数
-        const dayRegex = /(\d+(?:\.\d+)?)天/;
-        const dayMatch = input.match(dayRegex);
-        if (dayMatch) {
-            days = parseFloat(dayMatch[1]);
-        } else {
-            return "未匹配到执行天数"
-        }
-        // 天数合理性验证
-        if (!Number.isInteger(days)) {
-            return "检测到执行天数非整数输入，请检查输入"
-        }
-        if (days == 0) {
-            return "至少执行1天"
-        }
-        if (days >= 10000) {
-            return `已经肝了${Math.floor(days / 365)}年多了，休息一下吧(*^▽^*)`
-        }
-        if (days === undefined) {
-            return "检测到执行天数数值缺失，请检查输入"
+            return "检测到执行天数数值缺失，请检查输入";
         }
     }
-    return [mark, startLevel, startExp, endLevel, endExp, cafe, jjc, card, breakDia, days]
+    else if (mark == "自定义计算熟练证书") {
+        // 匹配咖啡厅等级
+        const cafeRegex1 = /咖啡厅(\d+(?:\.\d+)?)级/;
+        const cafeRegex2 = /(\d+(?:\.\d+)?)级咖啡厅/;
+        const cafeRegex3 = /咖啡厅(\d+(?:\.\d+)?)/;
+        const cafeMatch1 = input.match(cafeRegex1);
+        if (cafeMatch1) {
+            cafe = parseFloat(cafeMatch1[1]);
+        }
+        else {
+            const cafeMatch2 = input.match(cafeRegex2);
+            if (cafeMatch2) {
+                cafe = parseFloat(cafeMatch2[1]);
+            }
+            else {
+                const cafeMatch3 = input.match(cafeRegex3);
+                if (cafeMatch3) {
+                    cafe = parseFloat(cafeMatch3[1]);
+                }
+                else {
+                    return "未匹配到咖啡厅等级";
+                }
+            }
+        }
+        // 咖啡厅等级数值合理性验证
+        if (!Number.isInteger(cafe)) {
+            return "检测到咖啡厅等级非整数输入，请检查输入";
+        }
+        if (cafe < 1) {
+            return "咖啡厅等级最低为1级";
+        }
+        if (cafe > 8) {
+            return "当前日服咖啡厅最高等级为8级";
+        }
+        if (cafe === undefined) {
+            return "检测到咖啡厅等级数值缺失，请检查输入";
+        }
+        // 匹配jjc商店体力购买次数
+        const jjcRegex1 = /jjc(?:商店)?(?:买|购买)?(\d+(?:\.\d+)?)(?:次)?/;
+        const jjcRegex2 = /(?:买|购买)(\d+(?:\.\d+)?)次jjc(?:商店)?/;
+        const jjcRegex3 = /jjc(?:商店)?(?:刷新|刷)(\d+(?:\.\d+)?)(?:次)?/;
+        const jjcRegex4 = /(?:刷新|刷)(\d+(?:\.\d+)?)次jjc(?:商店)?/;
+        const jjcMatch1 = input.match(jjcRegex1);
+        if (jjcMatch1) {
+            jjc = parseFloat(jjcMatch1[1]);
+        }
+        else {
+            const jjcMatch2 = input.match(jjcRegex2);
+            if (jjcMatch2) {
+                jjc = parseFloat(jjcMatch2[1]);
+            }
+            else {
+                const jjcMatch3 = input.match(jjcRegex3);
+                if (jjcMatch3) {
+                    jjc = parseFloat(jjcMatch3[1]) + 1;
+                }
+                else {
+                    const jjcMatch4 = input.match(jjcRegex4);
+                    if (jjcMatch4) {
+                        jjc = parseFloat(jjcMatch4[1]) + 1;
+                    }
+                    else {
+                        return "未匹配到jjc商店购买体力次数";
+                    }
+                }
+            }
+        }
+        // jjc商店购买次数合理性验证
+        if (!Number.isInteger(jjc)) {
+            return "检测到jjc商店购买体力次数非整数输入，请检查输入";
+        }
+        if (jjc > 4) {
+            return "每日最多购买4次jjc商店";
+        }
+        if (jjc === undefined) {
+            return "检测到jjc商店购买体力次数数值缺失，请检查输入";
+        }
+        // 匹配碎钻次数
+        const diaRegex1 = /碎钻(\d+(?:\.\d+)?)(?:管)?/;
+        const diaRegex2 = /(\d+(?:\.\d+)?)管/;
+        const diaMatch1 = input.match(diaRegex1);
+        if (diaMatch1) {
+            breakDia = parseFloat(diaMatch1[1]);
+        }
+        else {
+            const diaMatch2 = input.match(diaRegex2);
+            if (diaMatch2) {
+                breakDia = parseFloat(diaMatch2[1]);
+            }
+            else {
+                return "未匹配到碎钻购买体力次数";
+            }
+        }
+        // 碎钻次数合理性验证
+        if (!Number.isInteger(breakDia)) {
+            return "检测到碎钻购买体力次数非整数输入，请检查输入";
+        }
+        if (breakDia > 20) {
+            return "每日最多碎钻购买20次体力";
+        }
+        if (jjc === undefined) {
+            return "检测到碎钻购买体力次数数值缺失，请检查输入";
+        }
+        // 匹配体力月卡有无
+        const cardRegex1 = /(?:体力)?月卡(有|无|没有)/;
+        const cardRegex2 = /(有|无|没有)(?:体力)?月卡/;
+        const cardMatch1 = input.match(cardRegex1);
+        if (cardMatch1) {
+            if (cardMatch1[1] === "有") {
+                card = true;
+            }
+        }
+        else {
+            const cardMatch2 = input.match(cardRegex2);
+            if (cardMatch2) {
+                if (cardMatch2[1] === "有") {
+                    card = true;
+                }
+            }
+            else {
+                return "未匹配到体力月卡信息";
+            }
+        }
+        // 匹配执行天数
+        const dayRegex = /(\d+(?:\.\d+)?)天/;
+        const dayMatch = input.match(dayRegex);
+        if (dayMatch) {
+            days = parseFloat(dayMatch[1]);
+        }
+        else {
+            return "未匹配到执行天数";
+        }
+        // 天数合理性验证
+        if (!Number.isInteger(days)) {
+            return "检测到执行天数非整数输入，请检查输入";
+        }
+        if (days == 0) {
+            return "至少执行1天";
+        }
+        if (days >= 10000) {
+            return `已经肝了${Math.floor(days / 365)}年多了，休息一下吧(*^▽^*)`;
+        }
+        if (days === undefined) {
+            return "检测到执行天数数值缺失，请检查输入";
+        }
+    }
+    return [mark, startLevel, startExp, endLevel, endExp, cafe, jjc, card, breakDia, days];
 }
-
+exports.getLevelMessage = getLevelMessage;

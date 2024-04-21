@@ -1,13 +1,17 @@
 {
-  "name": "koishi-plugin-bakoishi",
-  "description": "66666",
-  "version": "0.0.1",
+  "name": "koishi-plugin-ba-plugin",
+  "description": "碧蓝档案游戏工具箱,具有攻略、抽卡、计算、活动获取等功能",
+  "version": "1.0.0-beta.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
     "lib",
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alin-sky/koishi-plugin-ba-plugin.git"
+  },
   "license": "MIT",
   "keywords": [
     "chatbot",
@@ -15,11 +19,31 @@
     "plugin"
   ],
   "peerDependencies": {
-    "koishi": "^4.14.5",
-    "koishi-plugin-skia-canvas":"^0.3.6"
+    "koishi": "^4.17.0"
+  },
+  "koishi": {
+    "description": {
+      "zh": "blueArchive.碧蓝档案游戏工具箱,具有攻略、抽卡、计算、活动获取等功能",
+      "en": "blueArchive. blueArchive game toolbox, with guild, calculate, gacha, activities to get and other functions"
+    },
+    "service": {
+      "optional": [
+        "puppeteer",
+        "canvas"
+      ]
+    },
+    "locales": [
+      "zh"
+    ]
   },
   "dependencies": {
-    "koishi-plugin-skia-canvas":"^0.3.6"
+    "chinese-s2t-pro": "^1.0.2",
+    "cos-nodejs-sdk-v5": "^2.13.3",
+    "zh_cn": "^0.0.7"
+  },
+  "devDependencies": {
+    "chinese-s2t-pro": "^1.0.2",
+    "cos-nodejs-sdk-v5": "^2.13.3",
+    "zh_cn": "^0.0.7"
   }
-
 }
