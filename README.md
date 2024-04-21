@@ -5,6 +5,9 @@
 <br>     
  <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/logo2.png" width="145" height="196">
 <br>
+  
+
+
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-ba-plugin?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
 <h1>koishi插件，bluearchive-碧蓝档案工具箱</h1> 
@@ -12,66 +15,26 @@
 </div>
 
 
-
-## 功能
-
-<details>
-<summary> 抽卡模拟器 </summary>
-   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/ba.png" width="700" >
-</details>
-
-<details>
-<summary> 角色评分，攻略图查询 </summary>
-   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/gl.png" width="700">
-</details>
-
-<details>
-<summary> 千里眼 </summary>
-   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/qly.png" width="700">
-</details>
-
-<details>
-<summary> 总力模拟（0.10已关闭） </summary>
-   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/zl.png" width="700">
-</details>
-
-<details>
-<summary> 随机漫画和表情 </summary>
-   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/mh.png" width="700">
-</details>
-
-<details>
-<summary> 青辉石计算器 </summary>
-   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/zz.png" width="700">
-</details>
-
-<details>
-<summary> 升级计算器 </summary>
-   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/sj.png" width="700">
-</details>
-
-<details>
-<summary> 好感度需求计算器 </summary>
-   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/hg.png" width="700">
-</details>
-
-<details>
-<summary> 计算内容转图片 </summary>
-   <img src="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/Data%20for%20warehouses/puppe.png" width="700">
-</details>
-
-## 使用方法
-在koishi内使用“帮助”指令查询使用方法喵
+<h2>目前功能:</h2>
+<ul>
+  <li> Aronabot的攻略图 </li>
+  <li> 角色好感升级所需计算 </li>
+  <li> 玩家升级计算 </li>
+  <li> 总力站档线及排名查询 </li>
+  <li> 抽官方漫画 </li>
+  <li> 抽卡模拟器 </li>
+  <li> bawiki推图攻略 </li>
+  <li> 活动查询 </li>
+</ul>
 
 
 ## 介绍
-### **我正在学代码，这个项目相当于练手和学习的工程，肯定有很多不完善、不规范的地方，还请各位大佬轻喷**
+### **我是菜逼，这个项目相当于练手和学习的工程，肯定有很多不完善、不规范的地方，还请各位大佬轻喷**
 
-正在重构1.0版本
+### 1.0版本适配了官方bot，引入了自动更新json数据
+### 我们的 [QQ官方bot](https://qun.qq.com/qunpro/robot/qunshare?robot_uin=2854197266&robot_appid=102062652&biz_type=0)
 
-这个是[koishi](https://github.com/koishijs/koishi)机器人的插件，需要在koishi的插件市场安装
-
-我会不断更新这个项目
+这个是[koishi](https://github.com/koishijs/koishi)机器人的插件，需要在koishi框架中使用
 
 交互和功能设计灵感借鉴了[arona](https://github.com/diyigemt/arona)
 和[NoneBot-Plugin-BAWiki](https://github.com/lgc-NB2Dev/nonebot-plugin-bawiki)
@@ -80,25 +43,39 @@
 感谢各位巨佬帮忙测试🙏<br/>
 感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏
 
-### ba聊天水群：662889478，快来卷总力(bushi
-
-数据目前来源于[bawiki](https://ba.gamekee.com/entry)和[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)
 
 ---
 ## 感谢（按首字母排序）
 | 贡献者                                                       | 主要贡献                                     |
 | :----------------------------------------------------------- | :--------------------------------------- |
-| [diyigemt](https://github.com/diyigemt)           | 开放了API，提供了[Arona](https://github.com/diyigemt/arona)数据 |
-| [エルル](https://github.com/erurusion)  |抽卡模拟、抽群u等功能                                              |
+| [diyigemt](https://github.com/diyigemt)     | 开放了API，提供了[Arona](https://github.com/diyigemt/arona)数据 |
+| [エルル](https://github.com/erurusion)  |抽卡模拟、抽群u等功能  (1.0前)                                           |
 | [lgc-NB2Dev](https://github.com/lgc-NB2Dev) | 提供[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库 |
-| [Sanaene](https://github.com/Sanaene)      | 攒钻计算、好感计算、等级计算、总力模拟的算法                                           |
+| [Sanaene](https://github.com/Sanaene)      | 攒钻计算、好感计算、等级计算、总力模拟的算法      |
+| [shangxue](https://www.npmjs.com/~shangxue)    |  bawiki推图攻略的数据，还有些技术帮助~                 |
                          
 ---
 
 ## 更新日志
-<!-- (eruru的大致更新内容：井字棋(beta版) 抽卡模拟器功能调整，移除Jimp依赖，改用canvas实现图片处理)，
-抽卡模拟器增加了无参数时不响应，减少意外触发指令刷屏的可能，重构了指令，优化指令的体验，并减少了指令的数量(下一步，实现抽卡模拟器数据全自动更新，实现抽卡模拟器学生别名) -->
 
+### 1.0.0-alpha
+  - 优化结构，封装了常用功能
+  - 重构抽卡模拟器
+  - 重构攻略系统
+  - 重构好感计算
+  - 新增活动获取
+  - 独立抽漫画功能
+  - 新增上学的关卡攻略
+  - 新增总力获取（beta）
+  - 新增自动数据更新（beta）
+  - 新增本地数据更新（beta）
+
+
+<details>
+<summary>1.0前的更新日志</summary>
+<pre>
+  <code>
+    
 ### 0.10.2
   - 更新了aronabot的api
 
@@ -237,3 +214,8 @@
 
 ### 0.1.0
   - 发包！拥有角色评测图功能、抽卡模拟功能
+  </code>
+</pre>
+</details>
+
+
