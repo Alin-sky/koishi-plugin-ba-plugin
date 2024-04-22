@@ -51,7 +51,7 @@
 | [diyigemt](https://github.com/diyigemt)     | 开放了API，提供了[Arona](https://github.com/diyigemt/arona)数据 |
 | [エルル](https://github.com/erurusion)  |抽卡模拟、抽群u等功能  (1.0前)                                           |
 | [lgc-NB2Dev](https://github.com/lgc-NB2Dev) | 提供[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库 |
-| [Sanaene](https://github.com/Sanaene)      | 攒钻计算、好感计算、等级计算、总力模拟的算法      |
+| [Sanaene](https://github.com/Sanaene)      | 攒钻计算、好感计算、等级计算、学生匹配、总力模拟等算法，tql      |
 | [shangxue](https://www.npmjs.com/~shangxue)    |  bawiki推图攻略的数据，还有些技术帮助~                 |
                          
 ---
@@ -64,16 +64,20 @@
   - 修杂七杂八的bug
 
 ### 1.0.0-alpha
-  - 优化结构，封装了常用功能
-  - 重构抽卡模拟器
-  - 重构攻略系统
-  - 重构好感计算
-  - 新增活动获取
-  - 独立抽漫画功能
-  - 新增上学的关卡攻略
+  - 废弃大部分旧代码和架构，修改目录结构，封装了常用功能，
+  - 重构抽卡模拟器（v3）
+  - 重构攻略系统（v3）
+  - 重构好感计算（v3）
+  - 新增活动获取（v1）
+  - 独立并重构抽漫画功能（v2）
+  - 新增上学的关卡攻略（v1）
   - 新增总力获取（beta）
   - 新增自动数据更新（beta）
   - 新增本地数据更新（beta）
+  - ~~暂时废弃攒钻功能~~
+  - ~~废弃抽表情功能，转移至[emojihub-bili](https://www.npmjs.com/package/koishi-plugin-emojihub-bili?activeTab=readme)~~
+  - ~~废弃抽群u功能~~
+  - ~~废弃千里眼快速调用~~
 
 
 <details>
