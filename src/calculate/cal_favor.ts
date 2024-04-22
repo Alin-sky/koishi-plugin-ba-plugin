@@ -4,8 +4,7 @@ import { FMPS, } from '../FMPS/FMPS';
 import { } from "@satorijs/adapter-qq";
 import { calculate_numer, getFavorLv } from '../sanae-code/favorability'
 import { StudentMatch } from "../Snae_match/match";
-import { FMPS_server_download } from "../guide/guidesys";
-import { root_all_img } from "..";
+import { Config, } from '..';
 
 export const inject = { required: ['canvas'] }
 
@@ -16,7 +15,14 @@ const logger: Logger = new Logger(log)
 const random = new Random(() => Math.random())
 
 //Alin's Favourite Value Calculation Result to Picture v2.0-beta 2024-04-08 
-
+export interface draw_config {
+    modle: boolean
+}
+export const draw_config: Schema<draw_config> = Schema.intersect([
+    Schema.object({
+        modle: Schema.boolean().required().description('选择canvas渲染（canvas/puppeteer）'),
+    }).description('渲染模式设置'),
+])
 
 export const plugin_ass = [
     'item_icon_favor_0',
@@ -115,10 +121,11 @@ export const plugin_ass = [
 
 
 
-export async function cal_favorable(ctx: Context) {
+export async function cal_favorable(ctx: Context, config: Config) {
     const fmp = new FMPS(ctx)
     const root_img = await rootF("bap-img")
     const root_json = await rootF('bap-json')
+    const drawm = config.drawconfig.modle ? "" : 'file://'
 
     /*
     暂时不做了，未完善的自动更新礼物信息，等之后再写，不退坑再说
@@ -219,18 +226,18 @@ export async function cal_favorable(ctx: Context) {
         const arrow = await ctx.canvas.loadImage("https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/favor_img/arrow.png")
         */
 
-        const motou = await ctx.canvas.loadImage(`file://${root_img}/motou.png`)
-        const favo_1 = await ctx.canvas.loadImage(`file://${root_img}/1.png`)
-        const favo_2 = await ctx.canvas.loadImage(`file://${root_img}/2.png`)
-        const favo_3 = await ctx.canvas.loadImage(`file://${root_img}/3.png`)
-        const favo_4 = await ctx.canvas.loadImage(`file://${root_img}/4.png`)
-        const richen = await ctx.canvas.loadImage(`file://${root_img}/rc.png`)
-        const kokoro = await ctx.canvas.loadImage(`file://${root_img}/favologo.png`)
-        const arrow = await ctx.canvas.loadImage(`file://${root_img}/arrow.png`)
+        const motou = await ctx.canvas.loadImage(`${drawm}${root_img}/motou.png`)
+        const favo_1 = await ctx.canvas.loadImage(`${drawm}${root_img}/1.png`)
+        const favo_2 = await ctx.canvas.loadImage(`${drawm}${root_img}/2.png`)
+        const favo_3 = await ctx.canvas.loadImage(`${drawm}${root_img}/3.png`)
+        const favo_4 = await ctx.canvas.loadImage(`${drawm}${root_img}/4.png`)
+        const richen = await ctx.canvas.loadImage(`${drawm}${root_img}/rc.png`)
+        const kokoro = await ctx.canvas.loadImage(`${drawm}${root_img}/favologo.png`)
+        const arrow = await ctx.canvas.loadImage(`${drawm}${root_img}/arrow.png`)
 
         async function draw_stuicon(stu) {
             ys = 400
-            const stuiconimg = await ctx.canvas.loadImage(`file://${root_img}/${stuid}.png`)
+            const stuiconimg = await ctx.canvas.loadImage(`${drawm}${root_img}/${stuid}.png`)
             c.save(); // 保存当前画布状态
             c.beginPath();
             c.arc(350, 200, 125, 0, Math.PI * 2);
@@ -368,7 +375,7 @@ export async function cal_favorable(ctx: Context) {
                 draw_txt(num[8], x1, y, false)
                 y += 400
                 for (let i = 0; i < favorlist.length; i++) {
-                    const presents = ctx.canvas.loadImage(`file://${root_img}/${favorlist[i].Icon}.png`)
+                    const presents = ctx.canvas.loadImage(`${drawm}${root_img}/${favorlist[i].Icon}.png`)
                     c.drawImage(await presents, x - 20, y - 80, 255, 220)
                     if (favorlist[i].matchCount == 1) {
                         if (favorlist[i].Rarity == "SR") {

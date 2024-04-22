@@ -23,6 +23,9 @@ export async function active_get(ctx: Context, config: Config) {
     const mdid = config.qqconfig.markdown_setting.mdid
     const mdkey1 = config.qqconfig.markdown_setting.mdp1
     const mdkey2 = config.qqconfig.markdown_setting.mdp2
+
+    const drawm = config.drawconfig.modle ? "" : 'file://'
+
     var mdswitch: boolean = false
     if (mdid && mdkey1 && mdkey2 && mdid) {
         logger.info('🟢 总力获取功能已启用MD消息模板')
@@ -264,31 +267,31 @@ export async function active_get(ctx: Context, config: Config) {
         switch (hard) {
             case 'TM':
             case 'Torment':
-                img = await ctx.canvas.loadImage(`file://${root_img}/z_tom.png`)
+                img = await ctx.canvas.loadImage(`${drawm}${root_img}/z_tom.png`)
                 break
             case 'INS':
             case 'Insane':
-                img = await ctx.canvas.loadImage(`file://${root_img}/z_ins.png`)
+                img = await ctx.canvas.loadImage(`${drawm}${root_img}/z_ins.png`)
                 break
             case 'EX':
             case 'Extreme':
-                img = await ctx.canvas.loadImage(`file://${root_img}/z_ext.png`)
+                img = await ctx.canvas.loadImage(`${drawm}${root_img}/z_ext.png`)
                 break
             case 'HC':
             case 'HardCore':
-                img = await ctx.canvas.loadImage(`file://${root_img}/z_hac.png`)
+                img = await ctx.canvas.loadImage(`${drawm}${root_img}/z_hac.png`)
                 break
             case 'VH':
             case 'VeryHard':
-                img = await ctx.canvas.loadImage(`file://${root_img}/z_veh.png`)
+                img = await ctx.canvas.loadImage(`${drawm}${root_img}/z_veh.png`)
                 break
             case 'H':
             case 'Hard':
-                img = await ctx.canvas.loadImage(`file://${root_img}/z_har.png`)
+                img = await ctx.canvas.loadImage(`${drawm}${root_img}/z_har.png`)
                 break
             case 'N':
             case 'Normal':
-                img = await ctx.canvas.loadImage(`file://${root_img}/z_nor.png`)
+                img = await ctx.canvas.loadImage(`${drawm}${root_img}/z_nor.png`)
                 break
         }
         return img
@@ -299,9 +302,9 @@ export async function active_get(ctx: Context, config: Config) {
         height = 540
         const canvas = await ctx.canvas.createCanvas(700, height);
         const c = canvas.getContext('2d');
-        const pt = await ctx.canvas.loadImage(`file://${root_img}/pt.png`)
-        const au = await ctx.canvas.loadImage(`file://${root_img}/au.png`)
-        const ag = await ctx.canvas.loadImage(`file://${root_img}/ag.png`)
+        const pt = await ctx.canvas.loadImage(`${drawm}${root_img}/pt.png`)
+        const au = await ctx.canvas.loadImage(`${drawm}${root_img}/au.png`)
+        const ag = await ctx.canvas.loadImage(`${drawm}${root_img}/ag.png`)
 
         async function mod_1() {
             let x = 20, rad = 20, y = 10, wid = 660, hei = 220
@@ -423,9 +426,9 @@ export async function active_get(ctx: Context, config: Config) {
         height = 900
         const canvas = await ctx.canvas.createCanvas(700, height);
         const c = canvas.getContext('2d');
-        const pt = await ctx.canvas.loadImage(`file://${root_img}/pt.png`)
-        const au = await ctx.canvas.loadImage(`file://${root_img}/au.png`)
-        const ag = await ctx.canvas.loadImage(`file://${root_img}/ag.png`)
+        const pt = await ctx.canvas.loadImage(`${drawm}${root_img}/pt.png`)
+        const au = await ctx.canvas.loadImage(`${drawm}${root_img}/au.png`)
+        const ag = await ctx.canvas.loadImage(`${drawm}${root_img}/ag.png`)
         async function mod_1() {
             let x = 20, rad = 20, y = 10, wid = 660, hei = 250
             c.beginPath();
@@ -603,7 +606,7 @@ export async function active_get(ctx: Context, config: Config) {
         }
         async function mod_5() {
             const i = random.int(1, 10)
-            const image = await ctx.canvas.loadImage(`file://${root_img}/meme_${i}.png`)
+            const image = await ctx.canvas.loadImage(`${drawm}${root_img}/meme_${i}.png`)
             let newWidth, newHeight, maxWidth = 180, maxHeight = 180
             const originalWidth = image.naturalWidth;
             const originalHeight = image.naturalHeight;

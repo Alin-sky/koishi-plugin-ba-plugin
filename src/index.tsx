@@ -3,7 +3,7 @@ import { Context, Logger, Schema, } from 'koishi';
 import { gacha_f } from './gacha/gacha_main';
 import { guideConfig, guide_qq, guide_systeam } from './guide/guidesys';
 import { } from "@satorijs/server-temp";
-import { cal_favorable, plugin_ass } from './calculate/cal_favor';
+import { cal_favorable, draw_config, plugin_ass } from './calculate/cal_favor';
 import { active_get } from './get-active/get_active';
 import { FMPS } from './FMPS/FMPS';
 import { file_search, rootF } from './FMPS/FMPS_F';
@@ -90,15 +90,15 @@ export const usage = `
 
 
 export interface Config {
+  drawconfig:draw_config
   qqconfig: guide_qq
   guide: guideConfig
-  // functionswitch: function_switch
 }
 //koishi控制台
 export const Config: Schema<Config> = Schema.object({
+  drawconfig:draw_config,
   qqconfig: guide_qq,
   guide: guideConfig,
-
 })
 
 
@@ -255,7 +255,7 @@ export async function apply(ctx: Context, config: Config) {
 
   ctx.plugin(guide_systeam, config)
   ctx.plugin(gacha_f, config)
-  ctx.plugin(cal_favorable)
+  ctx.plugin(cal_favorable, config)
   ctx.plugin(cal_level)
   ctx.plugin(active_get, config)
 

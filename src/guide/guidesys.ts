@@ -3,7 +3,7 @@ import { Context, Schema, Logger, h, Random, } from 'koishi';
 import { FMPS } from '../FMPS/FMPS';
 import { move_file, rootF } from '../FMPS/FMPS_F';
 import { } from "@satorijs/adapter-qq";
-import { Config, name } from '..';
+import { Config, } from '..';
 import { pathToFileURL } from 'url';
 import path, { resolve } from 'path';
 import { match_file, MatchArona, MatchMapName } from '../Snae_match/match';
@@ -104,7 +104,10 @@ export const guide_systeam = ({
     const root_guide = await rootF("bap-guidesys", "guide_aronaimg")
     const root_json = await rootF('bap-json')
     const root_img = await rootF("bap-img")
-    const local_path = `file://${root_img}`
+
+    const drawm = config.drawconfig.modle ? "" : 'file://'
+
+    const local_path = `${drawm}${root_img}`
 
     const arona_url = 'https://arona.diyigemt.com/api/v2'
     const arona_cdn = 'https://arona.cdn.diyigemt.com/image'
