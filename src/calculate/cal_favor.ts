@@ -442,7 +442,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
 
     logger.info("🟢 好感计算器加载完毕")
     ctx.command("好感计算 <arg1> <arg2>", "好感度需求计算器")
-        .alias('好感1')
+        .alias('好感')
         .action(async ({ session }, arg1, arg2) => {
             if (!arg1) {
                 return help_text

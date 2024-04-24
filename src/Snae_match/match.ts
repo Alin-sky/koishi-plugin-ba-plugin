@@ -1,7 +1,10 @@
 
 //sanae’s ba-students-match-systems v2 2023-11
 
-import { maxmap_sms,synonyms } from "../guide/guidesys";
+import { FMPS } from "../FMPS/FMPS";
+import { rootF } from "../FMPS/FMPS_F";
+import { maxmap_sms, synonyms } from "../guide/guidesys";
+import { Context } from "koishi";
 
 // 定义各种学生名字的接口
 interface StudentName {
@@ -16,8 +19,15 @@ interface StudentName {
     "Name_zh_ft": string;
     "NickName": string[]
 }
+/*
+const ctx = new Context();
+const fmp = new FMPS(ctx)
+const root_json = rootF("bap-json")
+const json = fmp.json_parse(`${root_json}/sms_studata_main.json`)
+console.log(json)
+*/
 
-const NameData: StudentName[] = require("./sms_studata_main.json") as StudentName[];
+const NameData: StudentName[] = require(`./sms_studata_main.json`) as StudentName[];
 export const match_file = __dirname
 
 // ————————————————————————————————————————————————————————————————————————————————————————————————————

@@ -172,6 +172,7 @@ export async function apply(ctx: Context, config: Config) {
     }
     if (!arraysEqual(newhash, oldjson)) {
       log.info("☁️🆕🟡云hash更新");
+      
       await init_download()
     } else {
       log.info("☁️   🟢云hash未更新");
