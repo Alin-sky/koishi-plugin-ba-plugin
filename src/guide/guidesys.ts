@@ -1,7 +1,7 @@
 //import区域
 import { Context, Schema, Logger, h, Random, } from 'koishi';
 import { FMPS } from '../FMPS/FMPS';
-import { move_file, rootF } from '../FMPS/FMPS_F';
+import { file_search, move_file, rootF } from '../FMPS/FMPS_F';
 import { } from "@satorijs/adapter-qq";
 import { Config, } from '..';
 import { pathToFileURL } from 'url';
@@ -14,7 +14,7 @@ const logger: Logger = new Logger(log)
 const random = new Random(() => Math.random())
 export const inject = ['canvas']
 
-//Alin’s ba guide systems v3 2024-04-05
+//Alin’s ba guide systems v3.1 2024-04-25
 //配置项
 export interface guide_qq {
   markdown_setting: {
@@ -160,9 +160,9 @@ export const guide_systeam = ({
       await fmp.sanae_match_refinement(root);
       const endTime = await new Date().getTime();
       logger.info('数据更新完毕！用时' + ((endTime - startTime) * 0.001) + '秒');
-    }//await initialisation();
-
-
+    }//await initialisation_locally_generated();
+    //await fmp.sanae_match_refinement(root);
+    //await fmp.match_auto_update(root);
     async function initia() {
       const hashurl = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/hash.json'
       const jsonurl = "https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/json%2F"
@@ -429,9 +429,7 @@ export const guide_systeam = ({
         ctximg.closePath();
         ctximg.font = `bold 29px Arial`;
         ctximg.fillStyle = '#000000';
-
         const lines = insertLineBreaks(namearr[i], 9).split('\n');
-        console.log(namearr[i].length)
         let ytextp; namearr[i].length > 10 ? ytextp = -20 : ytextp = 10
         let ytext = vy + ytextp
         const lineHeight = 30; // 假设每行的高度是 20px
@@ -574,6 +572,10 @@ export const guide_systeam = ({
               return '呜呜，出错惹😿，老师稍后再试试？'
             }
             console.log(arodata)
+            if (arodata.code == 200) {
+              await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
+              return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
+            }
             if (!arodata.data) {
               return "呜呜，没有找到对应的攻略😿"
             }
@@ -600,7 +602,6 @@ export const guide_systeam = ({
             }
             if (mdswitch) {
               cosurl = await updcos(filename, rimg)
-              console.log('https://' + cosurl)
               let i1 = 0, i2 = 0, i3 = 0, i4 = 0
               if (arodata.data.length == 2) {
                 i1 = 0, i2 = 1, i3 = 1, i4 = 1
@@ -772,6 +773,10 @@ export const guide_systeam = ({
               return "呜呜，没有找到对应的攻略😿"
             }
             if (canvas_fun) {
+              if (arodata.code == 200) {
+                await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
+                return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
+              }
               let i1 = 0, i2 = 0, i3 = 0, i4 = 0
               if (arodata.data.length == 2) {
                 i1 = 0, i2 = 1, i3 = 1, i4 = 1
@@ -780,6 +785,7 @@ export const guide_systeam = ({
               } else {
                 i1 = 0, i2 = 1, i3 = 2, i4 = 3
               }
+              console.log(arodata)
               const rimg = await create_guide_icon(
                 'aronadata',
                 arodata.data[i1].name,

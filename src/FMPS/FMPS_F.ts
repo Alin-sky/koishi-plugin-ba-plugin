@@ -1,4 +1,4 @@
-import http from 'http';
+
 import { Context, Logger } from 'koishi';
 import * as fs from 'fs/promises';
 import * as path from 'path';
@@ -52,16 +52,17 @@ export async function move_file(lpath: string, npath: string) {
 }
 
 /**
- * 文件搜索器
+ * 文件搜索器,判断文件是否存在
  * @param filePath 文件路径
  */
 
 export async function file_search(filePath: string): Promise<boolean> {
     try {
-        fs.access(filePath, fs.constants.F_OK);
-        return true; // 文件存在
-    } catch {
-        return false; // 文件不存在或无法访问
+        await fs.access(filePath, fs.constants.F_OK);
+        // 如果没有错误，文件存在
+        return true;
+    } catch (error) {
+        // 如果有错误，假设文件不存在
+        return false;
     }
 }
-

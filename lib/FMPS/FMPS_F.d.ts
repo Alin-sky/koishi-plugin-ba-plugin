@@ -12,7 +12,7 @@ export declare function rootF(mainfile?: any, filename?: any): Promise<string>;
  */
 export declare function move_file(lpath: string, npath: string): Promise<void>;
 /**
- * 文件搜索器
+ * 文件搜索器,判断文件是否存在
  * @param filePath 文件路径
  */
 export declare function file_search(filePath: string): Promise<boolean>;

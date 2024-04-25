@@ -164,7 +164,7 @@ export class FMPS {
             ["兔", '兔女郎'],
             ["温泉"],
             ["新年", "春", "正月"],
-            ["应援", "拉拉", '应援团'],
+            ["应援", "拉拉", '应援团', "啦啦"],
             ["圣诞", "圣诞节"],
             ['妹抖', "女仆"],
             ["体操服", "体操", "运动", '体', "运动服"],
@@ -173,7 +173,8 @@ export class FMPS {
             ["幼女", "幼", "铜", "小"],
             ['礼', "礼服"],
             ["新年", "春", "正月"],
-            ['导游', "导"]
+            ['导游', "导"],
+            ['乐队',]
         ]
 
         function conversions_pinyin(input: string) {
@@ -211,7 +212,7 @@ export class FMPS {
             '温泉', '新年', '应援团',
             '圣诞节', '女仆', '运动服',
             '骑行', '露营', "小",
-            '礼服', '正月', "导游"]
+            '礼服', '正月', "导游", "乐队"]
         if (matches) {
             for (const match of matches) {
                 // 移除括号，只保留括号内的内容
@@ -252,6 +253,7 @@ export class FMPS {
                 let nic: string[] = [];
                 let twtxt: string
                 let alias_cn = this.complete_alias((studata_cn[i].Name).replace(/（/g, '(').replace(/）/g, ')'))
+                let alias_in = this.complete_alias((studata_tw[i].Name).replace(/（/g, '(').replace(/）/g, ')'))
                 let nameEn = studata_cn[i].PathName;
                 //暂时性的繁简互换方案
                 if ((studata_jp[i].Name) == studata_tw[i].Name || studata_tw[i].Name == '') {
@@ -331,9 +333,9 @@ export class FMPS {
                 '温泉', '新年', '应援团',
                 '圣诞节', '女仆', '运动服',
                 '骑行', '露营', "幼女",
-                '礼服', '正月', "导游"]
+                '礼服', '正月', "导游", "乐队"]
             const regex = /\(([^)]+)\)/g;
-            const supplementary_name = await this.json_parse(root + '/smto_arona_data_revisions.json')
+            const supplementary_name = await this.json_parse(root + '/sms_to_arona_data_revisions.json')
             let ss = 0
             for (let i = 0; i < studata_zh.length; i++) {
                 const db_name = (studata_zh[i].Name).replace(/（/g, '(').replace(/）/g, ')')
@@ -366,7 +368,7 @@ export class FMPS {
             logger.info('数据更新时发生错误-sanae_match_refinement', error)
         }
         const jsonString = JSON.stringify(arrys, null, 2); // 使用缩进美化
-        fs.writeFile(`${root}/studata_2.json`, jsonString, (err: any) => {
+        fs.writeFile(`${root}/sms_studata_toaro_stu.json`, jsonString, (err: any) => {
             if (err) {
                 logger.info('数据更新时发生错误', error)
             } else {
@@ -481,7 +483,7 @@ export class FMPS {
         }
     }
 
-    
+
 
     /**
      * cos的文件上传函数

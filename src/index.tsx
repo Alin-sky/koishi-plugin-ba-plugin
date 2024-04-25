@@ -1,5 +1,5 @@
 //import区域
-import { Context, Logger, Schema, } from 'koishi';
+import { Context, Logger, Schema, Random } from 'koishi';
 import { gacha_f } from './gacha/gacha_main';
 import { guideConfig, guide_qq, guide_systeam } from './guide/guidesys';
 import { } from "@satorijs/server-temp";
@@ -7,14 +7,12 @@ import { cal_favorable, draw_config, plugin_ass } from './calculate/cal_favor';
 import { active_get } from './get-active/get_active';
 import { FMPS } from './FMPS/FMPS';
 import { file_search, rootF } from './FMPS/FMPS_F';
-import { match_file } from './Snae_match/match';
+import { match_file, MatchStudentName } from './Snae_match/match';
 import { cal_level } from './calculate/cal_level';
 
 export const inject = ['canvas', 'puppeteer']
 
 export const using = ['canvas', 'puppeteer']
-
-
 
 
 //koishi定义区
@@ -90,13 +88,13 @@ export const usage = `
 
 
 export interface Config {
-  drawconfig:draw_config
+  drawconfig: draw_config
   qqconfig: guide_qq
   guide: guideConfig
 }
 //koishi控制台
 export const Config: Schema<Config> = Schema.object({
-  drawconfig:draw_config,
+  drawconfig: draw_config,
   qqconfig: guide_qq,
   guide: guideConfig,
 })
@@ -114,6 +112,57 @@ export async function apply(ctx: Context, config: Config) {
   const root_json = await rootF("bap-json")
   const root_guide = await rootF("bap-guidesys")
   const fmp = new FMPS(ctx)
+  const random = new Random(() => Math.random())
+
+  //抽样判断文件是否存在
+  async function file_random_survey() {
+    let status: boolean = false
+    const hashurl = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/hash.json'
+    const newhash = await ctx.http.get(hashurl)
+    const oldjson = await fmp.json_parse(root_json + "/hash.json")
+    const stu_data = await fmp.json_parse(`${root_json}/sms_studata_toaro_stu.json`)
+    for (let i = 0; i < newhash.length; i++) {
+      const jsons = await fmp.json_parse(`${root_json}/${oldjson[i].fname}`)
+      if (jsons == null) {
+        return status = false
+      }
+    }
+    async function mod1() {
+      const pluass = random.pick(plugin_ass, 20);
+      const fileChecks = pluass.map(async i => {
+        return await file_search(`${await root_all_img}/${i}.png`);
+      });
+      const results = await Promise.all(fileChecks);
+      const status = results.every(result => result);
+      return status
+    }
+    async function mod2() {
+      const pluass = random.pick(stu_data, 30);
+      const fileChecks = pluass.map(async i => {
+        return await file_search(`${await root_all_img}/${(i as { Id_db: any }).Id_db}.png`);
+      });
+      const results = await Promise.all(fileChecks);
+      const status = results.every(result => result);
+      return status
+    }
+    async function mod3() {
+      const pluass = random.pick(stu_data, 30);
+      const fileChecks = pluass.map(async i => {
+        return await file_search(`${await root_all_img}/${(i as { Id_db: any }).Id_db}_g.png`);
+      });
+      const results = await Promise.all(fileChecks);
+      const status = results.every(result => result);
+      return status
+    }
+    const statu1 = await mod1();
+    const statu2 = await mod2()
+    const statu3 = await mod3()
+    if (!statu1 && !statu2 && !statu3) {
+      return status = false
+    } else {
+      return status = true
+    }
+  }
 
   async function init_download() {
     log.info('⬇️ 开始下载插件必须资源，请稍等哦（*＾-＾*）')
@@ -172,8 +221,10 @@ export async function apply(ctx: Context, config: Config) {
     }
     if (!arraysEqual(newhash, oldjson)) {
       log.info("☁️🆕🟡云hash更新");
-      
-      await init_download()
+      if (!await file_random_survey()) {
+        log.info("🟡本地资源检测未通过");
+        await init_download()
+      }
     } else {
       log.info("☁️   🟢云hash未更新");
       //二次检测
@@ -183,6 +234,10 @@ export async function apply(ctx: Context, config: Config) {
           await fmp.file_download((`${jsonurl}${newhash[i].fname}`), root_guide, `${newhash[i].fname}`)
           await fmp.file_download((`${jsonurl}${newhash[i].fname}`), root_json, `${newhash[i].fname}`)
         }
+      }
+      if (!await file_random_survey()) {
+        log.info("🟡本地资源检测未通过");
+        await init_download()
       }
       return
     }
@@ -251,9 +306,6 @@ export async function apply(ctx: Context, config: Config) {
   } catch (e) {
     log.info(e)
   }
-
-
-
   ctx.plugin(guide_systeam, config)
   ctx.plugin(gacha_f, config)
   ctx.plugin(cal_favorable, config)

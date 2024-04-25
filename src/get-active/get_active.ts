@@ -877,7 +877,7 @@ export async function active_get(ctx: Context, config: Config) {
                 const hei = acvimg[i - s][drawm_hei] * m
                 jud_time(wiki_data.data[i].begin_at) ? yls += (hei + 160 * A) : yrs += (hei + 160 * A)
             } else {
-                jud_time(wiki_data.data[i].begin_at) ? yls += (145 * A) : yrs += (145 * A)
+                jud_time(wiki_data.data[i].begin_at) ? yls += (140 * A) : yrs += (140 * A)
                 s++
             }
         }
