@@ -23,9 +23,16 @@ export const usage = `
 <div style="border:1px solid #CCC"></div> 
 
 </div>
-<h2>1.0版本对绝大部分功能进行了重构</h2>
-<h3>第一次启动请等待下载资源1-2分钟，指令加载不出来请重启commands插件</h3>
+<div style="border:2px solid #CCC"></div>
 
+<div>
+<div style="text-align:center;"> <h2>注意</h2></div>
+<h4>1.0版本对绝大部分功能进行了重构，指令用法可能改变</h4>
+<h4>第一次启动请等待下载资源1-2分钟，指令加载不出来请重启commands插件</h4>
+<h4>如果有报错可尝试开启“每次重载都下载资源”，更新下资源</h4>
+</div>
+
+<div style="border:1px solid #CCC"></div> 
 <h2>数据来源于:</h2>
 <ul>
   <li> <a href="https://ba.gamekee.com/"> bawiki  </a> </li>
@@ -59,7 +66,7 @@ export const usage = `
   <tbody>
     <tr>
       <td><a href="https://github.com/Sanaene">Sanaene</a></td>
-      <td>攻略匹配、好感、升级的算法</td>
+      <td>学生匹配、好感、升级的算法</td>
     </tr>
     <tr>
       <td><a href="https://www.npmjs.com/~shangxue">shangxue</a></td>
@@ -67,6 +74,7 @@ export const usage = `
     </tr>
   </tbody>
 </table>
+
 `;
 
 
@@ -221,10 +229,16 @@ export async function apply(ctx: Context, config: Config) {
     }
     if (!arraysEqual(newhash, oldjson)) {
       log.info("☁️🆕🟡云hash更新");
+
       if (!await file_random_survey()) {
         log.info("🟡本地资源检测未通过");
         await init_download()
       }
+      const stu_data = await fmp.json_parse(`${root_json}/sms_studata_toaro_stu.json`)
+      if (!await file_search(`${await root_all_img}/${(stu_data[stu_data.length - 1] as { Id_db: any }).Id_db}.png`)) {
+        await init_download()
+      }
+
     } else {
       log.info("☁️   🟢云hash未更新");
       //二次检测
@@ -236,7 +250,11 @@ export async function apply(ctx: Context, config: Config) {
         }
       }
       if (!await file_random_survey()) {
-        log.info("🟡本地资源检测未通过");
+        log.info("🟡本地资源随机检测未通过");
+        await init_download()
+      }
+      if (config.drawconfig.auto_update) {
+        log.info("🟡本地资源随机更新");
         await init_download()
       }
       return
@@ -300,6 +318,7 @@ export async function apply(ctx: Context, config: Config) {
   }
 
   await initia()
+  //await init_download()
 
   try {
     ctx.setInterval(async () => await initia(), 3 * 60 * 60 * 1000)

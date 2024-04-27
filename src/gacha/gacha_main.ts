@@ -55,12 +55,13 @@ export async function gacha_f(ctx: Context, config: Config) {
             for (let i = 0; i < dbdata.length; i++) {
                 in_json_create_data[1].push({
                     "id": dbdata[i].Id,
-                    "PersonalNam": dbdata[i].PersonalNam,
+                    //"PersonalNam": dbdata[i].PersonalNam,
                     "IsReleased": dbdata[i].IsReleased,
                     "StarGrade": dbdata[i].StarGrade,
                     "IsLimited": dbdata[i].IsLimited,
                 })
             }
+            console.log(in_json_create_data)
             const j = await fmp.json_create(root_json, 'gacha_data.json', (in_json_create_data))
             gacha_json = await fmp.json_parse(j)
             logger.info("本地抽卡数据更新完毕")

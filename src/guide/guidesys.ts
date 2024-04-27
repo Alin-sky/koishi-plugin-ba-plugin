@@ -477,6 +477,127 @@ export const guide_systeam = ({
             await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
           } //模糊匹配
           else if (match_data.length <= 7 && match_data.length > 2) {
+
+
+
+
+            //模糊匹配重复的暂时解决方案
+            if (match_data.includes(message)) {
+              let arodata
+              try {
+                arodata = await ctx.http.get(arona_url + '/image?name=' + message)
+              } catch (error) {
+                logger.info('向arona请求时发生错误', error)
+                return '呜呜，出错惹😿，老师稍后再试试？'
+              }
+              if (!arodata.data) {
+                return "呜呜，没有找到对应的攻略😿"
+              }
+              if (arodata.code == 200) {
+                await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
+                await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
+                return 
+              } else {
+                let cosurl
+                let rimg
+                const uid = (session.event.user.id).slice(0, 9)
+                const ram = random.int(0, 1000000)
+                const filename = (uid + ram) + '.jpg'
+                let i1 = 0, i2 = 0, i3 = 0, i4 = 0
+                if (arodata.data.length == 2) {
+                  i1 = 0, i2 = 1, i3 = 1, i4 = 1
+                } else if (arodata.data.length == 3) {
+                  i1 = 0, i2 = 1, i3 = 2, i4 = 2
+                } else {
+                  i1 = 0, i2 = 1, i3 = 2, i4 = 3
+                }
+                if (canvas_fun) {
+                  rimg = await create_guide_icon(
+                    'aronadata',
+                    arodata.data[i1].name,
+                    arodata.data[i2].name,
+                    arodata.data[i3].name,
+                    arodata.data[i4].name,)
+                } else {
+                  cosurl = false
+                }
+                if (mdswitch) {
+                  cosurl = await updcos(filename, rimg)
+                  let i1 = 0, i2 = 0, i3 = 0, i4 = 0
+                  if (arodata.data.length == 2) {
+                    i1 = 0, i2 = 1, i3 = 1, i4 = 1
+                  } else if (arodata.data.length == 3) {
+                    i1 = 0, i2 = 1, i3 = 2, i4 = 2
+                  } else {
+                    i1 = 0, i2 = 1, i3 = 2, i4 = 3
+                  }
+                  const md = markdow_fuzzy(
+                    session,
+                    cosurl,
+                    arodata.data[i1].name,
+                    arodata.data[i2].name,
+                    arodata.data[i3].name,
+                    arodata.data[i4].name,)
+                  try {
+                    await session.qq.sendMessage(session.channelId, md)
+                  } catch (e) {
+                    logger.info('发送md时发生错误:', e)
+                    let bui = []
+                    if (arodata.data.length == 2) {
+                      bui = [0, 1]
+                    } else if (arodata.data.length == 3) {
+                      bui = [0, 1, 2]
+                    } else {
+                      bui = [0, 1, 2, 3]
+                    }
+                    const text = bui.map(
+                      i => (`${i}.${arodata.data[i].name}\n`)).join('')
+                    await session.send(`${return_text}\n${text}`);
+                  }
+                } else {
+                  const wait_mess = await session.prompt(times)
+                  if (!wait_mess) {
+                    const timeoutmess = await session.send(return_timeoutt)
+                    ctx.setTimeout(() => {
+                      try {
+                        session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
+                      } catch (e) {
+                        logger.info('撤回时出错：', e)
+                      }
+                    }, times)
+                  } else if (['1', '2', '3', '4'].includes(wait_mess)) {
+                    let numb = parseInt(wait_mess)
+                    if (arodata.data.length == 2) {
+                      numb >= 2 ? numb = 2 : numb = 1
+                    } else if (arodata.data.length == 3) {
+                      numb >= 3 ? numb = 3 : numb = numb
+                    }
+                    numb--
+                    try {
+                      arodata = await ctx.http.get(arona_url + '/image?name=' + arodata.data[numb].name)
+                    } catch (error) {
+                      logger.info('向arona请求时发生错误', error)
+                      return '呜呜，出错惹😿，老师稍后再试试？'
+                    }
+                    await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
+                    await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
+                  } else {
+                    const etext = await session.send(seerror)
+                    ctx.setTimeout(() => {
+                      try {
+                        session.bot.deleteMessage(session.bot.selfId, etext[0])
+                      } catch (e) {
+                        logger.info('撤回时出错：', e)
+                      }
+                    }, times)
+                  }
+                }
+              }
+            }
+
+
+
+
             let cosurl
             let rimg
             const uid = (session.event.user.id).slice(0, 9)
@@ -487,7 +608,6 @@ export const guide_systeam = ({
               rimg = await create_guide_icon(
                 match_data[0], match_data[1], match_data[2],
                 match_data[3], match_data[4], match_data[5], match_data[6])
-
             } else {
               cosurl = false
             }
@@ -904,15 +1024,15 @@ export const guide_systeam = ({
             if (map == "Error") {
               return '呜呜，输入有误'
             } else {
-              return map
+              try {
+                console.log()
+                const return_mess = map_json[map].map(i => { return h.image(i) })
+                return return_mess
+              } catch (e) {
+                logger.info('出现错误' + e)
+                return '呜呜呜，出错惹'
+              }
             }
-          }
-          try {
-            const return_mess = map_json[map].map(i => { return h.image(i) })
-            return return_mess
-          } catch (e) {
-            logger.info('出现错误' + e)
-            return '呜呜呜，出错惹'
           }
         }
       })

@@ -17,11 +17,15 @@ const random = new Random(() => Math.random())
 //Alin's Favourite Value Calculation Result to Picture v2.0-beta 2024-04-08 
 export interface draw_config {
     modle: boolean
+    auto_update: boolean
 }
 export const draw_config: Schema<draw_config> = Schema.intersect([
     Schema.object({
         modle: Schema.boolean().required().description('选择canvas渲染（canvas/puppeteer）'),
     }).description('渲染模式设置'),
+    Schema.object({
+        auto_update: Schema.boolean().default(true).experimental().description('是否每次重载都下载资源'),
+    }).description('自动更新设置'),
 ])
 
 export const plugin_ass = [
@@ -121,6 +125,7 @@ export const plugin_ass = [
 
 
 
+
 export async function cal_favorable(ctx: Context, config: Config) {
     const fmp = new FMPS(ctx)
     const root_img = await rootF("bap-img")
@@ -128,71 +133,74 @@ export async function cal_favorable(ctx: Context, config: Config) {
     const drawm = config.drawconfig.modle ? "" : 'file://'
 
     /*
-    暂时不做了，未完善的自动更新礼物信息，等之后再写，不退坑再说
-        async function get_stu_favo() {
-            try {
-                const dbdata = await ctx.http.get("https://schale.gg/data/cn/students.json")
-                let in_json_create_data = []
-                for (let i = 0; i < dbdata.length; i++) {
-                    in_json_create_data.push({
-                        "id": dbdata[i].Id,
-                        "name": dbdata[i].Name,
-                        "FavorItemTags": dbdata[i].FavorItemTags,
-                        "FavorItemUniqueTags": dbdata[i].FavorItemUniqueTags
-                    })
-                }
-                const j = await fmp.json_create(ctx.baseDir, 'favor.json', (in_json_create_data))
-                logger.info("本地抽卡数据更新完毕")
-            } catch (e) {
-                logger.info("出错惹呜呜" + e)
-                return
-            }
-        }
-        type Gift = {
-            Id: number;
-            Tags: string[];
-            Name: string;
-            Icon: string
-            Rarity: string
-        };
-        type Character = {
-            id: number;
-            name: string;
-            FavorItemTags: string[];
-            FavorItemUniqueTags: string[];
-        };
-        const gifts: Gift[] = await fmp.json_parse("C:\\bap-10new\\koishi-app\\external\\ba-plugin\\src\\calculate\\liwu.json")
-        const characters: Character[] = await fmp.json_parse("C:\\bap-10new\\koishi-app\\favor.json")
-        async function cre_favor_list(gifts: Gift[], characters: Character[]): Promise<void> {
-            let json = []
-            for (const character of characters) {
-                const allFavorTags = [...character.FavorItemTags, ...character.FavorItemUniqueTags];
-                const favorGifts = gifts.map((gift) => {
-                    const matchedTagsCount = gift.Tags.reduce((count, tag) =>
-                        allFavorTags.includes(tag) ? count + 1 : count, 0);
-                    return { giftId: gift.Id, matchCount: matchedTagsCount, Rarity: gift.Rarity, Icon: gift.Icon };
-                }).filter(gift => gift.matchCount > 0)
-                    .map(gift => ({
-                        "preId": gift.giftId,
-                        "matchCount": gift.matchCount,
-                        "Rarity": gift.Rarity,
-                        "Icon": gift.Icon
-                    }));
-    
-                json.push({
-                    "stuid": character.id,
-                    "favorGifts": favorGifts
+    async function get_stu_favo() {
+        let in_json_create_data = []
+        try {
+            const dbdata = await ctx.http.get("https://schale.gg/data/cn/students.json")
+            for (let i = 0; i < dbdata.length; i++) {
+                in_json_create_data.push({
+                    "id": dbdata[i].Id,
+                    "name": dbdata[i].Name,
+                    "FavorItemTags": dbdata[i].FavorItemTags,
+                    "FavorItemUniqueTags": dbdata[i].FavorItemUniqueTags
                 })
             }
-            await fmp.json_create(root, "favor.json", json)
+            await fmp.json_create(root_json, 'favor.json', (in_json_create_data))
+
+        } catch (e) {
+            logger.info("出错惹呜呜" + e)
+            return
         }
-        await cre_favor_list(gifts, characters);
-        await get_stu_favo()
-        */
+    }
+
+    type Gift = {
+        Id: number;
+        Tags: string[];
+        Name: string;
+        Icon: string
+        Rarity: string
+    };
+    type Character = {
+        id: number;
+        name: string;
+        FavorItemTags: string[];
+        FavorItemUniqueTags: string[];
+    };
+
+
+    async function cre_favor_list(gifts: Gift[], characters: Character[]): Promise<void> {
+        let json = []
+        for (const character of characters) {
+            const allFavorTags = [...character.FavorItemTags, ...character.FavorItemUniqueTags];
+            const favorGifts = gifts.map((gift) => {
+                const matchedTagsCount = gift.Tags.reduce((count, tag) =>
+                    allFavorTags.includes(tag) ? count + 1 : count, 0);
+                return { giftId: gift.Id, matchCount: matchedTagsCount, Rarity: gift.Rarity, Icon: gift.Icon };
+            }).filter(gift => gift.matchCount > 0)
+                .map(gift => ({
+                    "preId": gift.giftId,
+                    "matchCount": gift.matchCount,
+                    "Rarity": gift.Rarity,
+                    "Icon": gift.Icon
+                }));
+
+            json.push({
+                "stuid": character.id,
+                "favorGifts": favorGifts
+            })
+        }
+        await fmp.json_create(root_json, "favor.json", json)
+        logger.info("本地好感更新完毕")
+    }
+    const liwu: Gift[] = await fmp.json_parse(`${root_json}/liwu.json`)
+    const characters: Character[] = await fmp.json_parse(`${root_json}/favor.json`)
+    await get_stu_favo()
+    await cre_favor_list(liwu, characters);
+*/
+
 
     const url = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/json/favora_data.json'
     //await fmp.file_download(url, root, "favora_data.json")
-
 
     let toarojson
     let favorjson
@@ -485,7 +493,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
                         const stus = (await StudentMatch(arg2))[1]
                         let stus_in; stus ? stus_in = stus : stus_in = null
                         stus ? '' : console.log("未匹配到内容")
-                        const img = await creat_img(faovr, stus)
+                        const img = await creat_img(faovr, stus_in)
                         return (h.image(img))
                     }
                 } catch (e) {

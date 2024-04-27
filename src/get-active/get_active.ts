@@ -1066,7 +1066,7 @@ export async function active_get(ctx: Context, config: Config) {
     }
 
     ctx.command('活动日程', 'ba活动查询')
-        .alias("活动1")
+        .alias("活动")
         .action(async ({ session }) => {
             const utimetamp = Math.floor(Date.now() / 1000);
             const wiki_data = await ctx.http.get(`https://ba.gamekee.com/v1/activity/query?active_at=${utimetamp}`, {
