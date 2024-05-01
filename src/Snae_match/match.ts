@@ -847,7 +847,7 @@ export async function MatchArona(input: string): Promise<string[]> {
     }
     const m = ["地图", "主线", "走格子"];
     const o = ["杂图", "攻略", "活动"];
-    const s = ["学生", "角色", "人物"];
+    const s = ["学生", "人物"];
     for (const str of m) {
         if (input.includes(str)) {
             return MapMatch(input.replace(str, ""))

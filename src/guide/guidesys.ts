@@ -57,7 +57,7 @@ export const guide_qq: Schema<guide_qq> = Schema.intersect([
 
 export const guideConfig: Schema<guideConfig> = Schema.intersect([
   Schema.object({
-    avatar: Schema.boolean().description('模糊匹配时生成学生头像图（canvas）'),
+    avatar: Schema.boolean().default(true).description('模糊匹配时生成学生头像图（canvas）'),
     logger: Schema.boolean().default(true).description('每次攻略请求输出日志'),
     time: Schema.number().default(20000).description('攻略、抽卡系统的等待时间（单位：毫秒）'),
     return: Schema.string().default('呜呜，没有匹配到结果,sensei要找的是这些吗？输入序号查看:').description('模糊匹配的回复文本'),
@@ -496,7 +496,7 @@ export const guide_systeam = ({
               if (arodata.code == 200) {
                 await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
                 await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
-                return 
+                return
               } else {
                 let cosurl
                 let rimg
@@ -1036,5 +1036,33 @@ export const guide_systeam = ({
           }
         }
       })
+
+    ctx.command('攻略/国际服千里眼')
+    .alias('千里眼')
+    .action(async () => {
+      const arodatas = await ctx.http.get(arona_url + '/image?name=' + '国际服千里眼')
+      if(arodatas.code==200){
+        await fmp.guide_download_image(root_guide,(arona_cdn + '/s' + arodatas.data[0].content),(arodatas.data[0].hash),log_on)
+        return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodatas.data[0].hash + '.jpg'))).href))
+      }else{
+        return '呜呜，出错了咪'
+      }       
+    })
+
+    ctx.command('攻略/国服千里眼')
+    .action(async () => {
+      const arodatas = await ctx.http.get(arona_url + '/image?name=' + '国服未来视')
+      if(arodatas.code==200){
+        await fmp.guide_download_image(root_guide,(arona_cdn + '/s' + arodatas.data[0].content),(arodatas.data[0].hash),log_on)
+        return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodatas.data[0].hash + '.jpg'))).href))
+      }else{
+        return '呜呜，出错了咪'
+      }       
+    })
+
   }
 })
+
+
+
+

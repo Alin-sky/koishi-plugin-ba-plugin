@@ -21,7 +21,7 @@ export interface draw_config {
 }
 export const draw_config: Schema<draw_config> = Schema.intersect([
     Schema.object({
-        modle: Schema.boolean().required().description('选择canvas渲染（canvas/puppeteer）'),
+        modle: Schema.boolean().required().description('选择canvas渲染模式（开：canvas/关：puppeteer）'),
     }).description('渲染模式设置'),
     Schema.object({
         auto_update: Schema.boolean().default(true).experimental().description('是否每次重载都下载资源'),
@@ -125,13 +125,12 @@ export const plugin_ass = [
 
 
 
-
 export async function cal_favorable(ctx: Context, config: Config) {
     const fmp = new FMPS(ctx)
     const root_img = await rootF("bap-img")
     const root_json = await rootF('bap-json')
     const drawm = config.drawconfig.modle ? "" : 'file://'
-
+    logger.info(`渲染模式:${config.drawconfig.modle ? "canvas" : 'puppeteer'}`)
     /*
     async function get_stu_favo() {
         let in_json_create_data = []
@@ -407,12 +406,12 @@ export async function cal_favorable(ctx: Context, config: Config) {
         let height
         if (stu) {
             height = (Math.round(favorlist.length / 2)) * 400
-            height += 1500
+            height += 1550
             if (favorlist.length == 0) {
-                height = 2300
+                height = 2350
             }
         } else {
-            height = 2048
+            height = 2100
         }
         const canvas = await ctx.canvas.createCanvas(1200, height);
         const c = canvas.getContext('2d');
@@ -435,6 +434,9 @@ export async function cal_favorable(ctx: Context, config: Config) {
         c.fillText(num[2], x_kkr2, 195 + yss)
         c.font = `bold 56px Arial`;
         c.fillText(`总经验:${num[0]},需满足以下任意一点`, x + 100, y + 300 + yss)
+        c.font = `bold 30px Arial`;
+        c.fillText(`数据来源：https://schale.gg/                     https://ba.gamekee.com`, 50, height-20)
+        c.font = `bold 55px Arial`;
         await draw_text(favorlist)
         const img = canvas.toDataURL("image/png")
         return img

@@ -494,7 +494,6 @@ export async function gacha_f(ctx: Context, config: Config) {
         mdswitch = false
     }
 
-
     /**
     * 渲染器，规范传入stu_gacha
     * @param stu_gacha 抽卡结果
@@ -546,17 +545,13 @@ export async function gacha_f(ctx: Context, config: Config) {
         }
         ctximg.font = `bold 50px Arial`;
         ctximg.fillStyle = '#FFFFFF';
-
         ctximg.drawImage(printimg, 1450, 980,)
         ctximg.fillText(print, 1650, 1090)
-
         const buffers = canvas.toDataURL('image/png');
         return buffers;
     }
 
-
     async function draw_200_img(stu_gacha) {
-
         const pick = await ctx.canvas.loadImage(`${drawm}${root_img}/pickup.png`)
         const image = await ctx.canvas.loadImage(`${drawm}${root_img}/background.png`);
         const canvas = await ctx.canvas.createCanvas(2048, 1200);
@@ -624,8 +619,8 @@ export async function gacha_f(ctx: Context, config: Config) {
                 y2 = 430
                 y1 = 1240
             } else {
-                y2 = 760
-                y1 = 1730
+                y2 = 800
+                y1 = 1620
             }
         }
         for (let i = 0; i < final_stu_json.length; i++) {

@@ -68,7 +68,7 @@ export declare class FMPS {
      * 攻略系统的图片下载和调用函数
      * @param folderPath 传入的文件夹目录（一般是root）
      * @param imageUrl 图片url
-     * @param imageName 图片名称，一般是哈希值
+     * @param imageName 图片名称，一般是哈希值，没有拓展名
      * @param loggers 是否开日志
      */
     guide_download_image(folderPath: string, imageUrl: string, imageName: string, loggers?: boolean): Promise<string>;

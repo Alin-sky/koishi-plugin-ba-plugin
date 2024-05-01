@@ -6,6 +6,7 @@ export declare const inject: {
 export declare const using: string[];
 export interface draw_config {
     modle: boolean;
+    auto_update: boolean;
 }
 export declare const draw_config: Schema<draw_config>;
 export declare const plugin_ass: string[];

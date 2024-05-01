@@ -833,8 +833,8 @@ export async function active_get(ctx: Context, config: Config) {
             const remainingDays = Math.floor(remainingTimeInSeconds / (3600 * 24));
             const remainingHours = Math.floor((remainingTimeInSeconds % (3600 * 24)) / 3600);
             const remainingMinutes = Math.floor((remainingTimeInSeconds % 3600) / 60);
-            let remainingString
-            let type
+            let remainingString=''
+            let type=''
             if (remainingTimeInSeconds > 0) {
                 if (howlong > 0) {
                     type = '还有:'
@@ -1025,7 +1025,7 @@ export async function active_get(ctx: Context, config: Config) {
                 ytext += lineHeight;
             }
 
-            jud_time(wiki_data.data[i].begin_at) ? yl += 160 * A : yr += 160 * A
+            jud_time(wiki_data.data[i].begin_at) ? yl += 155 * A : yr += 155 * A
 
         }
 
