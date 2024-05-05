@@ -241,8 +241,8 @@ export async function active_get(ctx: Context, config: Config) {
             return {
                 time: Timestamp(response.data.time[response.data.time.length - 1]),
                 boss: icu_list.data[0],
-                hard_1: porblem.data[0],
-                hard_2: porblem.data[1],
+                hard_1: !porblem.data[0] ? null : porblem.data[0],
+                hard_2: !porblem.data[1] ? null : porblem.data[1],
                 hard_3: !porblem.data[2] ? null : porblem.data[2],
                 top_1: list_top.data[0],
                 top_2: list_top.data[1],
@@ -494,15 +494,28 @@ export async function active_get(ctx: Context, config: Config) {
             c.fillStyle = '#000000';
             c.font = `bold 25px Arial`;
             c.fillText("各难度最低排名", 270, 305)
-            const h1 = await h_img(data.hard_1.hard)
-            c.drawImage(h1, 25, 310, 150, 60)
-            c.fillText(data.hard_1.rank, 60, 380)
-            const h2 = await h_img(data.hard_2.hard)
-            c.drawImage(h2, 275, 310, 150, 60)
-            c.fillText(data.hard_2.rank, 310, 380)
-            const h3 = await h_img(data.hard_3.hard)
-            c.drawImage(h3, 525, 310, 150, 60)
-            c.fillText(data.hard_3.rank, 560, 380)
+            //not test
+            if (!data.hard_1.hard) {
+                c.fillText("暂无数据呜", 60, 380)
+            } else {
+                const h1 = await h_img(data.hard_1.hard)
+                c.drawImage(h1, 25, 310, 150, 60)
+                c.fillText(data.hard_1.rank, 60, 380)
+            }
+            if (!data.hard_2.hard) {
+                c.fillText("暂无数据呜", 310, 380)
+            } else {
+                const h2 = await h_img(data.hard_2.hard)
+                c.drawImage(h2, 275, 310, 150, 60)
+                c.fillText(data.hard_2.rank, 310, 380)
+            }
+            if (!data.hard_3.hard) {
+                c.fillText("暂无数据呜", 560, 380)
+            } else {
+                const h3 = await h_img(data.hard_3.hard)
+                c.drawImage(h3, 525, 310, 150, 60)
+                c.fillText(data.hard_3.rank, 560, 380)
+            }
         }
         async function mod_3(type) {
             let x = 20, rad = 20, y = 420, wid = 360, hei = 430
@@ -833,8 +846,8 @@ export async function active_get(ctx: Context, config: Config) {
             const remainingDays = Math.floor(remainingTimeInSeconds / (3600 * 24));
             const remainingHours = Math.floor((remainingTimeInSeconds % (3600 * 24)) / 3600);
             const remainingMinutes = Math.floor((remainingTimeInSeconds % 3600) / 60);
-            let remainingString=''
-            let type=''
+            let remainingString = ''
+            let type = ''
             if (remainingTimeInSeconds > 0) {
                 if (howlong > 0) {
                     type = '还有:'
@@ -1028,7 +1041,6 @@ export async function active_get(ctx: Context, config: Config) {
             jud_time(wiki_data.data[i].begin_at) ? yl += 155 * A : yr += 155 * A
 
         }
-
         const img = canvas.toDataURL("image/png")
         return img
     }

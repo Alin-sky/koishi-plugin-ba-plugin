@@ -9,7 +9,7 @@ import { Image } from '@koishijs/canvas';
 export const inject = { required: ['canvas'] }
 export const using = ['canvas']
 
-//Alin’s ba-gacha-systems v3 2024-04-18
+//Alin’s ba-gacha-systems v3.1 2024-05-05
 
 const log = "ba-plugin-gacha"
 const logger: Logger = new Logger(log)
@@ -116,6 +116,9 @@ export async function gacha_f(ctx: Context, config: Config) {
         return name[0].MapName
     }
     function name_to_id(name) {
+        if (name.length == 0) {
+            return
+        }
         const id = sms_data.filter(i => i.MapName == name)
         return id[0].Id_db
     }
@@ -293,26 +296,41 @@ export async function gacha_f(ctx: Context, config: Config) {
      * @param serid 0日 1国际 2国 3日井 4国际井 5国服井 
      */
     function markdown_gacha_sub(session, serid, muzhushi, stuname?) {
-        let stunames = stuname ? stuname : ''
-        let pools
+        let stunames = ''
+        let mdtext = ''
+        if (stuname == 'Not matched' || !stuname || stuname == 'Not 3star' || stuname == 'Not Released') {
+            stuname == 'Not matched' ? mdtext = '呜呜呜，未匹配到学生，' : ''
+            stuname == 'Not 3star' ? mdtext = '暂不支持up非三星角色，' : ''
+            stuname == 'Not Released' ? mdtext = '呜呜，该学生未实装，' : ''
+            stunames = ''
+        } else {
+            stunames = stuname
+        }
+        let pools = ['', '']
         switch (serid) {
             case 0:
-                pools = "日服十连"
+                pools[0] = "日服"
+                pools[1] = '十连'
                 break
             case 1:
-                pools = "国际服十连"
+                pools[0] = "国际服"
+                pools[1] = '十连'
                 break
             case 2:
-                pools = "国服十连"
+                pools[0] = "国服"
+                pools[1] = '十连'
                 break
             case 3:
-                pools = "日服一井"
+                pools[0] = "日服"
+                pools[1] = '一井'
                 break
             case 4:
-                pools = "国际服一井"
+                pools[0] = "国际服"
+                pools[1] = '一井'
                 break
             case 5:
-                pools = "国服一井"
+                pools[0] = "国服"
+                pools[1] = '一井'
                 break
         }
         return {
@@ -323,11 +341,11 @@ export async function gacha_f(ctx: Context, config: Config) {
                 params: [
                     {
                         key: mdkey1,
-                        values: ["总共获得神明精髓："],
+                        values: [`${mdtext}正在抽${pools[1]}${pools[0]}的${stunames == '' ? '常驻' : stunames}池子，请稍等哦`],
                     },
                     {
                         key: mdkey2,
-                        values: ["💎" + muzhushi + "个"],
+                        values: ["💎总共获得神明精髓：" + muzhushi + "个"],
                     },
                 ]
             },
@@ -341,7 +359,7 @@ export async function gacha_f(ctx: Context, config: Config) {
                                     action: {
                                         type: 2,
                                         permission: { type: 2 },
-                                        data: `/${pools} ${stunames}`,
+                                        data: `/${pools[0]}${pools[1]} ${stunames}`,
                                         enter: true,
                                     },
                                 },
@@ -807,7 +825,6 @@ ${i2}国服十连 爱丽丝
         .action(async ({ session }, message) => {
             const uid = session.event.user.id
             if (!message) {
-                await session.send('正在抽取日服常驻池子，请老师稍等哦')
                 const stu_gacha = gacha_10(0)
                 const print = await gacha_push(uid, 0, stu_gacha)
                 const img = await creat_img(stu_gacha, print, 0)
@@ -816,79 +833,68 @@ ${i2}国服十连 爱丽丝
                     const md = markdown_gacha_sub(session, 0, muzhu)
                     await session.qq.sendMessage(session.channelId, md)
                 } else {
+                    await session.send('正在抽日服常驻池子，请老师稍等哦')
                     await session.send("总共获得神明精髓：" + muzhu + "个")
                 }
                 return h.image(img)
             } else {
                 const student = await StudentMatch(message)
                 console.log(student)
-                const id = name_to_id(student[1])
-                if (!stu_sta_jud(id)) {
-                    await session.send('呜呜呜，暂不支持up非三星角色，抽取日服常驻池子中，请老师稍等哦')
+                if (student[0] != "Student" || student.length == 0) {
                     const stu_gacha = gacha_10(0)
                     const print = await gacha_push(uid, 0, stu_gacha)
                     const img = await creat_img(stu_gacha, print, 0)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, 0, muzhu)
+                        const md = markdown_gacha_sub(session, 0, muzhu, 'Not matched')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，未匹配到学生，正在抽取日服常驻池子，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
-
+                const id = name_to_id(student[1])
+                if (!stu_sta_jud(id)) {
+                    const stu_gacha = gacha_10(0)
+                    const print = await gacha_push(uid, 0, stu_gacha)
+                    const img = await creat_img(stu_gacha, print, 0)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    if (session.event.platform == 'qq' && mdswitch) {
+                        const md = markdown_gacha_sub(session, 0, muzhu, 'Not 3star')
+                        await session.qq.sendMessage(session.channelId, md)
+                    } else {
+                        await session.send('呜呜呜，暂不支持up非三星角色，抽取日服常驻池子中，请老师稍等哦')
+                        await session.send("总共获得神明精髓：" + muzhu + "个")
+                    }
+                    return h.image(img)
+                }
                 if (session.event.platform == 'qq' && mdswitch) {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽取日服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(0)
-                        const print = await gacha_push(uid, 0, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, 0)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 0, muzhu)
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    } else {
-                        const sername = serverid_to_text(0)
-                        await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(0, id)
-                        const print = await gacha_push(uid, 0, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, 0)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 0, muzhu, student[1])
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    }
+                    const stu_gacha = gacha_10(0, id)
+                    const print = await gacha_push(uid, 0, stu_gacha)
+                    const img = await creat_img(stu_gacha, print, 0)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    const md = markdown_gacha_sub(session, 0, muzhu, student[1])
+                    await session.qq.sendMessage(session.channelId, md)
+                    return h.image(img)
                 } else {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽取日服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(0)
-                        const print = await gacha_push(uid, 0, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, 0)
-                        return h.image(img)
-                    } else {
-                        const sername = serverid_to_text(0)
-                        await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(0, id)
-                        const print = await gacha_push(uid, 0, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, 0)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    }
+                    const sername = serverid_to_text(0)
+                    await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
+                    const stu_gacha = gacha_10(0, id)
+                    const print = await gacha_push(uid, 0, stu_gacha)
+                    const img = await creat_img(stu_gacha, print, 0)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    session.send("总共获得神明精髓：" + muzhu + "个")
+                    return h.image(img)
+
                 }
             }
         })
-
-
-
-
 
     ctx.command("ba抽卡/国际服十连 <message:text>")
         .action(async ({ session }, message) => {
             const uid = session.event.user.id
             if (!message) {
-                await session.send('正在抽取国际服常驻池子，请老师稍等哦')
                 const stu_gacha = gacha_10(1)
                 const print = await gacha_push(uid, 1, stu_gacha)
                 const img = await creat_img(stu_gacha, print, 1)
@@ -897,82 +903,74 @@ ${i2}国服十连 爱丽丝
                     const md = markdown_gacha_sub(session, 1, muzhu)
                     await session.qq.sendMessage(session.channelId, md)
                 } else {
+                    await session.send('正在抽取国际服常驻池子，请老师稍等哦')
                     await session.send("总共获得神明精髓：" + muzhu + "个")
                 }
                 return h.image(img)
             } else {
                 const student = await StudentMatch(message)
-                const id = name_to_id(student[1])
-                if (stu_server_jud(id) < 1) {
-                    await session.send('呜呜，该学生未实装，抽取国际服常驻池子中，请老师稍等哦')
+                console.log(student)
+                if (student[0] != "Student" || student.length == 0) {
                     const stu_gacha = gacha_10(1)
                     const print = await gacha_push(uid, 1, stu_gacha)
                     const img = await creat_img(stu_gacha, print, 1)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, 1, muzhu)
+                        const md = markdown_gacha_sub(session, 1, muzhu, 'Not matched')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，未匹配到学生，正在抽取国际服常驻池子，请老师稍等哦')
+                        await session.send("总共获得神明精髓：" + muzhu + "个")
+                    }
+                    return h.image(img)
+                }
+                const id = name_to_id(student[1])
+                if (stu_server_jud(id) < 1) {
+                    const stu_gacha = gacha_10(1)
+                    const print = await gacha_push(uid, 1, stu_gacha)
+                    const img = await creat_img(stu_gacha, print, 1)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    if (session.event.platform == 'qq' && mdswitch) {
+                        const md = markdown_gacha_sub(session, 1, muzhu, 'Not Released')
+                        await session.qq.sendMessage(session.channelId, md)
+                    } else {
+                        await session.send('呜呜，该学生未实装，抽取国际服常驻池子中，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
                 if (!stu_sta_jud(id)) {
-                    await session.send('呜呜呜，暂不支持up非三星角色，抽取国际服常驻池子中，请老师稍等哦')
                     const stu_gacha = gacha_10(1)
                     const print = await gacha_push(uid, 1, stu_gacha)
                     const img = await creat_img(stu_gacha, print, 1)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, 1, muzhu)
+                        const md = markdown_gacha_sub(session, 1, muzhu, 'Not 3star')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，暂不支持up非三星角色，抽取国际服常驻池子中，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
-                console.log(student)
                 if (session.event.platform == 'qq' && mdswitch) {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽取国际服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(1)
-                        const print = await gacha_push(uid, 1, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, 1)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 1, muzhu)
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    } else {
-                        const sername = serverid_to_text(1)
-                        await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(1, id)
-                        const print = await gacha_push(uid, 1, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, 1)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 1, muzhu, student[1])
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    }
+                    const stu_gacha = gacha_10(1, id)
+                    const print = await gacha_push(uid, 1, stu_gacha)
+                    const img = await creat_img(stu_gacha, print, 1)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    const md = markdown_gacha_sub(session, 1, muzhu, student[1])
+                    await session.qq.sendMessage(session.channelId, md)
+                    return h.image(img)
                 } else {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽取国际服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(1)
-                        const print = await gacha_push(uid, 1, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, 1)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        await session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    } else {
-                        const id = name_to_id(student[1])
-                        const sername = serverid_to_text(1)
-                        await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(1, id)
-                        const print = await gacha_push(uid, 1, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, 1)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    }
+                    const id = name_to_id(student[1])
+                    const sername = serverid_to_text(1)
+                    await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
+                    const stu_gacha = gacha_10(1, id)
+                    const print = await gacha_push(uid, 1, stu_gacha)
+                    const img = await creat_img(stu_gacha, print, 1)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    session.send("总共获得神明精髓：" + muzhu + "个")
+                    return h.image(img)
                 }
             }
         })
@@ -983,7 +981,6 @@ ${i2}国服十连 爱丽丝
             const server_id = 2
             const uid = session.event.user.id
             if (!message) {
-                await session.send('正在抽取国服常驻池子，请老师稍等哦')
                 const stu_gacha = gacha_10(server_id)
                 const print = await gacha_push(uid, server_id, stu_gacha)
                 const img = await creat_img(stu_gacha, print, server_id)
@@ -992,6 +989,7 @@ ${i2}国服十连 爱丽丝
                     const md = markdown_gacha_sub(session, server_id, muzhu)
                     await session.qq.sendMessage(session.channelId, md)
                 } else {
+                    await session.send('正在抽取国服常驻池子，请老师稍等哦')
                     await session.send("总共获得神明精髓：" + muzhu + "个")
                 }
 
@@ -999,93 +997,76 @@ ${i2}国服十连 爱丽丝
             } else {
                 const student = await StudentMatch(message)
                 console.log(student)
-                const id = name_to_id(student[1])
-                if (stu_server_jud(id) < 2) {
-                    await session.send('呜呜，该学生未实装，抽取国服常驻池子，请老师稍等哦')
+                if (student[0] != "Student" || student.length == 0) {
                     const stu_gacha = gacha_10(2)
                     const print = await gacha_push(uid, 2, stu_gacha)
                     const img = await creat_img(stu_gacha, print, 2)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, server_id, muzhu)
+                        const md = markdown_gacha_sub(session, 2, muzhu, 'Not matched')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，未匹配到学生，正在抽取国服常驻池子，请老师稍等哦')
+                        await session.send("总共获得神明精髓：" + muzhu + "个")
+                    }
+                    return h.image(img)
+                }
+                const id = name_to_id(student[1])
+                if (stu_server_jud(id) < 2) {
+                    const stu_gacha = gacha_10(2)
+                    const print = await gacha_push(uid, 2, stu_gacha)
+                    const img = await creat_img(stu_gacha, print, 2)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    if (session.event.platform == 'qq' && mdswitch) {
+                        const md = markdown_gacha_sub(session, server_id, muzhu, 'Not Released')
+                        await session.qq.sendMessage(session.channelId, md)
+                    } else {
+                        await session.send('呜呜，该学生未实装，抽取国服常驻池子，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
                 if (!stu_sta_jud(id)) {
-                    await session.send('呜呜呜，暂不支持up非三星角色，抽取国服常驻池子中，请老师稍等哦')
                     const stu_gacha = gacha_10(server_id)
                     const print = await gacha_push(uid, server_id, stu_gacha)
                     const img = await creat_img(stu_gacha, print, server_id)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, server_id, muzhu)
+                        const md = markdown_gacha_sub(session, server_id, muzhu, 'Not 3star')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，暂不支持up非三星角色，抽取国服常驻池子中，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
                 if (session.event.platform == 'qq' && mdswitch) {
-                    const student = await StudentMatch(message)
-                    console.log(student)
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽取国服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(server_id)
-                        const print = await gacha_push(uid, server_id, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, server_id)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, server_id, muzhu)
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    } else {
-                        const sername = serverid_to_text(server_id)
-                        await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(server_id, id)
-                        const print = await gacha_push(uid, server_id, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, server_id)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, server_id, muzhu, student[1])
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    }
+                    const stu_gacha = gacha_10(server_id, id)
+                    const print = await gacha_push(uid, server_id, stu_gacha)
+                    const img = await creat_img(stu_gacha, print, server_id)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    const md = markdown_gacha_sub(session, server_id, muzhu, student[1])
+                    await session.qq.sendMessage(session.channelId, md)
+                    return h.image(img)
                 } else {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽取国服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(server_id)
-                        const print = await gacha_push(uid, server_id, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, server_id)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    } else {
-                        const id = name_to_id(student[1])
-                        const sername = serverid_to_text(server_id)
-                        await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_10(server_id, id)
-                        const print = await gacha_push(uid, server_id, stu_gacha)
-                        const img = await creat_img(stu_gacha, print, server_id)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    }
+                    const id = name_to_id(student[1])
+                    const sername = serverid_to_text(server_id)
+                    await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
+                    const stu_gacha = gacha_10(server_id, id)
+                    const print = await gacha_push(uid, server_id, stu_gacha)
+                    const img = await creat_img(stu_gacha, print, server_id)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    session.send("总共获得神明精髓：" + muzhu + "个")
+                    return h.image(img)
                 }
             }
         })
-
-
-
-
-
 
 
     ctx.command('ba抽卡/日服一井 <message:text>')
         .action(async ({ session }, message) => {
             const server_ids = 0
             if (!message) {
-                await session.send('正在抽一井日服常驻池子，请老师稍等哦')
                 const stu_gacha = gacha_200(server_ids)
                 const img = await draw_200_img(stu_gacha)
                 const muzhu = cal_muzhu(stu_gacha)
@@ -1093,71 +1074,63 @@ ${i2}国服十连 爱丽丝
                     const md = markdown_gacha_sub(session, 3, muzhu)
                     await session.qq.sendMessage(session.channelId, md)
                 } else {
+                    await session.send('正在抽一井日服常驻池子，请老师稍等哦')
                     await session.send("总共获得神明精髓：" + muzhu + "个")
                 }
                 return h.image(img)
             } else {
                 const student = await StudentMatch(message)
                 console.log(student)
-                const id = name_to_id(student[1])
-                if (!stu_sta_jud(id)) {
-                    await session.send('呜呜呜，暂不支持up非三星角色，抽一井日服常驻池子中，请老师稍等哦')
+                if (student[0] != "Student" || student.length == 0) {
                     const stu_gacha = gacha_200(server_ids)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, 3, muzhu)
+                        const md = markdown_gacha_sub(session, 3, muzhu, 'Not matched')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，未匹配到学生，正在抽一井日服常驻池子，请老师稍等哦')
+                        await session.send("总共获得神明精髓：" + muzhu + "个")
+                    }
+                    return h.image(img)
+                }
+                const id = name_to_id(student[1])
+                if (!stu_sta_jud(id)) {
+                    const stu_gacha = gacha_200(server_ids)
+                    const img = await draw_200_img(stu_gacha)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    if (session.event.platform == 'qq' && mdswitch) {
+                        const md = markdown_gacha_sub(session, 3, muzhu, 'Not 3star')
+                        await session.qq.sendMessage(session.channelId, md)
+                    } else {
+                        await session.send('呜呜呜，暂不支持up非三星角色，抽一井日服常驻池子中，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
                 if (session.event.platform == 'qq' && mdswitch) {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽一井日服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 3, muzhu)
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    } else {
-                        await session.send('正在抽一井日服' + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids, id)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 3, muzhu, student[1])
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    }
+                    const stu_gacha = gacha_200(server_ids, id)
+                    const img = await draw_200_img(stu_gacha)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    const md = markdown_gacha_sub(session, 3, muzhu, student[1])
+                    await session.qq.sendMessage(session.channelId, md)
+                    return h.image(img)
                 } else {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽一井日服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    } else {
-                        await session.send('正在抽一井日服' + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids, id)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    }
+                    await session.send('正在抽一井日服' + student[1] + '池子，请老师稍等哦')
+                    const stu_gacha = gacha_200(server_ids, id)
+                    const img = await draw_200_img(stu_gacha)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    session.send("总共获得神明精髓：" + muzhu + "个")
+                    return h.image(img)
                 }
             }
         })
-
 
 
     ctx.command('ba抽卡/国际服一井 <message:text>')
         .action(async ({ session }, message) => {
             const server_ids = 1
             if (!message) {
-                await session.send('正在抽一井国际服常驻池子，请老师稍等哦')
                 const stu_gacha = gacha_200(server_ids)
                 const img = await draw_200_img(stu_gacha)
                 const muzhu = cal_muzhu(stu_gacha)
@@ -1165,75 +1138,69 @@ ${i2}国服十连 爱丽丝
                     const md = markdown_gacha_sub(session, 4, muzhu)
                     await session.qq.sendMessage(session.channelId, md)
                 } else {
+                    await session.send('正在抽一井国际服常驻池子，请老师稍等哦')
                     await session.send("总共获得神明精髓：" + muzhu + "个")
                 }
                 return h.image(img)
             } else {
                 const student = await StudentMatch(message)
                 console.log(student)
-                const id = name_to_id(student[1])
-                if (stu_server_jud(id) < server_ids) {
-                    await session.send('呜呜，该学生未实装，抽取国际服常驻池子，请老师稍等哦')
+                if (student[0] != "Student" || student.length == 0) {
                     const stu_gacha = gacha_200(server_ids)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, server_ids, muzhu)
+                        const md = markdown_gacha_sub(session, 4, muzhu, 'Not matched')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，未匹配到学生，正在抽一井国际服常驻池子，请老师稍等哦')
+                        await session.send("总共获得神明精髓：" + muzhu + "个")
+                    }
+                    return h.image(img)
+                }
+                const id = name_to_id(student[1])
+                if (stu_server_jud(id) < server_ids) {
+                    const stu_gacha = gacha_200(server_ids)
+                    const img = await draw_200_img(stu_gacha)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    if (session.event.platform == 'qq' && mdswitch) {
+                        const md = markdown_gacha_sub(session, 4, muzhu, 'Not Released')
+                        await session.qq.sendMessage(session.channelId, md)
+                    } else {
+                        await session.send('呜呜，该学生未实装，抽取国际服常驻池子，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
                 if (!stu_sta_jud(id)) {
-                    await session.send('呜呜呜，暂不支持up非三星角色，抽一井国际服常驻池子中，请老师稍等哦')
                     const stu_gacha = gacha_200(server_ids)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, 4, muzhu)
+                        const md = markdown_gacha_sub(session, 4, muzhu, 'Not 3star')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，暂不支持up非三星角色，抽一井国际服常驻池子中，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
                 if (session.event.platform == 'qq' && mdswitch) {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽一井国际服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 4, muzhu)
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    } else {
-                        const id = name_to_id(student[1])
-                        await session.send('正在抽一井国际服' + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids, id)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 4, muzhu, student[1])
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    }
+                    const id = name_to_id(student[1])
+                    const stu_gacha = gacha_200(server_ids, id)
+                    const img = await draw_200_img(stu_gacha)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    const md = markdown_gacha_sub(session, 4, muzhu, student[1])
+                    await session.qq.sendMessage(session.channelId, md)
+                    return h.image(img)
                 } else {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽一井国际服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    } else {
-                        const id = name_to_id(student[1])
-                        await session.send('正在抽一井国际服' + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids, id)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    }
+                    const id = name_to_id(student[1])
+                    await session.send('正在抽一井国际服' + student[1] + '池子，请老师稍等哦')
+                    const stu_gacha = gacha_200(server_ids, id)
+                    const img = await draw_200_img(stu_gacha)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    session.send("总共获得神明精髓：" + muzhu + "个")
+                    return h.image(img)
                 }
             }
         })
@@ -1243,7 +1210,6 @@ ${i2}国服十连 爱丽丝
         .action(async ({ session }, message) => {
             const server_ids = 2
             if (!message) {
-                await session.send('正在抽一井国服常驻池子，请老师稍等哦')
                 const stu_gacha = gacha_200(server_ids)
                 const img = await draw_200_img(stu_gacha)
                 const muzhu = cal_muzhu(stu_gacha)
@@ -1251,75 +1217,69 @@ ${i2}国服十连 爱丽丝
                     const md = markdown_gacha_sub(session, 5, muzhu)
                     await session.qq.sendMessage(session.channelId, md)
                 } else {
+                    await session.send('正在抽一井国服常驻池子，请老师稍等哦')
                     await session.send("总共获得神明精髓：" + muzhu + "个")
                 }
                 return h.image(img)
             } else {
                 const student = await StudentMatch(message)
                 console.log(student)
-                const id = name_to_id(student[1])
-                if (stu_server_jud(id) < server_ids) {
-                    await session.send('呜呜，该学生未实装，抽取国服常驻池子，请老师稍等哦')
+                if (student[0] != "Student" || student.length == 0) {
                     const stu_gacha = gacha_200(server_ids)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, server_ids, muzhu)
+                        const md = markdown_gacha_sub(session, 5, muzhu, 'Not matched')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，未匹配到学生，正在抽一井国服常驻池子，请老师稍等哦')
+                        await session.send("总共获得神明精髓：" + muzhu + "个")
+                    }
+                    return h.image(img)
+                }
+                const id = name_to_id(student[1])
+                if (stu_server_jud(id) < server_ids) {
+                    const stu_gacha = gacha_200(server_ids)
+                    const img = await draw_200_img(stu_gacha)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    if (session.event.platform == 'qq' && mdswitch) {
+                        const md = markdown_gacha_sub(session, 5, muzhu, 'Not Released')
+                        await session.qq.sendMessage(session.channelId, md)
+                    } else {
+                        await session.send('呜呜，该学生未实装，抽取一井国服常驻池子，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
                 if (!stu_sta_jud(id)) {
-                    await session.send('呜呜呜，暂不支持up非三星角色，抽一井国服常驻池子中，请老师稍等哦')
                     const stu_gacha = gacha_200(server_ids)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     if (session.event.platform == 'qq' && mdswitch) {
-                        const md = markdown_gacha_sub(session, 5, muzhu)
+                        const md = markdown_gacha_sub(session, 5, muzhu, 'Not 3star')
                         await session.qq.sendMessage(session.channelId, md)
                     } else {
+                        await session.send('呜呜呜，暂不支持up非三星角色，抽一井国服常驻池子中，请老师稍等哦')
                         await session.send("总共获得神明精髓：" + muzhu + "个")
                     }
                     return h.image(img)
                 }
                 if (session.event.platform == 'qq' && mdswitch) {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽一井国服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 5, muzhu)
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    } else {
-                        const id = name_to_id(student[1])
-                        await session.send('正在抽一井国服' + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids, id)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        const md = markdown_gacha_sub(session, 5, muzhu, student[1])
-                        await session.qq.sendMessage(session.channelId, md)
-                        return h.image(img)
-                    }
+                    const id = name_to_id(student[1])
+                    const stu_gacha = gacha_200(server_ids, id)
+                    const img = await draw_200_img(stu_gacha)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    const md = markdown_gacha_sub(session, 5, muzhu, student[1])
+                    await session.qq.sendMessage(session.channelId, md)
+                    return h.image(img)
                 } else {
-                    if (student[0] != "Student" || student.length == 0) {
-                        await session.send('呜呜呜，未匹配到学生，正在抽一井国服常驻池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    } else {
-                        const id = name_to_id(student[1])
-                        await session.send('正在抽一井国服' + student[1] + '池子，请老师稍等哦')
-                        const stu_gacha = gacha_200(server_ids, id)
-                        const img = await draw_200_img(stu_gacha)
-                        const muzhu = cal_muzhu(stu_gacha)
-                        session.send("总共获得神明精髓：" + muzhu + "个")
-                        return h.image(img)
-                    }
+                    const id = name_to_id(student[1])
+                    await session.send('正在抽一井国服' + student[1] + '池子，请老师稍等哦')
+                    const stu_gacha = gacha_200(server_ids, id)
+                    const img = await draw_200_img(stu_gacha)
+                    const muzhu = cal_muzhu(stu_gacha)
+                    session.send("总共获得神明精髓：" + muzhu + "个")
+                    return h.image(img)
                 }
             }
         })
