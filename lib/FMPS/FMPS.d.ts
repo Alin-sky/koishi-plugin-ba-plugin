@@ -65,6 +65,15 @@ export declare class FMPS {
      */
     name_detection(sms_arona: any, type: any): Promise<void>;
     /**
+     * 刷新机器人的令牌并上传图片到指定频道,抄的上学的，上学抄的22的（）
+     * @param data - 图片数据或者文件路径(buffer)
+     * @param appId - 机器人AppID
+     * @param secret - 机器人Secret
+     * @param channelId - 频道ID
+     * @returns {Promise<{ url: string }>} - 上传图片后的URL
+     */
+    img_to_channel(data: Buffer, appId: any, secret: any, channelId: any): Promise<string>;
+    /**
      * 攻略系统的图片下载和调用函数
      * @param folderPath 传入的文件夹目录（一般是root）
      * @param imageUrl 图片url

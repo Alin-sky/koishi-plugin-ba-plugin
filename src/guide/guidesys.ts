@@ -146,23 +146,25 @@ export const guide_systeam = ({
     async function initialisation_locally_generated() {
       const startTime = new Date().getTime();
       await fmp.match_auto_update(root);
-      const stujson = await fmp.json_parse(`${root}/studata_1.json`);
+      //const stujson = await fmp.json_parse(`${root}/studata_1.json`);
       const tarodata = `${FMPS_server_download}sanae_match/Sanae_match_to_arona_data.json`;
       await fmp.file_download(tarodata, root, 'Sanae_match_to_arona_data.json');
-      logger.info('db学生总数' + stujson.length);
+      //logger.info('db学生总数' + stujson.length);
       const smstoarona_json = await fmp.json_parse(root + '/Sanae_match_to_arona_data.json');
       logger.info('to_arona_data学生总数' + smstoarona_json.length);
-      const other_json = await fmp.json_parse(root + "/OthersMatchLib.json")
-      logger.info('others_match总数' + other_json.length);
+      //const other_json = await fmp.json_parse(root + "/OthersMatchLib.json")
+      //logger.info('others_match总数' + other_json.length);
       //核验数据
       await fmp.name_detection(smstoarona_json, 1);
-      await fmp.name_detection(other_json, 2)
+      //await fmp.name_detection(other_json, 2)
       await fmp.sanae_match_refinement(root);
       const endTime = await new Date().getTime();
       logger.info('数据更新完毕！用时' + ((endTime - startTime) * 0.001) + '秒');
-    }//await initialisation_locally_generated();
+    }
+    //await initialisation_locally_generated();
     //await fmp.sanae_match_refinement(root);
     //await fmp.match_auto_update(root);
+
     async function initia() {
       const hashurl = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/hash.json'
       const jsonurl = "https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/json%2F"
@@ -178,7 +180,6 @@ export const guide_systeam = ({
       } catch (e) {
         logger.info("json文件下载出错：" + e)
       }
-
       for (let i = 0; i < newhash.length; i++) {
         if (/sms_/.test(newhash[i].fname)) {
           await fmp.file_download((`${jsonurl}${newhash[i].fname}`), match_file, `${newhash[i].fname}`)

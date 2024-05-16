@@ -131,7 +131,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
     const root_json = await rootF('bap-json')
     const drawm = config.drawconfig.modle ? "" : 'file://'
     logger.info(`渲染模式:${config.drawconfig.modle ? "canvas" : 'puppeteer'}`)
-    /*
+    
     async function get_stu_favo() {
         let in_json_create_data = []
         try {
@@ -195,7 +195,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
     const characters: Character[] = await fmp.json_parse(`${root_json}/favor.json`)
     await get_stu_favo()
     await cre_favor_list(liwu, characters);
-*/
+
 
 
     const url = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/json/favora_data.json'
@@ -221,17 +221,6 @@ export async function cal_favorable(ctx: Context, config: Config) {
             favorlist = favorjson.find(i => i.stuid == stuid)?.favorGifts
         }
         let x = 50, y = 50, wi = 1100, hei = 350, rad = 40, wi1 = 525, x1 = 620, ys = 0
-
-        /*
-        const motou = await ctx.canvas.loadImage(`${FMPS_server_download}favor_img/motou.png`)
-        const favo_1 = await ctx.canvas.loadImage(`${FMPS_server_download}favor_img/1.png`)
-        const favo_2 = await ctx.canvas.loadImage(`${FMPS_server_download}favor_img/2.png`)
-        const favo_3 = await ctx.canvas.loadImage(`${FMPS_server_download}favor_img/3.png`)
-        const favo_4 = await ctx.canvas.loadImage(`${FMPS_server_download}favor_img/4.png`)
-        const richen = await ctx.canvas.loadImage(`${FMPS_server_download}favor_img/rc.png`)
-        const kokoro = await ctx.canvas.loadImage("https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/favor_img/favologo.png")
-        const arrow = await ctx.canvas.loadImage("https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/favor_img/arrow.png")
-        */
 
         const motou = await ctx.canvas.loadImage(`${drawm}${root_img}/motou.png`)
         const favo_1 = await ctx.canvas.loadImage(`${drawm}${root_img}/1.png`)
