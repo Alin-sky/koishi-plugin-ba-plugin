@@ -7,8 +7,6 @@
 <br>
   
 
-
-
 [![npm](https://img.shields.io/npm/v/koishi-plugin-ba-plugin?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
 <h1>koishi插件，bluearchive-碧蓝档案工具箱</h1> 
 
@@ -58,7 +56,11 @@
 
 ## 更新日志
 
-### 1.0.0-rc
+### 1.0.1
+  - 尝试修复inject报错
+  - 修改错误数据
+
+### 1.0.0-rc.x
   - 继承自1.0.0-beta.11 应该没啥大问题了（）
   - 咪
 

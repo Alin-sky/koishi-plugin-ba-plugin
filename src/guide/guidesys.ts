@@ -456,7 +456,14 @@ export const guide_systeam = ({
       .usage("发送“攻略”查看具体使用方法")
       .example('攻略 爱丽丝')
       .action(async ({ session }, message) => {
-        if (session.event.platform == 'qq' && mdswitch) {
+        console.log(session)
+        let platfrom: boolean = false
+        if (session.event.platform == 'qq' || session.event.platform == 'qqguild') {
+          platfrom = true
+        } else {
+          platfrom = false
+        }
+        if (platfrom && mdswitch) {
           if (!message) {
             return (`
 返回Arona的攻略图
@@ -478,9 +485,6 @@ export const guide_systeam = ({
             await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
           } //模糊匹配
           else if (match_data.length <= 7 && match_data.length > 2) {
-
-
-
 
             //模糊匹配重复的暂时解决方案
             if (match_data.includes(message)) {
@@ -595,9 +599,6 @@ export const guide_systeam = ({
                 }
               }
             }
-
-
-
 
             let cosurl
             let rimg
@@ -1039,27 +1040,27 @@ export const guide_systeam = ({
       })
 
     ctx.command('攻略/国际服千里眼')
-    .alias('千里眼')
-    .action(async () => {
-      const arodatas = await ctx.http.get(arona_url + '/image?name=' + '国际服千里眼')
-      if(arodatas.code==200){
-        await fmp.guide_download_image(root_guide,(arona_cdn + '/s' + arodatas.data[0].content),(arodatas.data[0].hash),log_on)
-        return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodatas.data[0].hash + '.jpg'))).href))
-      }else{
-        return '呜呜，出错了咪'
-      }       
-    })
+      .alias('千里眼')
+      .action(async () => {
+        const arodatas = await ctx.http.get(arona_url + '/image?name=' + '国际服千里眼')
+        if (arodatas.code == 200) {
+          await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodatas.data[0].content), (arodatas.data[0].hash), log_on)
+          return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodatas.data[0].hash + '.jpg'))).href))
+        } else {
+          return '呜呜，出错了咪'
+        }
+      })
 
     ctx.command('攻略/国服千里眼')
-    .action(async () => {
-      const arodatas = await ctx.http.get(arona_url + '/image?name=' + '国服未来视')
-      if(arodatas.code==200){
-        await fmp.guide_download_image(root_guide,(arona_cdn + '/s' + arodatas.data[0].content),(arodatas.data[0].hash),log_on)
-        return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodatas.data[0].hash + '.jpg'))).href))
-      }else{
-        return '呜呜，出错了咪'
-      }       
-    })
+      .action(async () => {
+        const arodatas = await ctx.http.get(arona_url + '/image?name=' + '国服未来视')
+        if (arodatas.code == 200) {
+          await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodatas.data[0].content), (arodatas.data[0].hash), log_on)
+          return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodatas.data[0].hash + '.jpg'))).href))
+        } else {
+          return '呜呜，出错了咪'
+        }
+      })
 
   }
 })

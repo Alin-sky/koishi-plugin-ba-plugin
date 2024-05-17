@@ -24,8 +24,6 @@ class EventRewards {
         this.normal = normal;
         this.challenge = challenge
     }
-
-
 }
 
 

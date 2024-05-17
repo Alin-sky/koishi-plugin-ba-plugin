@@ -6,8 +6,7 @@ import { Config } from '..';
 import { StudentMatch } from "../Snae_match/match";
 import { Image } from '@koishijs/canvas';
 
-export const inject = { required: ['canvas'] }
-export const using = ['canvas']
+export const inject = { required: ['canvas', 'database'] }
 
 //Alin’s ba-gacha-systems v3.1 2024-05-05
 

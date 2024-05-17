@@ -3798,5 +3798,21 @@
       "乐队冰",
       "乐冰"
     ]
+  },
+  {
+    "Id": "10180",
+    "Id_db": 10093,
+    "FirstName_jp": "夜桜",
+    "FirstName_zh": "夜樱",
+    "Name_jp": "キララ",
+    "Name_en": "Kirara",
+    "Name_zh_tw": "綺羅羅",
+    "Name_kr": "키라라",
+    "Name_zh_cn": "绮良良",
+    "Name_zh_ft": "绮罗罗",
+    "NickName": [
+      "qiliangliang",
+      "绮良"
+    ]
   }
 ]

@@ -10,10 +10,9 @@ import { file_search, rootF } from './FMPS/FMPS_F';
 import { match_file, MatchStudentName } from './Snae_match/match';
 import { cal_level } from './calculate/cal_level';
 
-export const inject = ['canvas', 'puppeteer']
+export const inject = ['canvas', 'puppeteer', "database"]
 
-export const using = ['canvas', 'puppeteer']
-
+//export const using = ['canvas', 'puppeteer']
 
 //koishi定义区
 export const name = "ba-plugin";
@@ -49,7 +48,7 @@ export const usage = `
 <ul>
   <li> Aronabot的攻略图 </li>
   <li> 角色好感升级所需计算 </li>
-  <li> 玩家升级计算 </li>
+  <li> 玩家升级所需计算 </li>
   <li> 总力站档线及排名查询 </li>
   <li> 抽官方漫画 </li>
   <li> 抽卡模拟器 </li>
@@ -78,21 +77,6 @@ export const usage = `
 `;
 
 
-/*
-'\n' +
-"交互和功能设计灵感借鉴了[arona](https://github.com/diyigemt/arona)和[NoneBot-Plugin-BAWiki](https://github.com/lgc-NB2Dev/nonebot-plugin-bawiki)\n" + "\n" +
-"1.0版本对官方bot进行了适配，按钮等功能需要填入模板id\n" +
-" ## 目前有以下功能:" + "\n" +
-" - 群友早苗写的：\n" +
-"   - 升级计算(升级)\n" +
-"   - 好感计算(好感计算)\n" +
-"   - 攒钻计算(攒钻)\n" +
-" - 升级、好感计算、攒钻转图片输出\n" +
-" - Aronabot的攻略图和角色评分查询(攻略)\n" +
-" - 抽卡模拟器\n" +
-" - 定期自动数据更新(需填入数据库服务器)-beta\n" +
-" - 随机漫画和表情(攻略)\n"
-*/
 
 
 export interface Config {
@@ -107,13 +91,10 @@ export const Config: Schema<Config> = Schema.object({
   guide: guideConfig,
 })
 
-
 //代码区
 
-
-
+//Alin’s Auto Update vbeta 2024-04-20
 const log = new Logger("ba-plugin")
-
 const cos1 = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/'
 export const root_all_img = rootF("bap-img")
 export async function apply(ctx: Context, config: Config) {

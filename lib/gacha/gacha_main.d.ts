@@ -3,7 +3,6 @@ import { Config } from '..';
 export declare const inject: {
     required: string[];
 };
-export declare const using: string[];
 declare module 'koishi' {
     interface Tables {
         bap_db: bap_db;

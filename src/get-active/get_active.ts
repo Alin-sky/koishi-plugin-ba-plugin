@@ -12,7 +12,7 @@ const log = "ba-plugin-get-active"
 const logger: Logger = new Logger(log)
 const random = new Random(() => Math.random())
 
-export const using = ['puppeteer'] as const;
+//export const using = ['puppeteer'] as const;
 export const inject = ['puppeteer']
 //Alin's ba zongli get v1.0-beta 2024-04-15 
 export async function active_get(ctx: Context, config: Config) {
@@ -611,7 +611,9 @@ export async function active_get(ctx: Context, config: Config) {
             c.fillText(timeZone, 400, 520)
             c.font = `bold 20px Arial`;
             const serv = type == 1 ? "官服" : "B服"
+            c.fillStyle = '#5C0C0C'
             c.fillText(serv + '当前总力：', 400, 560)
+            c.fillStyle = '#000000'
             c.fillText('第' + data.boss.season + '期', 400, 585)
             c.fillText(data.boss.map.value, 400, 610)
             c.fillText(data.boss.boss, 450, 610)
@@ -812,10 +814,8 @@ export async function active_get(ctx: Context, config: Config) {
 
     //————————————————————————————————————————————————————bawiki的活动获取————————————————————————————————
 
-    const A = 0.5//分辨率
-
+    const A = 0.6//分辨率
     async function draw_active(wiki_data) {
-
         function jud_time(begin_at) {
             const now = Math.floor(Date.now() / 1000);
             if (begin_at > now) {
@@ -919,7 +919,7 @@ export async function active_get(ctx: Context, config: Config) {
         c.fillText('进行中', (x + 50) * A, (y + 90) * A)
         c.fillStyle = '#000000';
         c.font = `bold ${40 * A}px Arial`;
-        c.fillText('当前时间：', (x + 300) * A, (y + 50) * A)
+        c.fillText('当前时间：', (x + 300) * A, (y + 60) * A)
         c.fillText(new Date().toLocaleString(), (x + 300) * A, (y + 100) * A)
         let xr = 800 * A
         c.beginPath();
@@ -945,11 +945,11 @@ export async function active_get(ctx: Context, config: Config) {
             const swin = wiki_data.data[i].pub_area + jud_time(wiki_data.data[i].begin_at)
             switch (swin) {
                 case '日服true': color = '#EBDBFF'; x = 30 * A; y = yl; break
-                case '日服false': color = '#BCA0CC'; x = 800 * A; y = yr; break
+                case '日服false': color = '#D8C8ED'; x = 800 * A; y = yr; break
                 case '国际服true': color = '#D4ECFF'; x = 30 * A; y = yl; break
-                case '国际服false': color = '#9AAECC'; x = 800 * A; y = yr; break
+                case '国际服false': color = '#ABC2E3'; x = 800 * A; y = yr; break
                 case '国服true': color = '#FFD8D8'; x = 30 * A; y = yl; break
-                case '国服false': color = '#D4A2A2'; x = 800 * A; y = yr; break
+                case '国服false': color = '#E5ADAD'; x = 800 * A; y = yr; break
             }
             if (!(wiki_data.data[i].picture == '')) {
 

@@ -3,7 +3,6 @@ import { Config } from '..';
 export declare const inject: {
     required: string[];
 };
-export declare const using: string[];
 export interface draw_config {
     modle: boolean;
     auto_update: boolean;

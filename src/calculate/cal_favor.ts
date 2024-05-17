@@ -8,7 +8,7 @@ import { Config, } from '..';
 
 export const inject = { required: ['canvas'] }
 
-export const using = ['canvas']
+//export const using = ['canvas']
 
 const log = "ba-plugin-favorable"
 const logger: Logger = new Logger(log)
@@ -191,10 +191,10 @@ export async function cal_favorable(ctx: Context, config: Config) {
         await fmp.json_create(root_json, "favor.json", json)
         logger.info("本地好感更新完毕")
     }
-    const liwu: Gift[] = await fmp.json_parse(`${root_json}/liwu.json`)
-    const characters: Character[] = await fmp.json_parse(`${root_json}/favor.json`)
-    await get_stu_favo()
-    await cre_favor_list(liwu, characters);
+    //const liwu: Gift[] = await fmp.json_parse(`${root_json}/liwu.json`)
+    //const characters: Character[] = await fmp.json_parse(`${root_json}/favor.json`)
+    //await get_stu_favo()
+    //await cre_favor_list(liwu, characters);
 
 
 
