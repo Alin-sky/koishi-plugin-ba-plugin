@@ -2,9 +2,10 @@
 
 # koishi-plugin-ba-plugin
 
-<img src="https://raw.githubusercontent.com/Alin-sky/koishi-plugin-ba-plugin/main/logo2.png" width="145" height="196">
 
-# BlueArchive——碧蓝档案工具箱
+<img src="https://raw.githubusercontent.com/Alin-sky/koishi-plugin-ba-plugin/main/logo2.png" width="130" height="176">
+
+# BlueArchive—碧蓝档案工具箱
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-ba-plugin?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
 [![npm downloads](https://img.shields.io/npm/dm/koishi-plugin-ba-plugin)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
@@ -14,20 +15,17 @@
 </div>
 
 
-
 ### 特性介绍 🌟
 
 #### 1.0版本亮点
 - 适配官方bot，自动更新json数据🔄
+- 全面重构旧功能
 - 优化和修复已知问题🛠️
 
 ###### 我是菜比，我是笨比
-###### 1.0版本适配了官方bot，引入了自动更新json数据，改了吧啦吧啦，修了叽叽喳喳
-
 
 #### 快速链接
 - 体验插件功能：与我们的 [QQ官方机器人](https://qun.qq.com/qunpro/robot/qunshare?robot_uin=2854197266&robot_appid=102062652&biz_type=0) 交互。
-
 
 
 #### 技术架构
@@ -108,6 +106,8 @@
   - ~~废弃抽群u功能~~
   - ~~废弃千里眼快速调用~~
 
+
+---
 
 ### 0.10.2
   - 更新了aronabot的api
