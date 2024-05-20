@@ -3,7 +3,7 @@
   <h1> koishi-plugin-ba-plugin
   </h1>
 <br>     
- <img src="https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/favor_img%2Flogo2.png" width="145" height="196">
+ <img src="https://raw.githubusercontent.com/Alin-sky/koishi-plugin-ba-plugin/main/logo2.png" width="145" height="196">
 <br>
   
 
