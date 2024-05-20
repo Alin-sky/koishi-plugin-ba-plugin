@@ -1,38 +1,39 @@
-
 <div align="center">
-  <h1> koishi-plugin-ba-plugin
-  </h1>
-<br>     
- <img src="https://raw.githubusercontent.com/Alin-sky/koishi-plugin-ba-plugin/main/logo2.png" width="145" height="196">
-<br>
-  
+
+# koishi-plugin-ba-plugin
+
+<img src="https://raw.githubusercontent.com/Alin-sky/koishi-plugin-ba-plugin/main/logo2.png" width="145" height="196">
+
+# BlueArchive——碧蓝档案工具箱
 
 [![npm](https://img.shields.io/npm/v/koishi-plugin-ba-plugin?style=flat-square)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
-<h1>koishi插件，bluearchive-碧蓝档案工具箱</h1> 
+[![npm downloads](https://img.shields.io/npm/dm/koishi-plugin-ba-plugin)](https://www.npmjs.com/package/koishi-plugin-ba-plugin)
+![node version](https://img.shields.io/badge/node-%3E%3D18-green)
+![GitHub top language](https://img.shields.io/github/languages/top/Alin-sky/koishi-plugin-ba-plugin?logo=github)
 
 </div>
 
 
-<h2>目前功能:</h2>
-<ul>
-  <li> Aronabot的攻略图 </li>
-  <li> 角色好感升级所需计算 </li>
-  <li> 玩家升级计算 </li>
-  <li> 总力站档线及排名查询 </li>
-  <li> 抽官方漫画 </li>
-  <li> 抽卡模拟器 </li>
-  <li> bawiki推图攻略 </li>
-  <li> 活动查询 </li>
-</ul>
+
+### 特性介绍 🌟
+
+#### 1.0版本亮点
+- 适配官方bot，自动更新json数据🔄
+- 优化和修复已知问题🛠️
+
+###### 我是菜比，我是笨比
+###### 1.0版本适配了官方bot，引入了自动更新json数据，改了吧啦吧啦，修了叽叽喳喳
 
 
-## 介绍
-### **我是菜比，我是笨比**
+#### 快速链接
+- 体验插件功能：与我们的 [QQ官方机器人](https://qun.qq.com/qunpro/robot/qunshare?robot_uin=2854197266&robot_appid=102062652&biz_type=0) 交互。
 
-### 1.0版本适配了官方bot，引入了自动更新json数据，改了吧啦吧啦，修了叽叽喳喳
-### 我们的 [QQ官方bot](https://qun.qq.com/qunpro/robot/qunshare?robot_uin=2854197266&robot_appid=102062652&biz_type=0)
 
-这个是[koishi](https://github.com/koishijs/koishi)机器人的插件，需要在koishi框架中使用
+
+#### 技术架构
+- 该插件是 [koishi](https://github.com/koishijs/koishi) 框架的一部分，需在 koishi 框架中使用。
+
+#### 致谢
 
 交互和功能设计灵感借鉴了[arona](https://github.com/diyigemt/arona)
 和[NoneBot-Plugin-BAWiki](https://github.com/lgc-NB2Dev/nonebot-plugin-bawiki)
@@ -42,9 +43,22 @@
 感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏
 
 
+<h2>目前功能:</h2>
+
+- [x] Aronabot的攻略图 
+- [x] 角色好感升级所需计算
+- [x] 玩家升级计算 
+- [x] 总力站档线及排名查询 
+- [x] 抽官方漫画 
+- [x] 抽卡模拟器
+- [x] bawiki推图攻略 
+- [x] 活动查询 
+
+
+
 ---
-## 感谢🙏🙏（按首字母排序）
-| 贡献者                                                       | 主要贡献                                     |
+## 项目感谢
+| 贡献者 （按首字母排序，不分先后）  | 主要贡献     |
 | :----------------------------------------------------------- | :--------------------------------------- |
 | [diyigemt](https://github.com/diyigemt)     | 开放了API，提供了[Arona](https://github.com/diyigemt/arona)数据 |
 | [エルル](https://github.com/erurusion)  |抽卡模拟、抽群u等功能  (1.0前)                                           |
@@ -54,7 +68,11 @@
                          
 ---
 
+
+
 ## 更新日志
+<details>
+<summary>点我查看更新日志详情</summary>
 
 ### 1.0.1
   - 尝试修复inject报错
@@ -91,11 +109,6 @@
   - ~~废弃千里眼快速调用~~
 
 
-<details>
-<summary>1.0前的更新日志</summary>
-<pre>
-  <code>
-    
 ### 0.10.2
   - 更新了aronabot的api
 
@@ -234,8 +247,5 @@
 
 ### 0.1.0
   - 发包！拥有角色评测图功能、抽卡模拟功能
-  </code>
-</pre>
+
 </details>
-
-
