@@ -5,6 +5,7 @@ import { } from "@satorijs/adapter-qq";
 import { calculate_numer, getFavorLv } from '../sanae-code/favorability'
 import { StudentMatch } from "../Snae_match/match";
 import { Config, } from '..';
+import zhCNi8n from '../locales/zh-CN.yml'
 
 export const inject = { required: ['canvas'] }
 
@@ -15,18 +16,6 @@ const logger: Logger = new Logger(log)
 const random = new Random(() => Math.random())
 
 //Alin's Favourite Value Calculation Result to Picture v2.0-beta 2024-04-08 
-export interface draw_config {
-    modle: boolean
-    auto_update: boolean
-}
-export const draw_config: Schema<draw_config> = Schema.intersect([
-    Schema.object({
-        modle: Schema.boolean().required().description('选择canvas渲染模式（开：canvas/关：puppeteer）'),
-    }).description('渲染模式设置'),
-    Schema.object({
-        auto_update: Schema.boolean().default(true).experimental().description('是否每次重载都下载资源'),
-    }).description('自动更新设置'),
-])
 
 export const plugin_ass = [
     'item_icon_favor_0',
@@ -116,11 +105,23 @@ export const plugin_ass = [
     "meme_8",
     "meme_9",
     "meme_10",
+    "meme_11",
+    "meme_12",
+    "meme_13",
+    "meme_14",
+    "meme_15",
+    "null_img_1",
+    "null_img_2",
+    "null_img_3",
+    "null_img_4",
+    "null_img_5",
     "background",
     "print_2",
     "print_1",
     "print_0",
     "pickup",
+    "tri_3",
+    "tri_2"
 ]
 
 
@@ -129,74 +130,74 @@ export async function cal_favorable(ctx: Context, config: Config) {
     const fmp = new FMPS(ctx)
     const root_img = await rootF("bap-img")
     const root_json = await rootF('bap-json')
-    const drawm = config.drawconfig.modle ? "" : 'file://'
-    logger.info(`渲染模式:${config.drawconfig.modle ? "canvas" : 'puppeteer'}`)
-    
-    async function get_stu_favo() {
-        let in_json_create_data = []
-        try {
-            const dbdata = await ctx.http.get("https://schale.gg/data/cn/students.json")
-            for (let i = 0; i < dbdata.length; i++) {
-                in_json_create_data.push({
-                    "id": dbdata[i].Id,
-                    "name": dbdata[i].Name,
-                    "FavorItemTags": dbdata[i].FavorItemTags,
-                    "FavorItemUniqueTags": dbdata[i].FavorItemUniqueTags
+    const drawm = config.plugin_config.draw_modle == "canvas" ? "" : 'file://'
+
+    async function local_update() {
+
+        async function get_stu_favo() {
+            let in_json_create_data = []
+            try {
+                const dbdata = await ctx.http.get("https://schale.gg/data/cn/students.json")
+                for (let i = 0; i < dbdata.length; i++) {
+                    in_json_create_data.push({
+                        "id": dbdata[i].Id,
+                        "name": dbdata[i].Name,
+                        "FavorItemTags": dbdata[i].FavorItemTags,
+                        "FavorItemUniqueTags": dbdata[i].FavorItemUniqueTags
+                    })
+                }
+                await fmp.json_create(root_json, 'favor_stu_tap.json', (in_json_create_data))
+
+            } catch (e) {
+                logger.info("出错惹呜呜" + e)
+                return
+            }
+        }
+        type Gift = {
+            Id: number;
+            Tags: string[];
+            Name: string;
+            Icon: string
+            Rarity: string
+        };
+        type Character = {
+            id: number;
+            name: string;
+            FavorItemTags: string[];
+            FavorItemUniqueTags: string[];
+        };
+        async function cre_favor_list(): Promise<void> {
+            const gifts: Gift[] = await fmp.json_parse(`${root_json}/liwu_list_rep.json`)
+            const characters: Character[] = await fmp.json_parse(`${root_json}/favor_stu_tap.json`)
+            let json = []
+            for (const character of characters) {
+                const allFavorTags = [...character.FavorItemTags, ...character.FavorItemUniqueTags];
+                const favorGifts = gifts.map((gift) => {
+                    const matchedTagsCount = gift.Tags.reduce((count, tag) =>
+                        allFavorTags.includes(tag) ? count + 1 : count, 0);
+                    return { giftId: gift.Id, matchCount: matchedTagsCount, Rarity: gift.Rarity, Icon: gift.Icon };
+                }).filter(gift => gift.matchCount > 0)
+                    .map(gift => ({
+                        "preId": gift.giftId,
+                        "matchCount": gift.matchCount,
+                        "Rarity": gift.Rarity,
+                        "Icon": gift.Icon
+                    }));
+                json.push({
+                    "stuid": character.id,
+                    "favorGifts": favorGifts
                 })
             }
-            await fmp.json_create(root_json, 'favor.json', (in_json_create_data))
-
-        } catch (e) {
-            logger.info("出错惹呜呜" + e)
-            return
+            await fmp.json_create(root_json, "favora_data.json", json)
+            logger.info("✔️ 本地好感数据更新完毕")
         }
+        await get_stu_favo()
+        await cre_favor_list()
     }
 
-    type Gift = {
-        Id: number;
-        Tags: string[];
-        Name: string;
-        Icon: string
-        Rarity: string
-    };
-    type Character = {
-        id: number;
-        name: string;
-        FavorItemTags: string[];
-        FavorItemUniqueTags: string[];
-    };
-
-
-    async function cre_favor_list(gifts: Gift[], characters: Character[]): Promise<void> {
-        let json = []
-        for (const character of characters) {
-            const allFavorTags = [...character.FavorItemTags, ...character.FavorItemUniqueTags];
-            const favorGifts = gifts.map((gift) => {
-                const matchedTagsCount = gift.Tags.reduce((count, tag) =>
-                    allFavorTags.includes(tag) ? count + 1 : count, 0);
-                return { giftId: gift.Id, matchCount: matchedTagsCount, Rarity: gift.Rarity, Icon: gift.Icon };
-            }).filter(gift => gift.matchCount > 0)
-                .map(gift => ({
-                    "preId": gift.giftId,
-                    "matchCount": gift.matchCount,
-                    "Rarity": gift.Rarity,
-                    "Icon": gift.Icon
-                }));
-
-            json.push({
-                "stuid": character.id,
-                "favorGifts": favorGifts
-            })
-        }
-        await fmp.json_create(root_json, "favor.json", json)
-        logger.info("本地好感更新完毕")
+    if (config.plugin_config.autoupd == "本地") {
+        await local_update()
     }
-    //const liwu: Gift[] = await fmp.json_parse(`${root_json}/liwu.json`)
-    //const characters: Character[] = await fmp.json_parse(`${root_json}/favor.json`)
-    //await get_stu_favo()
-    //await cre_favor_list(liwu, characters);
-
-
 
     const url = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/json/favora_data.json'
     //await fmp.file_download(url, root, "favora_data.json")
@@ -303,7 +304,6 @@ export async function cal_favorable(ctx: Context, config: Config) {
                     draw_rectangles(c, x, 1650 + ys, wi1, hei, rad, '#E3CDFF')
                     draw_rectangles(c, x1, 1650 + ys, wi1, hei, rad, '#E3CDFF')
                 }
-
             } else {
                 let y = 700, x = 50
                 draw_rectangles(c, x, 50, wi, hei + 250, rad, '#FFDDF1')
@@ -424,7 +424,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
         c.font = `bold 56px Arial`;
         c.fillText(`总经验:${num[0]},需满足以下任意一点`, x + 100, y + 300 + yss)
         c.font = `bold 30px Arial`;
-        c.fillText(`数据来源：https://schale.gg/                     https://ba.gamekee.com`, 50, height-20)
+        c.fillText(`数据来源：https://schale.gg/                      https://ba.gamekee.com`, 50, height - 20)
         c.font = `bold 55px Arial`;
         await draw_text(favorlist)
         const img = canvas.toDataURL("image/png")
@@ -436,10 +436,10 @@ export async function cal_favorable(ctx: Context, config: Config) {
         "🟢1.从当前好感度计算：输入当前好感度和目标好感度\n" +
         "🟢2.从1级好感度计算：只输入目标好感度\n" +
         "🟢3.计算某一角色所需礼物：输入目标好感度和角色名称\n" +
-        "示例：\n" +
-        "好感计算 10-50 爱丽丝\n"
-
+        "使用示例：\n" +
+        "好感 10-50 爱丽丝\n"
     logger.info("🟢 好感计算器加载完毕")
+    ctx.i18n.define('zh-CN', zhCNi8n)
     ctx.command("好感计算 <arg1> <arg2>", "好感度需求计算器")
         .alias('好感')
         .action(async ({ session }, arg1, arg2) => {
@@ -447,7 +447,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
                 return help_text
             } else if (!arg2) {
                 try {
-                    let favor_lev = getFavorLv(arg1);
+                    let favor_lev = getFavorLv(arg1, session);
                     let faovr
                     if (typeof favor_lev === "string") {
                         return favor_lev + "\n" + help_text;
@@ -462,9 +462,9 @@ export async function cal_favorable(ctx: Context, config: Config) {
             } else {
                 try {
                     let innum
-                    if (/^\d+$/.test(arg2)) {
-                        innum = arg1 + "-" + arg2
-                        let favor_lev = getFavorLv(innum);
+                    if (/^\d+$/.test(arg2[0])) {
+                        innum = arg1 + "-" + arg2[0]
+                        let favor_lev = getFavorLv(innum, session);
                         let faovr
                         if (typeof favor_lev === "string") {
                             return favor_lev + "\n" + help_text;
@@ -474,7 +474,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
                         const img = await creat_img(faovr)
                         return (h.image(img))
                     } else {
-                        let favor_lev = getFavorLv(arg1);
+                        let favor_lev = getFavorLv(arg1, session);
                         let faovr
                         if (typeof favor_lev === "string") {
                             return favor_lev + "\n" + help_text;

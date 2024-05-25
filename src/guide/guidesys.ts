@@ -1,5 +1,5 @@
 //import区域
-import { Context, Schema, Logger, h, Random, } from 'koishi';
+import { Context, Schema, Session, Logger, h, Random, Command } from 'koishi';
 import { FMPS } from '../FMPS/FMPS';
 import { file_search, move_file, rootF } from '../FMPS/FMPS_F';
 import { } from "@satorijs/adapter-qq";
@@ -8,25 +8,19 @@ import { pathToFileURL } from 'url';
 import path, { resolve } from 'path';
 import { match_file, MatchArona, MatchMapName } from '../Snae_match/match';
 import { Image } from '@koishijs/canvas';
+import zhCNi8n from '../locales/zh-CN.yml'
 
 const log = "ba-plugin-guide"
 const logger: Logger = new Logger(log)
 const random = new Random(() => Math.random())
 export const inject = ['canvas']
 
-//Alin’s ba guide systems v3.1 2024-04-25
+//Alin’s ba guide systems v3.2 2024-05-20
 //配置项
 export interface guide_qq {
   markdown_setting: {
-    mdid: string
-    mdp1: string
-    mdp2: string
-    mdp3: string
-    mdp4: string
-    Bucketname: string
-    Region: string
-    SecretId: string
-    SecretKey: string
+    table: any
+    qqguild: string
   },
 }
 
@@ -42,17 +36,16 @@ export interface guideConfig {
 export const guide_qq: Schema<guide_qq> = Schema.intersect([
   Schema.object({
     markdown_setting: Schema.object({
-      mdid: Schema.string().description('qqbot MD模板id'),
-      mdp1: Schema.string().default('text1').description('MD参数--1'),
-      mdp2: Schema.string().default('text2').description('MD参数--2'),
-      mdp3: Schema.string().default("img").description('MD参数--3'),
-      mdp4: Schema.string().default("url").description('MD参数--4'),
-      Bucketname: Schema.string().description('[存储桶](https://cloud.tencent.com/document/product/436)名称'),
-      Region: Schema.string().description('所在区域'),
-      SecretId: Schema.string().role('secret').description('账户[SecretId](https://console.cloud.tencent.com/cam/capi)'),
-      SecretKey: Schema.string().role('secret').description('账户[SecretKey](https://console.cloud.tencent.com/cam/capi)'),
+      table: Schema.array(Schema.object({
+        MD模板id: Schema.string(),
+        MD模板参数1: Schema.string(),
+        MD模板参数2: Schema.string(),
+        MD模板参数3: Schema.string(),
+        MD模板参数4: Schema.string(),
+      })).role('table'),
+      qqguild: Schema.string().description('QQ频道id，可通过inspect获取，应该是纯数字'),
     }).collapse(),
-  }).description('QQ官方bot设置,暂时使用tx的对象存储来发送md图片'),
+  }).description('QQ官方bot设置,使用QQ频道来发送md图片'),
 ])
 
 export const guideConfig: Schema<guideConfig> = Schema.intersect([
@@ -92,20 +85,23 @@ export const synonyms: { [key: string]: string[] } = {
   "补习": ["补课"]
 };
 
+/*已到期，缅怀
 export const alincloud = 'http://124.221.99.85:8088/'
-
 export const FMPS_server_download = 'http://124.221.198.113:9123/download/data/'
 export const FMPS_server_list = 'http://124.221.198.113:9123/download/'
+*/
+
+export const FMPS_server_download = "https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/json%2F"
 export const guide_systeam = ({
 
   async apply(ctx: Context, config: Config) {
-
+    ctx.i18n.define('zh-CN', zhCNi8n)
     const root = await rootF("bap-guidesys")
     const root_guide = await rootF("bap-guidesys", "guide_aronaimg")
     const root_json = await rootF('bap-json')
     const root_img = await rootF("bap-img")
 
-    const drawm = config.drawconfig.modle ? "" : 'file://'
+    const drawm = config.plugin_config.draw_modle == "canvas" ? "" : 'file://'
 
     const local_path = `${drawm}${root_img}`
 
@@ -121,20 +117,32 @@ export const guide_systeam = ({
     const return_mdtext = config.guide.returnmd
     const return_timeoutt = config.guide.timeout_text
 
-    const mdid = config.qqconfig.markdown_setting.mdid
-    const mdkey1 = config.qqconfig.markdown_setting.mdp1
-    const mdkey2 = config.qqconfig.markdown_setting.mdp2
-    const mdkey3 = config.qqconfig.markdown_setting.mdp3
-    const mdkey4 = config.qqconfig.markdown_setting.mdp4
+    const mdid = config.qqconfig.markdown_setting.table[0]['MD模板id']
+    const mdkey1 = config.qqconfig.markdown_setting.table[0]['MD模板参数1']
+    const mdkey2 = config.qqconfig.markdown_setting.table[0]['MD模板参数2']
+    const mdkey3 = config.qqconfig.markdown_setting.table[0]['MD模板参数3']
+    const mdkey4 = config.qqconfig.markdown_setting.table[0]['MD模板参数4']
+    const qqguild_id = config.qqconfig.markdown_setting.qqguild
+    /*
     const bucketName = config.qqconfig.markdown_setting.Bucketname
     const region = config.qqconfig.markdown_setting.Region
     const buckid = config.qqconfig.markdown_setting.SecretId
     const buckkey = config.qqconfig.markdown_setting.SecretKey
-
+    */
     const canvas_fun = config.guide.avatar
     var mdswitch: boolean = false
 
-    if (mdid && mdkey1 && mdkey2 && mdkey3 && mdkey4 && buckkey && buckid && region && bucketName && mdid) {
+    let mds: boolean = false
+    if (config.qqconfig.markdown_setting.table[1]) {
+      mds = true
+    } else {
+      if (mdkey2 && mdkey3 && mdkey4) {
+        mds = true
+      } else {
+        mds = false
+      }
+    }
+    if (mdid && mds && mdkey1 && mdid && qqguild_id) {
       logger.info('🟢 攻略已启用MD消息模板')
       mdswitch = true
     } else {
@@ -142,28 +150,29 @@ export const guide_systeam = ({
       mdswitch = false
     }
 
-    //本地生成json文件的，还有问题，暂时不用
+    //本地生成json文件
     async function initialisation_locally_generated() {
       const startTime = new Date().getTime();
-      await fmp.match_auto_update(root);
-      //const stujson = await fmp.json_parse(`${root}/studata_1.json`);
-      const tarodata = `${FMPS_server_download}sanae_match/Sanae_match_to_arona_data.json`;
-      await fmp.file_download(tarodata, root, 'Sanae_match_to_arona_data.json');
-      //logger.info('db学生总数' + stujson.length);
-      const smstoarona_json = await fmp.json_parse(root + '/Sanae_match_to_arona_data.json');
+
+      await fmp.match_auto_update(root_json);
+      await fmp.sanae_match_refinement(root_json);
+
+      const stujson = await fmp.json_parse(`${root_json}/sms_studata_main.json`);
+      logger.info('学生总数' + stujson.length);
+      const smstoarona_json = await fmp.json_parse(root_json + '/sms_studata_toaro_stu.json');
       logger.info('to_arona_data学生总数' + smstoarona_json.length);
-      //const other_json = await fmp.json_parse(root + "/OthersMatchLib.json")
-      //logger.info('others_match总数' + other_json.length);
+      const other_json = await fmp.json_parse(root_json + "/sms_othersmatchlib.json")
+      logger.info('others_match总数' + other_json.length);
       //核验数据
       await fmp.name_detection(smstoarona_json, 1);
-      //await fmp.name_detection(other_json, 2)
-      await fmp.sanae_match_refinement(root);
-      const endTime = await new Date().getTime();
+      await fmp.name_detection(other_json, 2)
+      const endTime = new Date().getTime();
       logger.info('数据更新完毕！用时' + ((endTime - startTime) * 0.001) + '秒');
     }
-    //await initialisation_locally_generated();
-    //await fmp.sanae_match_refinement(root);
-    //await fmp.match_auto_update(root);
+    if (config.plugin_config.autoupd == "本地") {
+      await initialisation_locally_generated();
+    }
+
 
     async function initia() {
       const hashurl = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/hash.json'
@@ -194,6 +203,7 @@ export const guide_systeam = ({
       logger.info(e)
     }
 
+    /*
     async function updcos(object_name_key: string, img: Buffer) {
       try {
         const result = await fmp.uploadFile(bucketName, region, object_name_key, img, buckid, buckkey);
@@ -202,7 +212,7 @@ export const guide_systeam = ({
       } catch (e) {
         logger.info('cos上传失败', e);
       }
-    }
+    }*/
 
     //md模板
     //变成臭虫alin的形状了
@@ -216,6 +226,9 @@ export const guide_systeam = ({
 
       let width = 720;
       let height = 410;
+      let t1
+      let t2
+
       if (!n5 && !n6) {
         height = 290
       }
@@ -226,7 +239,22 @@ export const guide_systeam = ({
         }
         imgurl = {
           key: mdkey4,
-          values: [`(https://${url})`],
+          values: [`(${url})`],
+        }
+      }
+      if (mdkey2 && mdkey3) {
+        t1 = {
+          key: mdkey1,
+          values: [return_mdtext],
+        }
+        t2 = {
+          key: mdkey2,
+          values: ["点击按钮直接查询哦"],
+        }
+      } else {
+        imgurl = {
+          key: mdkey1,
+          values: [`${url}`],
         }
       }
       if (n3) {
@@ -279,14 +307,8 @@ export const guide_systeam = ({
         markdown: {
           custom_template_id: mdid,
           params: [
-            {
-              key: mdkey1,
-              values: [return_mdtext],
-            },
-            {
-              key: mdkey2,
-              values: ["点击按钮直接查询哦"],
-            },
+            t1,
+            t2,
             img,
             imgurl,
           ]
@@ -339,7 +361,7 @@ export const guide_systeam = ({
     //头像生成函数
     async function create_guide_icon(type, n1, n2, n3?, n4?, n5?, n6?) {
       const nall = [n1, n2, n3, n4, n5, n6]
-      let null_imgurl = ('http://124.221.198.113:9123/download/data/325/nullimg' + random.int(1, 5) + '.png')
+      let null_imgurl = `${local_path}/null_img_${random.int(1, 5)}.png`
       let againmatch = []
       const nullname = new Map(); // 用于存储字符串
       //日后可加上杂图和导航的头像图
@@ -449,14 +471,26 @@ export const guide_systeam = ({
       const data_buffer = canvas.toBuffer('image/png');
       return data_buffer
     }
+    const sms_data = await fmp.json_parse(`${root_json}/sms_studata_toaro_stu.json`)
 
+    function id_to_name(id) {
+      if (id == "Student" || id == "MapFailedt" || id == "MapSuccess" || id == "Others") {
+        return id
+      } else {
+        if (!(/^-?\d+(\.\d+)?$/.test(id))) {
+          return id
+        } else {
+          const name = sms_data.filter(i => i.Id == id)
+          return name[0].MapName
+        }
+      }
+    }
 
     ctx.command('攻略 <message:text>', "Arona的攻略图")
       .alias('评分')
       .usage("发送“攻略”查看具体使用方法")
       .example('攻略 爱丽丝')
       .action(async ({ session }, message) => {
-        console.log(session)
         let platfrom: boolean = false
         if (session.event.platform == 'qq' || session.event.platform == 'qqguild') {
           platfrom = true
@@ -468,18 +502,24 @@ export const guide_systeam = ({
             return (`
 返回Arona的攻略图
 使用方法：
-🟢@机器人并发送：/攻略+空格+内容 调用AronaBot的数据
+🟢发送：攻略+空格+内容 调用AronaBot的数据
 攻略图来自arona.diyigemt`)
           }
-          const match_data = await MatchArona(message)
+          const match_data_id = await MatchArona(message)
+          const match_data = []
+          match_data_id.map((i) => {
+            const names = id_to_name(i)
+            match_data.push(names)
+          })
           console.log(match_data)
+
           let arodata
           if (match_data.length == 2) {
             try {
               arodata = await ctx.http.get(arona_url + '/image?name=' + match_data[1])
             } catch (error) {
               logger.info('向arona请求时发生错误', error)
-              return '呜呜，出错惹😿，老师稍后再试试？'
+              return session.text('.error')
             }
             await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
             await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
@@ -493,10 +533,10 @@ export const guide_systeam = ({
                 arodata = await ctx.http.get(arona_url + '/image?name=' + message)
               } catch (error) {
                 logger.info('向arona请求时发生错误', error)
-                return '呜呜，出错惹😿，老师稍后再试试？'
+                return session.text('.error')
               }
               if (!arodata.data) {
-                return "呜呜，没有找到对应的攻略😿"
+                return session.text('.no_guide')
               }
               if (arodata.code == 200) {
                 await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
@@ -505,9 +545,6 @@ export const guide_systeam = ({
               } else {
                 let cosurl
                 let rimg
-                const uid = (session.event.user.id).slice(0, 9)
-                const ram = random.int(0, 1000000)
-                const filename = (uid + ram) + '.jpg'
                 let i1 = 0, i2 = 0, i3 = 0, i4 = 0
                 if (arodata.data.length == 2) {
                   i1 = 0, i2 = 1, i3 = 1, i4 = 1
@@ -527,7 +564,8 @@ export const guide_systeam = ({
                   cosurl = false
                 }
                 if (mdswitch) {
-                  cosurl = await updcos(filename, rimg)
+                  cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
+                  console.log(cosurl)
                   let i1 = 0, i2 = 0, i3 = 0, i4 = 0
                   if (arodata.data.length == 2) {
                     i1 = 0, i2 = 1, i3 = 1, i4 = 1
@@ -582,7 +620,7 @@ export const guide_systeam = ({
                       arodata = await ctx.http.get(arona_url + '/image?name=' + arodata.data[numb].name)
                     } catch (error) {
                       logger.info('向arona请求时发生错误', error)
-                      return '呜呜，出错惹😿，老师稍后再试试？'
+                      return session.text('.error')
                     }
                     await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
                     await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
@@ -602,9 +640,6 @@ export const guide_systeam = ({
 
             let cosurl
             let rimg
-            const uid = (session.event.user.id).slice(0, 9)
-            const ram = random.int(0, 1000000)
-            const filename = (uid + ram) + '.jpg'
             if (match_data[0] == 'Student' && canvas_fun) {
               //图渲函
               rimg = await create_guide_icon(
@@ -614,9 +649,9 @@ export const guide_systeam = ({
               cosurl = false
             }
             if (mdswitch) {
-              cosurl = await updcos(filename, rimg)
-              console.log('https://' + cosurl)
-              const md = markdow_fuzzy(
+              cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
+              console.log(cosurl)
+              const md = await markdow_fuzzy(
                 session,
                 cosurl,
                 match_data[1],
@@ -666,7 +701,7 @@ export const guide_systeam = ({
                   arodata = await ctx.http.get(arona_url + '/image?name=' + match_data[numb])
                 } catch (error) {
                   logger.info('向arona请求时发生错误', error)
-                  return '呜呜，出错惹😿，老师稍后再试试？'
+                  return session.text('.error')
                 }
                 await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
                 await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
@@ -691,7 +726,7 @@ export const guide_systeam = ({
               arodata = await ctx.http.get(arona_url + '/image?name=' + message)
             } catch (error) {
               logger.info('向arona请求时发生错误', error)
-              return '呜呜，出错惹😿，老师稍后再试试？'
+              return session.text('.error')
             }
             console.log(arodata)
             if (arodata.code == 200) {
@@ -699,7 +734,7 @@ export const guide_systeam = ({
               return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
             }
             if (!arodata.data) {
-              return "呜呜，没有找到对应的攻略😿"
+              return session.text('.no_guide')
             }
             const uid = (session.event.user.id).slice(0, 9)
             const ram = random.int(0, 1000000)
@@ -723,7 +758,7 @@ export const guide_systeam = ({
               cosurl = false
             }
             if (mdswitch) {
-              cosurl = await updcos(filename, rimg)
+              cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
               let i1 = 0, i2 = 0, i3 = 0, i4 = 0
               if (arodata.data.length == 2) {
                 i1 = 0, i2 = 1, i3 = 1, i4 = 1
@@ -778,7 +813,7 @@ export const guide_systeam = ({
                   arodata = await ctx.http.get(arona_url + '/image?name=' + arodata.data[numb].name)
                 } catch (error) {
                   logger.info('向arona请求时发生错误', error)
-                  return '呜呜，出错惹😿，老师稍后再试试？'
+                  return session.text('.error')
                 }
                 await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
                 await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
@@ -803,21 +838,29 @@ export const guide_systeam = ({
 🟢发送：攻略+空格+内容 调用AronaBot的数据
 攻略图来自arona.diyigemt`)
           }
-          const match_data = await MatchArona(message)
+          const match_data_id = await MatchArona(message)
+          console.log(match_data_id)
+
+          const match_data = []
+          match_data_id.map((i) => {
+            const names = id_to_name(i)
+            match_data.push(names)
+          })
           console.log(match_data)
+
           let arodata
           if (match_data.length == 2) {
             try {
               arodata = await ctx.http.get(arona_url + '/image?name=' + match_data[1])
             } catch (error) {
               logger.info('向arona请求时发生错误', error)
-              return '呜呜，出错惹😿，老师稍后再试试？'
+              return session.text('.error')
             }
             await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
             await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
           } else if (match_data.length <= 7 && match_data.length > 2) {
 
-            if (canvas_fun && match_data[0] == 'Student') {
+            if (canvas_fun && await match_data[0] == 'Student') {
               //图渲函
               const rimg = await create_guide_icon(
                 match_data[0], match_data[1], match_data[2],
@@ -865,7 +908,7 @@ export const guide_systeam = ({
                 arodata = await ctx.http.get(arona_url + '/image?name=' + match_data[numb])
               } catch (error) {
                 logger.info('向arona请求时发生错误', error)
-                return '呜呜，出错惹😿，老师稍后再试试？'
+                return session.text('.error')
               }
               await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
               await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
@@ -889,10 +932,10 @@ export const guide_systeam = ({
               arodata = await ctx.http.get(arona_url + '/image?name=' + message)
             } catch (error) {
               logger.info('向arona请求时发生错误', error)
-              return '呜呜，出错惹😿，老师稍后再试试？'
+              return session.text('.error')
             }
             if (!arodata.data) {
-              return "呜呜，没有找到对应的攻略😿"
+              return session.text('.no_guide')
             }
             if (canvas_fun) {
               if (arodata.code == 200) {
@@ -976,7 +1019,7 @@ export const guide_systeam = ({
                 arodata = await ctx.http.get(arona_url + '/image?name=' + arodata.data[numb].name)
               } catch (error) {
                 logger.info('向arona请求时发生错误', error)
-                return '呜呜，出错惹😿，老师稍后再试试？'
+                return session.text('.error')
               }
               await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
               await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
@@ -1024,7 +1067,7 @@ export const guide_systeam = ({
           const map = MatchMapName(message)
           if (typeof map == "string") {
             if (map == "Error") {
-              return '呜呜，输入有误'
+              return session.text('.input_error')
             } else {
               try {
                 console.log()
@@ -1032,7 +1075,7 @@ export const guide_systeam = ({
                 return return_mess
               } catch (e) {
                 logger.info('出现错误' + e)
-                return '呜呜呜，出错惹'
+                return session.text('.error')
               }
             }
           }
@@ -1041,24 +1084,24 @@ export const guide_systeam = ({
 
     ctx.command('攻略/国际服千里眼')
       .alias('千里眼')
-      .action(async () => {
+      .action(async ({ session }) => {
         const arodatas = await ctx.http.get(arona_url + '/image?name=' + '国际服千里眼')
         if (arodatas.code == 200) {
           await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodatas.data[0].content), (arodatas.data[0].hash), log_on)
           return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodatas.data[0].hash + '.jpg'))).href))
         } else {
-          return '呜呜，出错了咪'
+          return session.text('.error')
         }
       })
 
     ctx.command('攻略/国服千里眼')
-      .action(async () => {
+      .action(async ({ session }) => {
         const arodatas = await ctx.http.get(arona_url + '/image?name=' + '国服未来视')
         if (arodatas.code == 200) {
           await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodatas.data[0].content), (arodatas.data[0].hash), log_on)
           return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodatas.data[0].hash + '.jpg'))).href))
         } else {
-          return '呜呜，出错了咪'
+          return session.text('.error')
         }
       })
 

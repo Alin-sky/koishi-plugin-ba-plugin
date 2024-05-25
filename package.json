@@ -1,7 +1,7 @@
 {
   "name": "koishi-plugin-ba-plugin",
   "description": "碧蓝档案游戏工具箱,具有攻略、抽卡、计算、活动获取等功能",
-  "version": "1.0.1",
+  "version": "1.1.0-alpha.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -19,7 +19,7 @@
     "plugin"
   ],
   "peerDependencies": {
-    "koishi": "^4.17.0"
+    "koishi": "^4.17.6"
   },
   "koishi": {
     "description": {
@@ -38,12 +38,10 @@
   },
   "dependencies": {
     "chinese-s2t-pro": "^1.0.2",
-    "cos-nodejs-sdk-v5": "^2.13.3",
     "zh_cn": "^0.0.7"
   },
   "devDependencies": {
     "chinese-s2t-pro": "^1.0.2",
-    "cos-nodejs-sdk-v5": "^2.13.3",
     "zh_cn": "^0.0.7"
   }
 }

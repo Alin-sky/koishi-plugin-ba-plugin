@@ -1,6 +1,6 @@
 // 活动奖励类，用来记录活动的时间以及钻石奖励
 
-//1.0版本，排期问题暂时砍掉这个功能，1.1加回来
+//1.0版本，排期问题暂时砍掉这个功能，1.2or1.3加回来
 class EventRewards {
     name: string;
     startTime: string;

@@ -7,7 +7,7 @@ const log = "ba-plugin-FMPS";
 const logger: Logger = new Logger(log);
 
 const ctx = new Context();
-//ba-plugin-FMPS-V1
+//ba-plugin-FMPS-V1.2
 //Alin's File Management and Processing System-beta
 
 /**

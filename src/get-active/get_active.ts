@@ -1,4 +1,4 @@
-import { Context, h, Logger, Random } from 'koishi';
+import { Context, h, Logger, Random, Time } from 'koishi';
 import { } from 'koishi-plugin-puppeteer'
 import { FMPS } from '../FMPS/FMPS';
 import { rootF } from '../FMPS/FMPS_F';
@@ -7,6 +7,7 @@ import { Image } from '@koishijs/canvas';
 import { pathToFileURL } from 'url'
 import { resolve } from 'path'
 import { } from "@satorijs/adapter-qq";
+import zhCNi8n from '../locales/zh-CN.yml'
 
 const log = "ba-plugin-get-active"
 const logger: Logger = new Logger(log)
@@ -14,21 +15,21 @@ const random = new Random(() => Math.random())
 
 //export const using = ['puppeteer'] as const;
 export const inject = ['puppeteer']
-//Alin's ba zongli get v1.0-beta 2024-04-15 
+//Alin's ba zongli&dajuezhan get v1.0-rc 2024-05-24 
 export async function active_get(ctx: Context, config: Config) {
     const root_act = await rootF('bap-active')
     const root_img = await rootF("bap-img")
     const fmp = new FMPS(ctx)
 
-    const mdid = config.qqconfig.markdown_setting.mdid
-    const mdkey1 = config.qqconfig.markdown_setting.mdp1
-    const mdkey2 = config.qqconfig.markdown_setting.mdp2
 
-    const drawm = config.drawconfig.modle ? "" : 'file://'
-    console.log(drawm)
+    const mdid = config.qqconfig.markdown_setting.table[1] ? config.qqconfig.markdown_setting.table[1]['MD模板id'] : config.qqconfig.markdown_setting.table[0]['MD模板id']
+    const mdkey1 = config.qqconfig.markdown_setting.table[1] ? config.qqconfig.markdown_setting.table[1]['MD模板参数1'] : config.qqconfig.markdown_setting.table[0]['MD模板参数1']
+    const mdkey2 = config.qqconfig.markdown_setting.table[1] ? config.qqconfig.markdown_setting.table[1]['MD模板参数2'] : config.qqconfig.markdown_setting.table[0]['MD模板参数2']
+
+    const drawm = config.plugin_config.draw_modle == "canvas" ? "" : 'file://'
 
     var mdswitch: boolean = false
-    if (mdid && mdkey1 && mdkey2 && mdid) {
+    if (mdid && mdkey1 && mdid) {
         logger.info('🟢 总力获取功能已启用MD消息模板')
         mdswitch = true
     } else {
@@ -37,6 +38,11 @@ export async function active_get(ctx: Context, config: Config) {
     }
 
     function markdown(session) {
+        let t2
+        mdkey2 ? t2 = {
+            key: mdkey2,
+            values: ["点击按钮直接查询哦"],
+        } : ''
         return {
             msg_type: 2,
             msg_id: session.messageId,
@@ -45,12 +51,9 @@ export async function active_get(ctx: Context, config: Config) {
                 params: [
                     {
                         key: mdkey1,
-                        values: ["总力战档线查询，支持日服、国服官服、国服B服"],
+                        values: ["总力战和大决战档线查询，支持日服、国服官服、国服B服"],
                     },
-                    {
-                        key: mdkey2,
-                        values: ["点击按钮直接查询哦"],
-                    },
+                    t2
                 ]
             },
             keyboard: {
@@ -58,15 +61,6 @@ export async function active_get(ctx: Context, config: Config) {
                     rows: [
                         {
                             buttons: [
-                                {
-                                    render_data: { label: "日服", style: 2 },
-                                    action: {
-                                        type: 2, // 指令按钮
-                                        permission: { type: 2 }, // 所有人可点击
-                                        data: `/总力档线 日服`, // 点击后发送
-                                        enter: true, // 若 false 则填入输入框
-                                    },
-                                },
                                 {
                                     render_data: { label: "国服官服", style: 2 },
                                     action: {
@@ -87,12 +81,71 @@ export async function active_get(ctx: Context, config: Config) {
                                 },
                             ]
                         },
+                        {
+                            buttons: [
+                                {
+                                    render_data: { label: "日服总力", style: 2 },
+                                    action: {
+                                        type: 2,
+                                        permission: { type: 2 },
+                                        data: `/总力档线 日服`,
+                                        enter: true,
+                                    },
+                                },
+                                {
+                                    render_data: { label: "日服大决战", style: 2 },
+                                    action: {
+                                        type: 2,
+                                        permission: { type: 2 },
+                                        data: `/大决战档线`,
+                                        enter: true,
+                                    },
+                                },
+                            ]
+                        },
                     ],
                 },
             },
         }
     }
 
+    async function 大决战获取() {
+        for (let i = 1; i <= 5; i++) {
+            try {
+                const page = await ctx.puppeteer.page();
+                await page.goto('https://arona.ai/egraph');
+                await page.waitForSelector(".MuiBox-root.css-tucewo")
+                await page.waitForSelector(".MuiBox-root.css-1tu59u4")
+                await page.waitForSelector(".MuiBox-root.css-14syrz5")
+                const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+                await delay(5000);
+                const web_time = await page.$(".MuiBox-root.css-1tu59u4");
+                const grade_line = await page.$(".MuiBox-root.css-tucewo")
+                const imageUrls = await page.evaluate(() => {
+                    const images = Array.from(document.querySelectorAll('.MuiBox-root.css-14syrz5 img'));
+                    return images.map(img => img.getAttribute('src'));
+                });
+                const w_time = (await page.evaluate((el: Element) => (el as HTMLElement).innerText, web_time)).split(' ');
+                const g_line = (await page.evaluate((el: Element) => (el as HTMLElement).innerText, grade_line)).split('\n');
+                if (g_line && !g_line.includes('— 0 /Hr')) {
+                    return {
+                        time: w_time[2] + w_time[3] + w_time[4] + w_time[6],
+                        urls: imageUrls,
+                        hard_1: [g_line[1], g_line[2]],
+                        hard_2: [g_line[4], g_line[5]],
+                        hard_3: [g_line[7], g_line[8]],
+                    }
+                }
+                await page.close();
+            } catch (e) {
+                if (i == 5) {
+                    logger.error("尝试" + i + "次后依旧出错" + e)
+                    break
+                }
+                logger.error("出现错误,第" + i + "次重试" + e)
+            }
+        }
+    }
     async function zongli_get_jp() {
         for (let i = 1; i <= 5; i++) {
             try {
@@ -102,7 +155,7 @@ export async function active_get(ctx: Context, config: Config) {
                 await page.waitForSelector('.MuiBox-root.css-1f11ikm');
                 await page.waitForSelector(".MuiBox-root.css-1tu59u4")
                 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-                await delay(4000);
+                await delay(5000);
                 const grade_line = await page.$(".MuiBox-root.css-tucewo")
                 const grade_people = await page.$('.MuiBox-root.css-1f11ikm');
                 const web_time = await page.$(".MuiBox-root.css-1tu59u4");
@@ -180,8 +233,9 @@ export async function active_get(ctx: Context, config: Config) {
                 "dataType": 0,
                 "tryNumber": 0
             }, head_cfg)
+            const tp1 = !list_top.data[0] ? null : list_top.data[0]
+            const tp2 = !list_top.data[1] ? null : list_top.data[1]
             const tp3 = !list_top.data[2] ? null : list_top.data[2]
-
             let li15_20k
             if (type == 1) {
                 if (response.data.data.hasOwnProperty('15000')) {
@@ -244,8 +298,8 @@ export async function active_get(ctx: Context, config: Config) {
                 hard_1: !porblem.data[0] ? null : porblem.data[0],
                 hard_2: !porblem.data[1] ? null : porblem.data[1],
                 hard_3: !porblem.data[2] ? null : porblem.data[2],
-                top_1: list_top.data[0],
-                top_2: list_top.data[1],
+                top_1: tp1,
+                top_2: tp2,
                 top_3: tp3,
                 li1: response.data.data['1'][response.data.data['1'].length - 1],
                 li1k: response.data.data['1000'][response.data.data['1000'].length - 1],
@@ -445,24 +499,40 @@ export async function active_get(ctx: Context, config: Config) {
             c.fillStyle = '#000000';
             c.font = `bold 30px Arial`;
             c.fillText("各档线分数", 275, 50)
-            c.drawImage(pt, 50, 60)
-            c.fillText(data.top_1.bestRankingPoint, 30, 170)
-            c.fillStyle = '#00687D';
-            c.font = `bold 25px Arial`;
-            c.fillText(data.top_1.battleTime, 45, 200)
-            const h1 = await h_img(data.top_1.hard)
-            c.drawImage(h1, 25, 195, 150, 60)
-            c.fillStyle = '#000000';
-            c.font = `bold 30px Arial`;
-            c.drawImage(au, 300, 60)
-            c.fillText(data.top_2.bestRankingPoint, 290, 170)
-            c.fillStyle = '#00687D';
-            c.font = `bold 25px Arial`;
-            c.fillText(data.top_2.battleTime, 295, 200)
-            const h2 = await h_img(data.top_2.hard)
-            c.drawImage(h2, 275, 195, 150, 60)
-            c.fillStyle = '#000000';
-            c.font = `bold 30px Arial`;
+            if (data.top_1 == null) {
+                c.drawImage(pt, 50, 60)
+                c.fillText('暂无信息', 30, 170)
+                c.fillStyle = '#00687D';
+                c.font = `bold 25px Arial`;
+                c.fillText('暂无信息', 45, 200)
+            } else {
+                c.drawImage(pt, 50, 60)
+                c.fillText(data.top_1.bestRankingPoint, 30, 170)
+                c.fillStyle = '#00687D';
+                c.font = `bold 25px Arial`;
+                c.fillText(data.top_1.battleTime, 45, 200)
+                const h1 = await h_img(data.top_1.hard)
+                c.drawImage(h1, 25, 195, 150, 60)
+            }
+            if (data.top_2 == null) {
+                c.drawImage(au, 300, 60)
+                c.fillText('暂无信息', 290, 170)
+                c.fillStyle = '#00687D';
+                c.font = `bold 25px Arial`;
+                c.fillText('暂无信息', 295, 200)
+            } else {
+                c.fillStyle = '#000000';
+                c.font = `bold 30px Arial`;
+                c.drawImage(au, 300, 60)
+                c.fillText(data.top_2.bestRankingPoint, 290, 170)
+                c.fillStyle = '#00687D';
+                c.font = `bold 25px Arial`;
+                c.fillText(data.top_2.battleTime, 295, 200)
+                const h2 = await h_img(data.top_2.hard)
+                c.drawImage(h2, 275, 195, 150, 60)
+                c.fillStyle = '#000000';
+                c.font = `bold 30px Arial`;
+            }
             if (data.top_3 == null) {
                 c.drawImage(ag, 550, 60)
                 c.fillText('暂无信息', 550, 170)
@@ -495,22 +565,22 @@ export async function active_get(ctx: Context, config: Config) {
             c.font = `bold 25px Arial`;
             c.fillText("各难度最低排名", 270, 305)
             //not test
-            if (!data.hard_1.hard) {
+            if (!data.hard_1) {
                 c.fillText("暂无数据呜", 60, 380)
             } else {
                 const h1 = await h_img(data.hard_1.hard)
                 c.drawImage(h1, 25, 310, 150, 60)
                 c.fillText(data.hard_1.rank, 60, 380)
             }
-            if (!data.hard_2.hard) {
+            if (!data.hard_2) {
                 c.fillText("暂无数据呜", 310, 380)
             } else {
                 const h2 = await h_img(data.hard_2.hard)
                 c.drawImage(h2, 275, 310, 150, 60)
                 c.fillText(data.hard_2.rank, 310, 380)
             }
-            if (!data.hard_3.hard) {
-                c.fillText("暂无数据呜", 560, 380)
+            if (!data.hard_3) {
+                c.fillText("暂无数据呜", 540, 380)
             } else {
                 const h3 = await h_img(data.hard_3.hard)
                 c.drawImage(h3, 525, 310, 150, 60)
@@ -612,7 +682,7 @@ export async function active_get(ctx: Context, config: Config) {
             c.font = `bold 20px Arial`;
             const serv = type == 1 ? "官服" : "B服"
             c.fillStyle = '#5C0C0C'
-            c.fillText(serv + '当前总力：', 400, 560)
+            c.fillText(serv + '当前总力：', 400, 555)
             c.fillStyle = '#000000'
             c.fillText('第' + data.boss.season + '期', 400, 585)
             c.fillText(data.boss.map.value, 400, 610)
@@ -621,12 +691,12 @@ export async function active_get(ctx: Context, config: Config) {
             c.fillText("结束：" + data.boss.endTime, 400, 670)
         }
         async function mod_5() {
-            const i = random.int(1, 10)
+            const i = random.int(1, 15)
             const image = await ctx.canvas.loadImage(`${drawm}${root_img}/meme_${i}.png`)
             console.log(image)
             let newWidth, newHeight, maxWidth = 180, maxHeight = 180
-            let wids = config.drawconfig.modle ? 'width' : 'naturalWidth'
-            let heis = config.drawconfig.modle ? 'height' : 'originalHeight'
+            let wids = config.plugin_config.draw_modle == "canvas" ? 'width' : 'naturalWidth'
+            let heis = config.plugin_config.draw_modle == "canvas" ? 'height' : 'naturalHeight'
             const originalWidth = image[wids];
             const originalHeight = image[heis];
             const widthRatio = maxWidth / originalWidth;
@@ -663,6 +733,62 @@ export async function active_get(ctx: Context, config: Config) {
         return (root_act + "/list_cn_" + type + ".png")
     }
 
+    async function draw_dajuezhan(data) {
+        let height: number
+        height = 320
+        const canvas = await ctx.canvas.createCanvas(700, height);
+        const c = canvas.getContext('2d');
+        const pt = await ctx.canvas.loadImage(`${drawm}${root_img}/pt.png`)
+        const au = await ctx.canvas.loadImage(`${drawm}${root_img}/au.png`)
+        const ag = await ctx.canvas.loadImage(`${drawm}${root_img}/ag.png`)
+        async function mod_1() {
+            let x = 10, rad = 20, y = 10, wid = 680, hei = 220
+            c.beginPath();
+            c.moveTo(x + rad, y);
+            c.arcTo(x + wid, y, x + wid, y + hei, rad); // 右上角
+            c.arcTo(x + wid, y + hei, x, y + hei, rad);
+            c.arcTo(x, y + hei, x, y, rad);
+            c.arcTo(x, y, x + wid, y, rad);
+            c.closePath();
+            c.fillStyle = '#AAE6D1';
+            c.fill();
+            c.restore();
+            c.fillStyle = '#000000';
+            c.font = `bold 28px Arial`;
+            c.fillText("日服大决战各档线分数", 225, 50)
+            c.drawImage(pt, 50, 60)
+            c.fillText(data.hard_1[0], 30, 170)
+            c.fillStyle = '#01CC00';
+            c.font = `bold 23px Arial`;
+            c.fillText(data.hard_1[1], 40, 200)
+            c.fillStyle = '#000000';
+            c.font = `bold 28px Arial`;
+            c.drawImage(au, 300, 60)
+            c.fillText(data.hard_2[0], 270, 170)
+            c.fillStyle = '#01CC00';
+            c.font = `bold 23px Arial`;
+            c.fillText(data.hard_2[1], 270, 200)
+            c.fillStyle = '#000000';
+            c.font = `bold 28px Arial`;
+            c.drawImage(ag, 550, 60)
+            c.fillText(data.hard_3[0], 530, 170)
+            c.fillStyle = '#01CC00';
+            c.font = `bold 23px Arial`;
+            c.fillText(data.hard_3[1], 530, 200)
+        }
+        c.fillStyle = '#FFFFFF';
+        c.fillRect(0, 0, 700, height);
+        c.fillStyle = '#000000';
+        c.font = `bold 23px Arial`;
+        c.fillText("数据来源:https://arona.ai", 20, 280)
+        c.fillText("更新时间：" + data.time, 320, 280)
+        await mod_1()
+        c.beginPath();
+        c.stroke();
+        const img = await canvas.toBuffer("image/png")
+        fmp.img_save(img, root_act, "dajuezhan_jp.png")
+        return (root_act + "/dajuezhan_jp.png")
+    }
 
     const cacheInstances = {};
     /**gpt4
@@ -696,7 +822,6 @@ export async function active_get(ctx: Context, config: Config) {
         return cacheFunction;
     }
 
-
     let cacheFunctionInstance = null;
     async function getCache_jp() {
         // 如果已经有缓存函数实例，直接返回它
@@ -724,10 +849,36 @@ export async function active_get(ctx: Context, config: Config) {
         return cacheFunction;
     }
 
-    logger.info("🟢 总力获取加载完毕")
+    let cacheFunction_dajuezhan = null;
+    async function getCache_dajuezhan() {
+        // 如果已经有缓存函数实例，直接返回它
+        if (cacheFunction_dajuezhan) {
+            return cacheFunction_dajuezhan;
+        }
+        let cache = null;
+        let cacheTime = null;
+        const cacheDuration = 5 * 60 * 1000; // 5分钟
+        const cacheFunction = async function () {
+            const now = new Date().getTime();
+            // 检查是否有缓存以及缓存是否过期
+            if (cache !== null && (now - cacheTime) < cacheDuration) {
+                console.log("返回缓存结果");
+                return cache;
+            }
+            console.log("调用原函数");
+            const func = await 大决战获取();
+            cache = await draw_dajuezhan(func); // 假设是异步函数
+            cacheTime = now; // 更新缓存时间
+            return cache;
+        };
+        // 存储新的缓存函数实例
+        cacheFunction_dajuezhan = cacheFunction;
+        return cacheFunction;
+    }
+
+    ctx.i18n.define('zh-CN', zhCNi8n)
     ctx.command('总力档线 <message:text>', '总力站信息查询')
         .alias("总力")
-        .alias('档线')
         .action(async ({ session }, message) => {
             if (session.event.platform == 'qq' && mdswitch) {
                 if (!message) {
@@ -736,6 +887,7 @@ export async function active_get(ctx: Context, config: Config) {
                     } catch (e) {
                         logger.info('发送md时发生错误', e)
                         return ("总力战档线查询，支持日服、国服官服、国服B服\n"
+                            + "还支持大决战查询哦\n"
                             + "使用方法：\n"
                             + "🟢@机器人并发送:/总力档线+空格+服务器"
                         )
@@ -743,13 +895,13 @@ export async function active_get(ctx: Context, config: Config) {
                 }
                 if (/日/.test(message)) {
                     try {
-                        session.send("请老师稍等哦，正在获取数据")
+                        session.send(session.text('.wait'))
                         const cacheFunction = await getCache_jp();
                         const result = await cacheFunction();
                         return (h.image(pathToFileURL(resolve(result)).href))
                     } catch (e) {
                         logger.info(e)
-                        return "呜呜呜，出错惹"
+                        return session.text('.error')
                     }
                 } else if (/b/.test(message) || /B/.test(message)) {
                     try {
@@ -758,7 +910,7 @@ export async function active_get(ctx: Context, config: Config) {
                         return (h.image(pathToFileURL(resolve(paths)).href))
                     } catch (e) {
                         logger.info(e)
-                        return "呜呜呜，出错惹"
+                        return session.text('.error')
                     }
                 } else {
                     try {
@@ -767,15 +919,25 @@ export async function active_get(ctx: Context, config: Config) {
                         return (h.image(pathToFileURL(resolve(paths)).href))
                     } catch (e) {
                         logger.info(e)
-                        return "呜呜呜，出错惹"
+                        return session.text('.error')
                     }
                 }
             } else {
                 if (!message) {
-                    return ("总力战档线查询，支持日服、国服官服、国服B服\n"
-                        + "使用方法：\n"
-                        + "🟢总力档线+空格+服务器"
-                    )
+                    try {
+                        const cacheFunction = await getCacheFunction(1);
+                        console.log(cacheFunction)
+                        const paths = await cacheFunction();
+                        console.log(paths)
+                        session.send(h.image(pathToFileURL(resolve(paths)).href))
+                        return ("总力战档线查询，支持日服、国服官服、国服B服\n"
+                            + "使用方法：\n"
+                            + "🟢总力档线+空格+服务器"
+                        )
+                    } catch (e) {
+                        logger.info(e)
+                        return session.text('.error')
+                    }
                 } else {
                     if (/日/.test(message)) {
                         try {
@@ -785,7 +947,7 @@ export async function active_get(ctx: Context, config: Config) {
                             return (h.image(pathToFileURL(resolve(result)).href))
                         } catch (e) {
                             logger.info(e)
-                            return '呜呜呜，出错惹'
+                            return session.text('.error')
                         }
                     } else if (/b/.test(message) || /B/.test(message)) {
                         try {
@@ -794,7 +956,7 @@ export async function active_get(ctx: Context, config: Config) {
                             return (h.image(pathToFileURL(resolve(paths)).href))
                         } catch (e) {
                             logger.info(e)
-                            return '呜呜呜，出错惹'
+                            return session.text('.error')
                         }
                     } else {
                         try {
@@ -805,15 +967,27 @@ export async function active_get(ctx: Context, config: Config) {
                             return (h.image(pathToFileURL(resolve(paths)).href))
                         } catch (e) {
                             logger.info(e)
-                            return '呜呜呜，出错惹'
+                            return session.text('.error')
                         }
                     }
                 }
             }
         })
 
+    ctx.command("大决战档线")
+        .alias("大决战")
+        .action(async ({ session }) => {
+            try {
+                session.send(session.text('.wait'))
+                const cacheFunction = await getCache_dajuezhan();
+                const result = await cacheFunction();
+                return (h.image(pathToFileURL(resolve(result)).href))
+            } catch (e) {
+                logger.info(e)
+                return session.text('.error')
+            }
+        })
     //————————————————————————————————————————————————————bawiki的活动获取————————————————————————————————
-
     const A = 0.6//分辨率
     async function draw_active(wiki_data) {
         function jud_time(begin_at) {
@@ -885,7 +1059,7 @@ export async function active_get(ctx: Context, config: Config) {
             if (!(wiki_data.data[i].picture == '')) {
                 acvimg.push(await ctx.canvas.loadImage('https:' + wiki_data.data[i].picture))
                 let drawm_hei;
-                config.drawconfig.modle ? drawm_hei = 'height' : drawm_hei = 'naturalHeight'
+                config.plugin_config.draw_modle == "canvas" ? drawm_hei = 'height' : drawm_hei = 'naturalHeight'
                 const m = 260 / acvimg[i - s][drawm_hei]
                 const hei = acvimg[i - s][drawm_hei] * m
                 jud_time(wiki_data.data[i].begin_at) ? yls += (hei + 160 * A) : yrs += (hei + 160 * A)
@@ -937,7 +1111,6 @@ export async function active_get(ctx: Context, config: Config) {
         c.font = `bold ${50 * A}px Arial`;
         c.fillText('即将开始：', (xr + 50 * A), (y + 90) * A)
 
-
         let ss = 0, ypush = 0
         for (let i = 0; i < wiki_data.data.length; i++) {
             ypush = 0
@@ -954,9 +1127,9 @@ export async function active_get(ctx: Context, config: Config) {
             if (!(wiki_data.data[i].picture == '')) {
 
                 let drawm_hei;
-                config.drawconfig.modle ? drawm_hei = 'height' : drawm_hei = 'naturalHeight'
+                config.plugin_config.draw_modle == "canvas" ? drawm_hei = 'height' : drawm_hei = 'naturalHeight'
                 let drawm_wid;
-                config.drawconfig.modle ? drawm_wid = 'width' : drawm_wid = 'naturalWidth'
+                config.plugin_config.draw_modle == "canvas" ? drawm_wid = 'width' : drawm_wid = 'naturalWidth'
                 const m = 250 * A / acvimg[i - ss][drawm_hei]
                 const hei = acvimg[i - ss][drawm_hei] * m
                 const widimg = acvimg[i - ss][drawm_wid] * m
@@ -1045,7 +1218,6 @@ export async function active_get(ctx: Context, config: Config) {
         return img
     }
 
-
     let cachedImageGeneratorInstance: (() => Promise<string>) | null = null;
 
     async function createCachedImageGenerator(wiki_data): Promise<() => Promise<string>> {
@@ -1076,6 +1248,7 @@ export async function active_get(ctx: Context, config: Config) {
         cachedImageGeneratorInstance = await cachedImageGenerator;
         return cachedImageGenerator;
     }
+    logger.info("🟢 总力获取加载完毕")
 
     ctx.command('活动日程', 'ba活动查询')
         .alias("活动")
@@ -1089,5 +1262,8 @@ export async function active_get(ctx: Context, config: Config) {
             const cachedGenerator = await (await createCachedImageGenerator(wiki_data))()
             session.send(await h.image(await cachedGenerator))
         })
+
     logger.info('🟢 活动获取功能加载完毕')
+
+
 }

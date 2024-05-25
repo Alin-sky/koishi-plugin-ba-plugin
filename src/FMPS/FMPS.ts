@@ -4,8 +4,8 @@ import * as path from 'path';
 import * as fs from 'fs'
 import zh from "zh_cn";
 import { simpleLine2TL } from 'chinese-s2t-pro';
-import COS from 'cos-nodejs-sdk-v5';
 import crypto_1 from 'crypto';
+import { StudentMatch } from "../Snae_match/match";
 
 //ba-plugin-FMPS-V1
 //Alin's File Management and Processing Systems v1.0-beta 2024-04-05 
@@ -21,28 +21,17 @@ const student_data_tw = 'https://schale.gg/data/tw/students.json'
 const student_data_kr = 'https://schale.gg/data/kr/students.json'
 const student_data_zh = 'https://schale.gg/data/zh/students.json'
 
-// 初始化 COS 实例
-export interface UploadResult {
-    Location: string;
-    ETag: string;
-    Bucket: string;
-    Key: string;
-}
-
 export class FMPS {
     private ctx: Context;
     constructor(ctx: Context) {
         this.ctx = ctx; // ctx
     }
 
-
     /**
      * 服务器选择函数，待写 
      *     async server_selection() {
-
     }
      */
-
 
     /**
      * json解析函数
@@ -231,6 +220,41 @@ export class FMPS {
         } else {
             return output
         }
+    }
+
+
+
+    /**
+     * 学生生日爬取
+     * @param root 存储json文件的路径
+     */
+    async student_birthdays_get(root) {
+        const studata_jp = await this.ctx.http.get(student_data_jp)
+        const studata_cn = await this.ctx.http.get(student_data_cn)
+        let arry = []
+        try {
+            for (let i = 0; i < studata_jp.length; i++) {
+                arry.push(
+                    {
+                        "Id": (10000 + i).toString(),
+                        "Id_db": studata_jp[i].Id,
+                        "Name": studata_cn[i].Name,
+                        "Birthday": studata_jp[i].Birthday,
+                    })
+            }
+        } catch (e) {
+            logger.info('数据更新时发生错误', e)
+        }
+
+        const jsonString = JSON.stringify(arry, null, 2); // 使用缩进美化
+        fs.writeFile(`${root}/studata_birthdays.json`, jsonString, (err: any) => {
+            if (err) {
+                logger.info('数据更新时发生错误', error)
+            } else {
+
+                logger.info('数据更新完毕')
+            }
+        });
     }
 
 
@@ -427,7 +451,6 @@ export class FMPS {
      * @param appId - 机器人AppID
      * @param secret - 机器人Secret
      * @param channelId - 频道ID
-     * @returns {Promise<{ url: string }>} - 上传图片后的URL
      */
     async img_to_channel(data: Buffer, appId, secret, channelId) {
         async function refreshToken(bot) {
@@ -436,11 +459,11 @@ export class FMPS {
                 clientSecret: bot.secret
             });
             bot.token = accessToken;
-            this.ctx.setTimeout(() => refreshToken(bot), (expiresIn - 30) * 1000);
+            await this.ctx.setTimeout(() => refreshToken.bind(this)(bot), (expiresIn - 30) * 1000);
         }
         const bot = { appId, secret, channelId };
         // 刷新令牌
-        await refreshToken(bot);
+        await refreshToken.bind(this)(bot);
         const payload = new FormData();
         payload.append('msg_id', '0');
         payload.append('file_image', new Blob([data], { type: 'image/png' }), 'image.jpg');
@@ -495,7 +518,6 @@ export class FMPS {
         return imagePath;
     }
 
-
     /**
      * 文件删除函数
      * @param dirPath 文件夹路径
@@ -524,55 +546,32 @@ export class FMPS {
 
 
     /**
-     * cos的文件上传函数
-     * @param bucketName 桶名 
-     * @param region 桶地域
-     * @param objectKey 上传到 COS 的文件名
-     * @param filePath 上传到 COS 的文件路径
-     * @param SecretId 
-     * @param SecretKey 
-     * @returns 
+     * 将Unix时间戳转换为指定时区的时间字符串，格式为YYYY-MM-DDTHH:mm:ss+HH:MM。
+     * @param {number} timestamp - Unix时间戳（秒）
+     * @returns {string} 返回格式化的时间字符串
      */
-    async uploadFile(
-        bucketName: string, region: string,
-        objectKey: string, file_buffer: Buffer,
-        SecretId: string, SecretKey: string
-    ): Promise<UploadResult> {
-        const cos = new COS({
-            SecretId: SecretId,
-            SecretKey: SecretKey
-        });
-        try {
-            return await new Promise((resolve, reject) => {
-                cos.putObject({
-                    Bucket: bucketName,
-                    Region: region,
-                    Key: ('mddata/' + objectKey),
-                    Body: file_buffer,
-                    onProgress: function (progressData) {
-                        console.log(JSON.stringify(progressData));
-                    }
-                }, function (err, data) {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(data as UploadResult);
-                    }
-                });
-            });
-        } catch (e) {
-            console.error(e);
-            throw e;
-        }
+    formatTimestamp(timestamp) {
+        const offset = 8; // 时区偏移量，例如中国标准时间为UTC+8
+        // 将Unix时间戳（秒）转换为毫秒，并创建Date对象
+        const date = new Date(timestamp * 1000);
+        // 根据偏移量调整日期和时间
+        // getTime()返回的是毫秒，所以需要将偏移小时转换为毫秒（1小时=3600000毫秒）
+        const localDate = new Date(date.getTime() + offset * 3600000);
+        // 使用toISOString()获取调整后的本地时间的ISO格式字符串
+        // 然后，我们可以直接截取所需的日期和时间部分（因为这已经是本地时间了）
+        let isoString = localDate.toISOString();
+        // 获取不包含时区的日期时间部分
+        let dateTime = isoString.slice(0, 19);
+        // 计算时区偏移的字符串表示
+        const sign = offset < 0 ? '-' : '+';
+        const hoursOffset = String(Math.floor(Math.abs(offset))).padStart(2, '0');
+        const minutesOffset = String((Math.abs(offset) * 60) % 60).padStart(2, '0');
+        const offsetString = `${sign}${hoursOffset}:${minutesOffset}`;
+        // 返回最终的格式化字符串
+        return `${dateTime}${offsetString}`;
     }
 
-    //cos sdk
-    // 引入模块
-    // 创建实例
-    // 通过 npm 安装 sdk npm install cos-nodejs-sdk-v5
-    // SECRETID 和 SECRETKEY 请登录 https://console.cloud.tencent.com/cam/capi 进行查看和管理
-    // nodejs 端可直接使用 CAM 密钥计算签名，建议用限制最小权限的子用户的 CAM 密钥
-    // 最小权限原则说明 https://cloud.tencent.com/document/product/436/38618
+
 
 
 }

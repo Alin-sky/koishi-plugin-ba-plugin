@@ -1,5 +1,7 @@
 
 //sanae’s ba-students-match-systems v2 2023-11
+//Revised by Alin on 3034-5-22
+//ba-students-match-systems v2.1
 
 import { FMPS } from "../FMPS/FMPS";
 import { rootF } from "../FMPS/FMPS_F";
@@ -19,15 +21,10 @@ interface StudentName {
     "Name_zh_ft": string;
     "NickName": string[]
 }
-/*
+
 const ctx = new Context();
 const fmp = new FMPS(ctx)
-const root_json = rootF("bap-json")
-const json = fmp.json_parse(`${root_json}/sms_studata_main.json`)
-console.log(json)
-*/
-
-const NameData: StudentName[] = require(`./sms_studata_main.json`) as StudentName[];
+//const NameData: StudentName[] = require(`./sms_studata_main.json`) as StudentName[];
 export const match_file = __dirname
 
 // ————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -60,9 +57,11 @@ function pretreat(input: string): string {
     input = TransToSmall(input);
     return input
 }
-function ExactMatchName(input: string): string[] {
+async function ExactMatchName(input: string): Promise<string[]> {
     let result: string[] = [];
     input = pretreat(input)
+    const root = await rootF("bap-json")
+    const NameData = await fmp.json_parse(`${root}/sms_studata_main.json`) as StudentName[]
     const ExactNameData: StudentName[] = NameData.map(student => {
         const processedStudent: StudentName = {} as StudentName;
         for (const key in student) {
@@ -116,8 +115,10 @@ function JaccardSimilarity(str1: string, str2: string): number {
     const similarity = intersectionSize / unionSize;
     return similarity;
 }
-function JaccardFuzzyMatch(input: string): [string, number][] {
+async function JaccardFuzzyMatch(input: string): Promise<[string, number][]> {
     input = pretreat(input);
+    const root = await rootF("bap-json")
+    const NameData = await fmp.json_parse(`${root}/sms_studata_main.json`) as StudentName[]
     const ExactNameData: StudentName[] = NameData.map(student => {
         const processedStudent: StudentName = {} as StudentName;
         for (const key in student) {
@@ -265,8 +266,11 @@ function JaroWinklerDistance(str1: string, str2: string): number {
     return jaroSimilarityScore + prefixLength * prefixScale * (1 - jaroSimilarityScore);
 }
 
-function JaroWinklerFuzzyMatch(input: string): [string, number][] {
+async function JaroWinklerFuzzyMatch(input: string): Promise<[string, number][]> {
     input = pretreat(input);
+    const root = await rootF("bap-json")
+    const NameData = await fmp.json_parse(`${root}/sms_studata_main.json`) as StudentName[]
+
     const ExactNameData: StudentName[] = NameData.map(student => {
         const processedStudent: StudentName = {} as StudentName;
         for (const key in student) {
@@ -461,8 +465,10 @@ function LevenshteinSimilarityScore(s1: string, s2: string): number {
     const similarityScore = 1 - distance / maxLength;
     return similarityScore;
 }
-function LevenshteinFuzzyMatch(input: string): [string, number][] {
+async function LevenshteinFuzzyMatch(input: string): Promise<[string, number][]> {
     input = TransToPinyin(pretreat(input));
+    const root = await rootF("bap-json")
+    const NameData = await fmp.json_parse(`${root}/sms_studata_main.json`) as StudentName[]
     const ExactNameData: StudentName[] = NameData.map(student => {
         const processedStudent: StudentName = {} as StudentName;
         for (const key in student) {
@@ -584,10 +590,10 @@ function LevenshteinFuzzyMatch(input: string): [string, number][] {
     }
     return LevenshteinDistanceResults
 }
-function FuzzyMatchName(input: string): [string, number][] {
-    const MatchResult_J = JaccardFuzzyMatch(input);
-    const MatchResult_JW = JaroWinklerFuzzyMatch(input);
-    const MatchResult_L = LevenshteinFuzzyMatch(input);
+async function FuzzyMatchName(input: string): Promise<[string, number][]> {
+    const MatchResult_J = await JaccardFuzzyMatch(input);
+    const MatchResult_JW = await JaroWinklerFuzzyMatch(input);
+    const MatchResult_L = await LevenshteinFuzzyMatch(input);
     let JWresult: [string, number][] = [];
     let J_JW: [string, number][] = [];
     for (let i = 0; i < MatchResult_JW.length; i++) {
@@ -639,10 +645,10 @@ function FuzzyMatchName(input: string): [string, number][] {
     finalResults.sort((a, b) => b[1] - a[1]);
     return finalResults
 }
-export function MatchStudentName(input: string): string[] {
+export async function MatchStudentName(input: string): Promise<string[]> {
     const ExactResults = ExactMatchName(input);
-    if (ExactResults.length != 0) {
-        if (ExactResults.length > 6) {
+    if ((await ExactResults).length != 0) {
+        if ((await ExactResults).length > 6) {
             let ExactResults5: string[] = [];
             for (let i = 0; i < 6; i++) {
                 ExactResults5.push(ExactResults[i]);
@@ -652,7 +658,7 @@ export function MatchStudentName(input: string): string[] {
             return ExactResults
         }
     } else {
-        const FuzzyResults = FuzzyMatchName(input);
+        const FuzzyResults = await FuzzyMatchName(input);
         let FuzzyResults_nonum: string[] = [];
         for (const result of FuzzyResults) {
             FuzzyResults_nonum.push(result[0]);
@@ -715,8 +721,12 @@ interface OthersName {
     "Keywords": string[];
     "Nickname": string[]
 }
-const OthersData: OthersName[] = require("./sms_othersmatchlib.json") as OthersName[];
-export function MatchOthers(input: string): string[] {
+//const OthersData: OthersName[] = require("./sms_othersmatchlib.json") as OthersName[];
+export async function MatchOthers(input: string): Promise<string[]> {
+
+    const root = await rootF("bap-json")
+    const OthersData = await fmp.json_parse(`${root}/sms_othersmatchlib.json`) as OthersName[];
+
     for (const names of OthersData) {
         if (names.Name === input) {
             return [names.Name]
@@ -787,10 +797,13 @@ export async function StudentMatch(input: string): Promise<string[]> {
         "Id": string;
         "MapName": string
     }
-    const AronaNameData: AronaName[] = require("./sms_studata_toaro_stu.json") as AronaName[];
+    const root = await rootF("bap-json")
+    const AronaNameData = await fmp.json_parse(`${root}/sms_studata_toaro_stu.json`) as AronaName[];
+
+    //const AronaNameData: AronaName[] = require("./sms_studata_toaro_stu.json") as AronaName[];
     const TryStudentMatch = MatchStudentName(input);
-    if (TryStudentMatch.length != 0) {
-        for (let i = 0; i < TryStudentMatch.length; i++) {
+    if ((await TryStudentMatch).length != 0) {
+        for (let i = 0; i < (await TryStudentMatch).length; i++) {
             for (const student of AronaNameData) {
                 if (student.Id === TryStudentMatch[i]) {
                     TryStudentMatch[i] = student.MapName;
@@ -798,7 +811,7 @@ export async function StudentMatch(input: string): Promise<string[]> {
                 }
             }
         }
-        return [...["Student"], ...TryStudentMatch]
+        return [...["Student"], ...await TryStudentMatch]
     } else {
         return []
     }
@@ -816,21 +829,22 @@ export async function MatchArona(input: string): Promise<string[]> {
             return []
         }
     }
-    function OthersMatch(input: string): string[] {
-        const TryOthersMatch = MatchOthers(input);
+    async function OthersMatch(input: string): Promise<string[]> {
+        const TryOthersMatch = await MatchOthers(input);
         if (TryOthersMatch.length != 0) {
             return [...["Others"], ...TryOthersMatch]
         } else {
             return []
         }
     }
-    function StudentMatch(input: string): string[] {
+    async function StudentMatch(input: string): Promise<string[]> {
         interface AronaName {
             "Id": string;
             "MapName": string
         }
-        const AronaNameData: AronaName[] = require("./sms_studata_toaro_stu.json") as AronaName[];
-        const TryStudentMatch = MatchStudentName(input);
+        const root = await rootF("bap-json")
+        const AronaNameData = await fmp.json_parse(`${root}/sms_studata_toaro_stu.json`) as AronaName[];
+        const TryStudentMatch = await MatchStudentName(input);
         if (TryStudentMatch.length != 0) {
             for (let i = 0; i < TryStudentMatch.length; i++) {
                 for (const student of AronaNameData) {
@@ -864,7 +878,7 @@ export async function MatchArona(input: string): Promise<string[]> {
     }
     for (const str of s) {
         if (input.includes(str)) {
-            return StudentMatch(input.replace(str, ""))
+            return await StudentMatch(input.replace(str, ""))
         }
     }
     const resultM = MapMatch(input);
@@ -872,10 +886,10 @@ export async function MatchArona(input: string): Promise<string[]> {
         return resultM
     }
     const resultO = OthersMatch(input);
-    if (resultO.length != 0) {
+    if ((await resultO).length != 0) {
         return resultO
     }
-    const resultS = StudentMatch(input);
+    const resultS = await StudentMatch(input);
     if (resultS.length != 0) {
         return resultS
     } else {

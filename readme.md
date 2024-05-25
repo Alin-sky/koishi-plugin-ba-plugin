@@ -16,22 +16,26 @@
 
 
 ### 特性介绍 🌟
-
+###### 我是菜比，我是笨比
 #### 1.0版本亮点
 - 适配官方bot，自动更新json数据🔄
 - 全面重构旧功能
 - 优化和修复已知问题🛠️
 
-###### 我是菜比，我是笨比
+#### 📦安装
+```
+npm install koishi-plugin-ba-plugin
+```
 
-#### 快速链接
+
+#### 🔗快速链接
 - 体验插件功能：与我们的 [QQ官方机器人](https://qun.qq.com/qunpro/robot/qunshare?robot_uin=2854197266&robot_appid=102062652&biz_type=0) 交互。
 
 
-#### 技术架构
+#### ⚙️技术架构
 - 该插件是 [koishi](https://github.com/koishijs/koishi) 框架的一部分，需在 koishi 框架中使用。
 
-#### 致谢
+### 🙏致谢
 
 交互和功能设计灵感借鉴了[arona](https://github.com/diyigemt/arona)
 和[NoneBot-Plugin-BAWiki](https://github.com/lgc-NB2Dev/nonebot-plugin-bawiki)
@@ -41,7 +45,7 @@
 感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏
 
 
-<h2>目前功能:</h2>
+<h2>🌈目前功能:</h2>
 
 - [x] Aronabot的攻略图 
 - [x] 角色好感升级所需计算
@@ -51,11 +55,12 @@
 - [x] 抽卡模拟器
 - [x] bawiki推图攻略 
 - [x] 活动查询 
+- [x] 数据自动更新 
 
 
 
 ---
-## 项目感谢
+### 🙏项目感谢
 | 贡献者 （按首字母排序，不分先后）  | 主要贡献     |
 | :----------------------------------------------------------- | :--------------------------------------- |
 | [diyigemt](https://github.com/diyigemt)     | 开放了API，提供了[Arona](https://github.com/diyigemt/arona)数据 |
@@ -65,12 +70,26 @@
 | [shangxue](https://www.npmjs.com/~shangxue)    |  bawiki推图攻略的数据，还有些技术帮助~                 |
                          
 ---
+## ❤️支持
 
+#### [爱发电，感谢所有赞助咪😽](https://afdian.net/a/alin-sky)
 
-
-## 更新日志
+## 📃更新日志
 <details>
 <summary>点我查看更新日志详情</summary>
+
+### 1.1.0-alpha.x
+  - 新增使用QQ频道中转来发送md图
+  - 新增大决战档线
+  - 增加抽卡粒子效果
+  - 实现本地化功能
+  - 实现学生匹配系统数据热更新，重启插件即可更新（之前需要重启koishi）
+  - 完善自动更新，现在可在控制台选择更新模式
+  - 修改错误数据
+  - 修改配置项位置
+  - 适配多md模板
+  - 修复已知错误，提高稳定性
+  - ~~废弃使用对象存储来发图~~
 
 ### 1.0.1
   - 尝试修复inject报错
@@ -80,17 +99,17 @@
   - 继承自1.0.0-beta.11 应该没啥大问题了（）
   - 咪
 
-### 1.0.0-beta-x
+### 1.0.0-beta.x
   - 增加千里眼指令
   - 增加选择canvas渲染模式
-  - 修复自动更新问题
+  - 修复自动更新问题，抽卡数据实现热更新
   - 修复已知学生匹配算法bug
   - 修复已知总力获取功能的bug
   - 修改canvas坐标
   - 修复渲染bug
   - 修杂七杂八的bug
 
-### 1.0.0-alpha
+### 1.0.0-alpha.x
   - 废弃大部分旧代码和架构，修改目录结构，封装了常用功能，
   - 重构抽卡模拟器（v3）
   - 重构攻略系统（v3）

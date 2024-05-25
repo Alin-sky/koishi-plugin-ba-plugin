@@ -1,18 +1,10 @@
-/// <reference types="node" />
 import { Context } from "koishi";
-export interface UploadResult {
-    Location: string;
-    ETag: string;
-    Bucket: string;
-    Key: string;
-}
 export declare class FMPS {
     private ctx;
     constructor(ctx: Context);
     /**
      * 服务器选择函数，待写
      *     async server_selection() {
-
     }
      */
     /**
@@ -50,6 +42,11 @@ export declare class FMPS {
      */
     complete_alias(text: string): string[];
     /**
+     * 学生生日爬取
+     * @param root 存储json文件的路径
+     */
+    student_birthdays_get(root: any): Promise<void>;
+    /**
      * 学生json数据的自动创建函数，爬取db
      * @param root 存储json文件的路径
      */
@@ -70,7 +67,6 @@ export declare class FMPS {
      * @param appId - 机器人AppID
      * @param secret - 机器人Secret
      * @param channelId - 频道ID
-     * @returns {Promise<{ url: string }>} - 上传图片后的URL
      */
     img_to_channel(data: Buffer, appId: any, secret: any, channelId: any): Promise<string>;
     /**
@@ -88,14 +84,9 @@ export declare class FMPS {
      */
     file_delete(dirPath: string, file?: string): Promise<void>;
     /**
-     * cos的文件上传函数
-     * @param bucketName 桶名
-     * @param region 桶地域
-     * @param objectKey 上传到 COS 的文件名
-     * @param filePath 上传到 COS 的文件路径
-     * @param SecretId
-     * @param SecretKey
-     * @returns
+     * 将Unix时间戳转换为指定时区的时间字符串，格式为YYYY-MM-DDTHH:mm:ss+HH:MM。
+     * @param {number} timestamp - Unix时间戳（秒）
+     * @returns {string} 返回格式化的时间字符串
      */
-    uploadFile(bucketName: string, region: string, objectKey: string, file_buffer: Buffer, SecretId: string, SecretKey: string): Promise<UploadResult>;
+    formatTimestamp(timestamp: any): string;
 }

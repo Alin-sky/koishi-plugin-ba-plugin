@@ -9,12 +9,9 @@ const log = "ba-plugin-favorable"
 const logger: Logger = new Logger(log)
 const random = new Random(() => Math.random())
 
-
 export async function cal_level(ctx: Context) {
-
     ctx.command("升级 <message:text>", "计算玩家升级所需")
         .alias('lvup')
-        .alias('等级')
         .action((_, message) => {
             if (!message) {
                 return "功能：\n" +
@@ -44,10 +41,8 @@ export async function cal_level(ctx: Context) {
                         levelMessage[7],
                         levelMessage[8],
                         levelMessage[9])
-
                     return resultMessage
                 }
             }
         })
-
 }
