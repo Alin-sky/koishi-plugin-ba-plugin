@@ -82,6 +82,7 @@ npm install koishi-plugin-ba-plugin
 ### 1.1.0-beta.x
   - 修复好感计算器问题
   - 修复本地化路径
+  - 修复抽卡模拟器问题
 
 ### 1.1.0-alpha.x
   - 新增使用QQ频道中转来发送md图

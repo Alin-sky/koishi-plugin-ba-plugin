@@ -1019,7 +1019,7 @@ ${i2}国服十连 爱丽丝
                         return h.image(img, 'image/jpg')
                     }
                 }
-                const id = name_to_id(student[1])
+                const id = id_to_dbid(student[1])
                 if (!stu_sta_jud(id)) {
                     const stu_gacha = gacha_10(0)
                     const print = await gacha_push(uid, 0, stu_gacha)
@@ -1042,12 +1042,14 @@ ${i2}国服十连 爱丽丝
                     const img = await creat_img(stu_gacha, print, 0)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const md = markdown_gacha_sub(session, 0, muzhu, imgurl, student[1])
+                    const stuname = id_to_name(id)
+                    const md = markdown_gacha_sub(session, 0, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
                     const sername = serverid_to_text(0)
-                    await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
+                    const stuname = id_to_name(id)
+                    await session.send('正在抽取' + sername + stuname + '的池子，请老师稍等哦')
                     const stu_gacha = gacha_10(0, id)
                     const print = await gacha_push(uid, 0, stu_gacha)
                     const img = await creat_img(stu_gacha, print, 0)
@@ -1096,7 +1098,7 @@ ${i2}国服十连 爱丽丝
                         return h.image(img, 'image/jpg')
                     }
                 }
-                const id = name_to_id(student[1])
+                const id = id_to_dbid(student[1])
                 if (stu_server_jud(id) < 1) {
                     const stu_gacha = gacha_10(1)
                     const print = await gacha_push(uid, 1, stu_gacha)
@@ -1135,13 +1137,15 @@ ${i2}国服十连 爱丽丝
                     const img = await creat_img(stu_gacha, print, 1)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const md = markdown_gacha_sub(session, 1, muzhu, imgurl, student[1])
+                    const stuname = id_to_name(id)
+                    const md = markdown_gacha_sub(session, 1, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
-                    const id = name_to_id(student[1])
+                    const id = id_to_dbid(student[1])
                     const sername = serverid_to_text(1)
-                    await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
+                    const stuname = id_to_name(id)
+                    await session.send('正在抽取' + sername + stuname + '的池子，请老师稍等哦')
                     const stu_gacha = gacha_10(1, id)
                     const print = await gacha_push(uid, 1, stu_gacha)
                     const img = await creat_img(stu_gacha, print, 1)
@@ -1164,7 +1168,7 @@ ${i2}国服十连 爱丽丝
                 const muzhu = cal_muzhu(stu_gacha)
                 if (session.event.platform == 'qq' && mdswitch) {
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const md = markdown_gacha_sub(session, server_id, imgurl, muzhu)
+                    const md = markdown_gacha_sub(session, server_id, muzhu, imgurl)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
@@ -1172,8 +1176,6 @@ ${i2}国服十连 爱丽丝
                     await session.send("总共获得神明精髓：" + muzhu + "个")
                     return h.image(img, 'image/jpg')
                 }
-
-
             } else {
                 const student = await StudentMatch(message)
                 console.log(student)
@@ -1192,7 +1194,7 @@ ${i2}国服十连 爱丽丝
                         return h.image(img, 'image/jpg')
                     }
                 }
-                const id = name_to_id(student[1])
+                const id = id_to_dbid(student[1])
                 if (stu_server_jud(id) < 2) {
                     const stu_gacha = gacha_10(2)
                     const print = await gacha_push(uid, 2, stu_gacha)
@@ -1229,13 +1231,15 @@ ${i2}国服十连 爱丽丝
                     const img = await creat_img(stu_gacha, print, server_id)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const md = markdown_gacha_sub(session, server_id, muzhu, imgurl, student[1])
+                    const stuname = id_to_name(id)
+                    const md = markdown_gacha_sub(session, server_id, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
-                    const id = name_to_id(student[1])
+                    const id = id_to_dbid(student[1])
                     const sername = serverid_to_text(server_id)
-                    await session.send('正在抽取' + sername + student[1] + '池子，请老师稍等哦')
+                    const stuname = id_to_name(id)
+                    await session.send('正在抽取' + sername + stuname  + '的池子，请老师稍等哦')
                     const stu_gacha = gacha_10(server_id, id)
                     const print = await gacha_push(uid, server_id, stu_gacha)
                     const img = await creat_img(stu_gacha, print, server_id)
@@ -1264,7 +1268,6 @@ ${i2}国服十连 爱丽丝
                     await session.send("总共获得神明精髓：" + muzhu + "个")
                     return h.image(img, 'image/jpg')
                 }
-
             } else {
                 const student = await StudentMatch(message)
                 console.log(student)
@@ -1283,7 +1286,7 @@ ${i2}国服十连 爱丽丝
                         return h.image(img, 'image/jpg')
                     }
                 }
-                const id = name_to_id(student[1])
+                const id = id_to_dbid(student[1])
                 if (!stu_sta_jud(id)) {
                     const stu_gacha = gacha_200(server_ids)
                     const img = await draw_200_img(stu_gacha)
@@ -1304,11 +1307,13 @@ ${i2}国服十连 爱丽丝
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const md = markdown_gacha_sub(session, 3, muzhu, imgurl, student[1])
+                    const stuname = id_to_name(id)
+                    const md = markdown_gacha_sub(session, 3, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
-                    await session.send('正在抽一井日服' + student[1] + '池子，请老师稍等哦')
+                    const stuname = id_to_name(id)
+                    await session.send('正在抽一井日服的' + stuname + '池子，请老师稍等哦')
                     const stu_gacha = gacha_200(server_ids, id)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
@@ -1317,7 +1322,6 @@ ${i2}国服十连 爱丽丝
                 }
             }
         })
-
 
     ctx.command('ba抽卡/国际服一井 <message:text>')
         .action(async ({ session }, message) => {
@@ -1354,7 +1358,7 @@ ${i2}国服十连 爱丽丝
                         return h.image(img, 'image/jpg')
                     }
                 }
-                const id = name_to_id(student[1])
+                const id = id_to_dbid(student[1])
                 if (stu_server_jud(id) < server_ids) {
                     const stu_gacha = gacha_200(server_ids)
                     const img = await draw_200_img(stu_gacha)
@@ -1386,17 +1390,19 @@ ${i2}国服十连 爱丽丝
                     }
                 }
                 if (session.event.platform == 'qq' && mdswitch) {
-                    const id = name_to_id(student[1])
+                    const id = id_to_dbid(student[1])
                     const stu_gacha = gacha_200(server_ids, id)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const md = markdown_gacha_sub(session, 4, muzhu, imgurl, student[1])
+                    const stuname = id_to_name(id)
+                    const md = markdown_gacha_sub(session, 4, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
-                    const id = name_to_id(student[1])
-                    await session.send('正在抽一井国际服' + student[1] + '池子，请老师稍等哦')
+                    const id = id_to_dbid(student[1])
+                    const stuname = id_to_name(id)
+                    await session.send('正在抽一井国际服的' + stuname + '池子，请老师稍等哦')
                     const stu_gacha = gacha_200(server_ids, id)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
@@ -1416,7 +1422,7 @@ ${i2}国服十连 爱丽丝
                 const muzhu = cal_muzhu(stu_gacha)
                 if (session.event.platform == 'qq' && mdswitch) {
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const md = markdown_gacha_sub(session, 5, imgurl, muzhu)
+                    const md = markdown_gacha_sub(session, 5, muzhu, imgurl)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
@@ -1442,7 +1448,7 @@ ${i2}国服十连 爱丽丝
                         return h.image(img, 'image/jpg')
                     }
                 }
-                const id = name_to_id(student[1])
+                const id = id_to_dbid(student[1])
                 if (stu_server_jud(id) < server_ids) {
                     const stu_gacha = gacha_200(server_ids)
                     const img = await draw_200_img(stu_gacha)
@@ -1474,17 +1480,19 @@ ${i2}国服十连 爱丽丝
                     }
                 }
                 if (session.event.platform == 'qq' && mdswitch) {
-                    const id = name_to_id(student[1])
+                    const id = id_to_dbid(student[1])
+                    const stuname = id_to_name(id)
                     const stu_gacha = gacha_200(server_ids, id)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const md = markdown_gacha_sub(session, 5, muzhu, imgurl, student[1])
+                    const md = markdown_gacha_sub(session, 5, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
-                    const id = name_to_id(student[1])
-                    await session.send('正在抽一井国服' + student[1] + '池子，请老师稍等哦')
+                    const id = id_to_dbid(student[1])
+                    const stuname = id_to_name(id)
+                    await session.send('正在抽一井国服的' + stuname + '池子，请老师稍等哦')
                     const stu_gacha = gacha_200(server_ids, id)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
