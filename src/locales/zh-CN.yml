@@ -4,6 +4,10 @@ commands:
       error: 呜呜，出错惹😿，老师稍后再试试？
       no_guide: 呜呜，没有找到对应的攻略😿
       input_error: 呜呜，输入有误
+      match_text: 呜呜，没有匹配到结果,sensei要找的是这些吗？输入序号查看
+      outtime_return: 呜呜，等待超时，请重新触发指令
+      mdtext: sensei！这是爱丽丝找到的内容
+      num_error: 呜呜，输入的不是指定序号，请重新触发指令
   好感计算: 
     messages:
       error: 呜呜，出错惹😿，老师稍后再试试？

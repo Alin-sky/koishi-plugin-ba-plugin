@@ -5,7 +5,7 @@ import { } from "@satorijs/adapter-qq";
 import { calculate_numer, getFavorLv } from '../sanae-code/favorability'
 import { StudentMatch } from "../Snae_match/match";
 import { Config, } from '..';
-import zhCNi8n from '../locales/zh-CN.yml'
+//import zhCNi8n from '../locales/zh-CN.yml'
 
 export const inject = { required: ['canvas'] }
 
@@ -133,7 +133,6 @@ export async function cal_favorable(ctx: Context, config: Config) {
     const drawm = config.plugin_config.draw_modle == "canvas" ? "" : 'file://'
 
     async function local_update() {
-
         async function get_stu_favo() {
             let in_json_create_data = []
             try {
@@ -217,8 +216,9 @@ export async function cal_favorable(ctx: Context, config: Config) {
     async function creat_img(num, stu?) {
         let favorlist = []
         let stuid
+        const sms_data = await fmp.json_parse(`${root_json}/sms_studata_toaro_stu.json`)
         if (stu) {
-            stuid = toarojson.find(i => i.MapName == stu)?.Id_db;
+            stuid = sms_data.filter(i => i.Id == stu)[0].Id_db
             favorlist = favorjson.find(i => i.stuid == stuid)?.favorGifts
         }
         let x = 50, y = 50, wi = 1100, hei = 350, rad = 40, wi1 = 525, x1 = 620, ys = 0
@@ -244,7 +244,8 @@ export async function cal_favorable(ctx: Context, config: Config) {
             c.restore(); // 恢复 到上一次保存的画布状态
             c.font = `bold 100px  Arial`;
             c.fillStyle = '#000000';
-            c.fillText(stu, 550, 225)
+            const stuname = sms_data.filter(i => i.Id_db == stuid)[0].MapName
+            c.fillText(stuname, 550, 225)
         }
         function draw_rectangles(c, x, y, width, height, radius, color) {
             c.beginPath();
@@ -439,7 +440,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
         "使用示例：\n" +
         "好感 10-50 爱丽丝\n"
     logger.info("🟢 好感计算器加载完毕")
-    ctx.i18n.define('zh-CN', zhCNi8n)
+    ctx.i18n.define('zh-CN', require('../locales/zh-CN'))
     ctx.command("好感计算 <arg1> <arg2>", "好感度需求计算器")
         .alias('好感')
         .action(async ({ session }, arg1, arg2) => {
@@ -457,7 +458,8 @@ export async function cal_favorable(ctx: Context, config: Config) {
                     const img = await creat_img(faovr)
                     return (h.image(img))
                 } catch (e) {
-                    logger.info("出现错误" + e)
+                    logger.info("出现错误-1:" + e)
+                    return session.text('.error')
                 }
             } else {
                 try {
@@ -488,7 +490,8 @@ export async function cal_favorable(ctx: Context, config: Config) {
                         return (h.image(img))
                     }
                 } catch (e) {
-                    logger.info("出现错误" + e)
+                    logger.info(e)
+                    return session.text('.error')
                 }
             }
         })

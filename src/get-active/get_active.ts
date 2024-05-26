@@ -7,7 +7,7 @@ import { Image } from '@koishijs/canvas';
 import { pathToFileURL } from 'url'
 import { resolve } from 'path'
 import { } from "@satorijs/adapter-qq";
-import zhCNi8n from '../locales/zh-CN.yml'
+//import zhCNi8n from '../locales/zh-CN.yml'
 
 const log = "ba-plugin-get-active"
 const logger: Logger = new Logger(log)
@@ -236,6 +236,20 @@ export async function active_get(ctx: Context, config: Config) {
             const tp1 = !list_top.data[0] ? null : list_top.data[0]
             const tp2 = !list_top.data[1] ? null : list_top.data[1]
             const tp3 = !list_top.data[2] ? null : list_top.data[2]
+            let li10k
+            if (type == 1) {
+                if (response.data.data.hasOwnProperty('120000')) {
+                    li10k = response.data.data['10000'][response.data.data['10000'].length - 1]
+                } else {
+                    li10k = null
+                }
+            } else {
+                if (response.data.data.hasOwnProperty('96000')) {
+                    li10k = response.data.data['10000'][response.data.data['10000'].length - 1]
+                } else {
+                    li10k = null
+                }
+            }
             let li15_20k
             if (type == 1) {
                 if (response.data.data.hasOwnProperty('15000')) {
@@ -306,7 +320,7 @@ export async function active_get(ctx: Context, config: Config) {
                 li3k: response.data.data['3000'][response.data.data['3000'].length - 1],
                 li5k: response.data.data['5000'][response.data.data['5000'].length - 1],
                 li8k: response.data.data['8000'][response.data.data['8000'].length - 1],
-                li10k: response.data.data['10000'][response.data.data['10000'].length - 1],
+                li10k: li10k,
                 li15_20k: li15_20k,
                 li20_30k: li20_30k,
                 li50_48k: li50_48k,
@@ -622,13 +636,16 @@ export async function active_get(ctx: Context, config: Config) {
                 c.font = `bold 25px Arial`;
             }
             c.fillText(data.li8k, 220, 620)
-            c.fillText(data.li10k, 220, 660)
+            if (!data.li10k) {
+                c.fillText("暂无数据呜", 220, 660)
+            } else {
+                c.fillText(data.li10k, 220, 660)
+            }
             if (!data.li15_20k) {
                 c.fillText("暂无数据呜", 220, 700)
             } else {
                 c.fillText(data.li15_20k, 220, 700)
             }
-
             c.fillStyle = '#665B00';
             c.font = `bold 25px Arial`;
             if (!data.li20_30k) {
@@ -636,7 +653,6 @@ export async function active_get(ctx: Context, config: Config) {
             } else {
                 c.fillText(data.li20_30k, 220, 740)
             }
-
             if (type == 2) {
                 c.fillStyle = '#4A4A4A';
                 c.font = `bold 25px Arial`;
@@ -672,17 +688,19 @@ export async function active_get(ctx: Context, config: Config) {
             c.fillStyle = '#000000';
             c.font = `bold 20px Arial`;
             c.fillText('更新时间：', 400, 455)
-            c.font = `bold 20px Arial`;
+            c.font = `bold 23px Arial`;
+            c.fillStyle = '#002E6B'
             c.fillText(data.time[0], 400, 480)
             const timeWithoutTimeZone = data.time[1].replace(/ \([^)]+\)/, '');
             const timeMatch = data.time[1].match(/ \(([^)]+)\)/);
             const timeZone = timeMatch ? timeMatch[1] : '未匹配到时区';
-            c.fillText(timeWithoutTimeZone, 400, 500)
-            c.fillText(timeZone, 400, 520)
+            c.fillText(timeWithoutTimeZone, 400, 510)
+            c.fillText(timeZone, 400, 530)
+            c.fillStyle = '#000000'
             c.font = `bold 20px Arial`;
             const serv = type == 1 ? "官服" : "B服"
             c.fillStyle = '#5C0C0C'
-            c.fillText(serv + '当前总力：', 400, 555)
+            c.fillText(serv + '当前总力：', 400, 560)
             c.fillStyle = '#000000'
             c.fillText('第' + data.boss.season + '期', 400, 585)
             c.fillText(data.boss.map.value, 400, 610)
@@ -876,7 +894,7 @@ export async function active_get(ctx: Context, config: Config) {
         return cacheFunction;
     }
 
-    ctx.i18n.define('zh-CN', zhCNi8n)
+    ctx.i18n.define('zh-CN', require('../locales/zh-CN'))
     ctx.command('总力档线 <message:text>', '总力站信息查询')
         .alias("总力")
         .action(async ({ session }, message) => {

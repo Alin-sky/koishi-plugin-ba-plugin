@@ -78,6 +78,11 @@ npm install koishi-plugin-ba-plugin
 <details>
 <summary>点我查看更新日志详情</summary>
 
+
+### 1.1.0-beta.x
+  - 修复好感计算器问题
+  - 修复本地化路径
+
 ### 1.1.0-alpha.x
   - 新增使用QQ频道中转来发送md图
   - 新增大决战档线

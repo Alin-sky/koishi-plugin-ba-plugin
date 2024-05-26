@@ -8,7 +8,7 @@ import { pathToFileURL } from 'url';
 import path, { resolve } from 'path';
 import { match_file, MatchArona, MatchMapName } from '../Snae_match/match';
 import { Image } from '@koishijs/canvas';
-import zhCNi8n from '../locales/zh-CN.yml'
+//import zhCNi8n from '../locales/zh-CN.yml'
 
 const log = "ba-plugin-guide"
 const logger: Logger = new Logger(log)
@@ -28,9 +28,6 @@ export interface guideConfig {
   avatar: boolean
   logger: boolean
   time: number
-  return: string
-  returnmd: string
-  timeout_text: string
 }
 
 export const guide_qq: Schema<guide_qq> = Schema.intersect([
@@ -53,9 +50,6 @@ export const guideConfig: Schema<guideConfig> = Schema.intersect([
     avatar: Schema.boolean().default(true).description('模糊匹配时生成学生头像图（canvas）'),
     logger: Schema.boolean().default(true).description('每次攻略请求输出日志'),
     time: Schema.number().default(20000).description('攻略、抽卡系统的等待时间（单位：毫秒）'),
-    return: Schema.string().default('呜呜，没有匹配到结果,sensei要找的是这些吗？输入序号查看:').description('模糊匹配的回复文本'),
-    returnmd: Schema.string().default('sensei久等啦，这是爱丽丝找到的攻略内容').description('Markdown模板模糊匹配的回复文本'),
-    timeout_text: Schema.string().default('呜呜，等待超时，请重新触发指令').description('超时回复文本')
   }).description('攻略系统设置'),
 ])
 
@@ -95,7 +89,7 @@ export const FMPS_server_download = "https://1145141919810-1317895529.cos.ap-che
 export const guide_systeam = ({
 
   async apply(ctx: Context, config: Config) {
-    ctx.i18n.define('zh-CN', zhCNi8n)
+    ctx.i18n.define('zh-CN', require('../locales/zh-CN'))
     const root = await rootF("bap-guidesys")
     const root_guide = await rootF("bap-guidesys", "guide_aronaimg")
     const root_json = await rootF('bap-json')
@@ -109,13 +103,9 @@ export const guide_systeam = ({
     const arona_cdn = 'https://arona.cdn.diyigemt.com/image'
     const db_imgdata_url = 'https://schale.gg/images/student/collection/'
 
-    const seerror = '呜呜，输入的不是指定序号，请重新触发指令'
     const fmp = new FMPS(ctx)
     const log_on = config.guide.logger
     const times = config.guide.time
-    const return_text = config.guide.return
-    const return_mdtext = config.guide.returnmd
-    const return_timeoutt = config.guide.timeout_text
 
     const mdid = config.qqconfig.markdown_setting.table[0]['MD模板id']
     const mdkey1 = config.qqconfig.markdown_setting.table[0]['MD模板参数1']
@@ -245,7 +235,7 @@ export const guide_systeam = ({
       if (mdkey2 && mdkey3) {
         t1 = {
           key: mdkey1,
-          values: [return_mdtext],
+          values: [session.text('.mdtext')],
         }
         t2 = {
           key: mdkey2,
@@ -595,12 +585,12 @@ export const guide_systeam = ({
                     }
                     const text = bui.map(
                       i => (`${i}.${arodata.data[i].name}\n`)).join('')
-                    await session.send(`${return_text}\n${text}`);
+                    await session.send(`${session.text('.mdtext')}\n${text}`);
                   }
                 } else {
                   const wait_mess = await session.prompt(times)
                   if (!wait_mess) {
-                    const timeoutmess = await session.send(return_timeoutt)
+                    const timeoutmess = await session.send(session.text('.outtime_return'))
                     ctx.setTimeout(() => {
                       try {
                         session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
@@ -625,7 +615,7 @@ export const guide_systeam = ({
                     await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
                     await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
                   } else {
-                    const etext = await session.send(seerror)
+                    const etext = await session.send(session.text('.num_error'))
                     ctx.setTimeout(() => {
                       try {
                         session.bot.deleteMessage(session.bot.selfId, etext[0])
@@ -666,13 +656,13 @@ export const guide_systeam = ({
                 logger.info('发送md时发生错误', e)
                 const text = [1, 2, 3, 4, 5, 6].map(
                   i => match_data[i] ? `${i}.${match_data[i]}` : '').filter(Boolean).join('\n');
-                await session.send(`${return_text}\n${text}`);
+                await session.send(`${session.text('.match_text')}\n${text}`);
               }
             } else {
               const imgmess = await session.send(h.image(rimg, "image/png"));
               const text = [1, 2, 3, 4, 5, 6].map(
                 i => match_data[i] ? `${i}.${match_data[i]}` : '').filter(Boolean).join('\n');
-              const messid = await session.send(`${h('at', { id: session.userId })}\n${return_text}\n${text}`);
+              const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`);
               ctx.setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, messid[0])
@@ -685,7 +675,7 @@ export const guide_systeam = ({
               let wait_arry = [...(Array((match_data.length) - 1).keys())].map(i => (i + 1).toString());
               const wait_mess = await session.prompt(times)
               if (!wait_mess) {
-                const timeoutmess = await session.send(return_timeoutt)
+                const timeoutmess = await session.send(session.text('.outtime_return'))
                 ctx.setTimeout(() => {
                   try {
                     session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
@@ -707,7 +697,7 @@ export const guide_systeam = ({
                 await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
                 return
               } else {
-                const etext = await session.send(seerror)
+                const etext = await session.send(session.text('.num_error'))
                 ctx.setTimeout(() => {
                   try {
                     session.bot.deleteMessage(session.bot.selfId, etext[0])
@@ -788,12 +778,12 @@ export const guide_systeam = ({
                 }
                 const text = bui.map(
                   i => (`${i}.${arodata.data[i].name}\n`)).join('')
-                await session.send(`${return_text}\n${text}`);
+                await session.send(`${session.text('.match_text')}\n${text}`);
               }
             } else {
               const wait_mess = await session.prompt(times)
               if (!wait_mess) {
-                const timeoutmess = await session.send(return_timeoutt)
+                const timeoutmess = await session.send(session.text('.outtime_return'))
                 ctx.setTimeout(() => {
                   try {
                     session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
@@ -818,7 +808,7 @@ export const guide_systeam = ({
                 await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
                 await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
               } else {
-                const etext = await session.send(seerror)
+                const etext = await session.send(session.text('.num_error'))
                 ctx.setTimeout(() => {
                   try {
                     session.bot.deleteMessage(session.bot.selfId, etext[0])
@@ -868,7 +858,7 @@ export const guide_systeam = ({
               const imgmess = await session.send(h.image(rimg, "image/png"));
               const text = [1, 2, 3, 4, 5, 6].map(
                 i => match_data[i] ? `${i}.${match_data[i]}` : '').filter(Boolean).join('\n');
-              const messid = await session.send(`${h('at', { id: session.userId })}\n${return_text}\n${text}`);
+              const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`);
               ctx.setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, messid[0])
@@ -880,7 +870,7 @@ export const guide_systeam = ({
             } else {
               const text = [1, 2, 3, 4, 5, 6].map(
                 i => match_data[i] ? `${i}.${match_data[i]}` : '').filter(Boolean).join('\n');
-              const messid = await session.send(`${h('at', { id: session.userId })}\n${return_text}\n${text}`);
+              const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`);
               ctx.setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.channelId, messid[0])
@@ -893,7 +883,7 @@ export const guide_systeam = ({
             let wait_arry = [...(Array((match_data.length) - 1).keys())].map(i => (i + 1).toString());
             const wait_mess = await session.prompt(times)
             if (!wait_mess) {
-              const timeoutmess = await session.send(return_timeoutt)
+              const timeoutmess = await session.send(session.text('.outtime_return'))
               ctx.setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
@@ -913,7 +903,7 @@ export const guide_systeam = ({
               await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
               await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
             } else {
-              const etext = await session.send(seerror)
+              const etext = await session.send(session.text('.num_error'))
               /*
               ctx.setTimeout(() => {
                 try {
@@ -968,7 +958,7 @@ export const guide_systeam = ({
               }
               const text = bui.map(
                 i => (`${i + 1}.${arodata.data[i].name}\n`)).join('')
-              const messid = await session.send(`${h('at', { id: session.userId })}\n${return_text}\n${text}`)
+              const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`)
               ctx.setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, messid[0])
@@ -988,7 +978,7 @@ export const guide_systeam = ({
               }
               const text = bui.map(
                 i => (`${i + 1}.${arodata.data[i].name}\n`)).join('')
-              const messid = await session.send(`${h('at', { id: session.userId })}\n${return_text}\n${text}`)
+              const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`)
               ctx.setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, messid[0])
@@ -999,7 +989,7 @@ export const guide_systeam = ({
             }
             const wait_mess = await session.prompt(times)
             if (!wait_mess) {
-              const timeoutmess = await session.send(return_timeoutt)
+              const timeoutmess = await session.send(session.text('.outtime_return'))
               ctx.setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
@@ -1024,7 +1014,7 @@ export const guide_systeam = ({
               await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
               await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
             } else {
-              const etext = await session.send(seerror)
+              const etext = await session.send(session.text('.num_error'))
               /*
               ctx.setTimeout(() => {
                 try {

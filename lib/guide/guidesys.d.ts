@@ -11,9 +11,6 @@ export interface guideConfig {
     avatar: boolean;
     logger: boolean;
     time: number;
-    return: string;
-    returnmd: string;
-    timeout_text: string;
 }
 export declare const guide_qq: Schema<guide_qq>;
 export declare const guideConfig: Schema<guideConfig>;
