@@ -21,11 +21,18 @@ export async function active_get(ctx: Context, config: Config) {
     const root_img = await rootF("bap-img")
     const fmp = new FMPS(ctx)
 
-
-    const mdid = config.qqconfig.markdown_setting.table[1] ? config.qqconfig.markdown_setting.table[1]['MD模板id'] : config.qqconfig.markdown_setting.table[0]['MD模板id']
-    const mdkey1 = config.qqconfig.markdown_setting.table[1] ? config.qqconfig.markdown_setting.table[1]['MD模板参数1'] : config.qqconfig.markdown_setting.table[0]['MD模板参数1']
-    const mdkey2 = config.qqconfig.markdown_setting.table[1] ? config.qqconfig.markdown_setting.table[1]['MD模板参数2'] : config.qqconfig.markdown_setting.table[0]['MD模板参数2']
-
+    const mdid = config.qqconfig.markdown_setting.table.length == 1 ?
+        config.qqconfig.markdown_setting.table[0]['MD模板id'] :
+        config.qqconfig.markdown_setting.table.length == 0 ?
+            null : config.qqconfig.markdown_setting.table[1]['MD模板id']
+    const mdkey1 = config.qqconfig.markdown_setting.table.length == 1 ?
+        config.qqconfig.markdown_setting.table[0]['MD模板参数1'] :
+        config.qqconfig.markdown_setting.table.length == 0 ?
+            null : config.qqconfig.markdown_setting.table[1]['MD模板参数1']
+    const mdkey2 = config.qqconfig.markdown_setting.table.length == 1 ?
+        config.qqconfig.markdown_setting.table[0]['MD模板参数2'] :
+        config.qqconfig.markdown_setting.table.length == 0 ?
+            null : config.qqconfig.markdown_setting.table[1]['MD模板参数2']
     const drawm = config.plugin_config.draw_modle == "canvas" ? "" : 'file://'
 
     var mdswitch: boolean = false

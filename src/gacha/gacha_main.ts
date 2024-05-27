@@ -46,11 +46,11 @@ export async function gacha_f(ctx: Context, config: Config) {
     const root_json = await rootF("bap-json")
     const root_img = await rootF("bap-img")
     const fmp = new FMPS(ctx)
-    const mdid = config.qqconfig.markdown_setting.table[0]['MD模板id']
-    const mdkey1 = config.qqconfig.markdown_setting.table[0]['MD模板参数1']
-    const mdkey2 = config.qqconfig.markdown_setting.table[0]['MD模板参数2']
-    const mdkey3 = config.qqconfig.markdown_setting.table[0]['MD模板参数3']
-    const mdkey4 = config.qqconfig.markdown_setting.table[0]['MD模板参数4']
+    const mdid = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数1']
+    const mdkey1 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数1']
+    const mdkey2 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数2']
+    const mdkey3 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数3']
+    const mdkey4 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数4']
     const qqguild_id = config.qqconfig.markdown_setting.qqguild
 
     const drawm = config.plugin_config.draw_modle == "canvas" ? "" : 'file://'
@@ -943,7 +943,6 @@ ${i1}卡池选项+空格+up角色"
 ${i2}国服十连 爱丽丝
         `
             }
-
             switch (message) {
                 case '国服一井': {
                     return session.execute('国服一井')
@@ -1239,7 +1238,7 @@ ${i2}国服十连 爱丽丝
                     const id = id_to_dbid(student[1])
                     const sername = serverid_to_text(server_id)
                     const stuname = id_to_name(id)
-                    await session.send('正在抽取' + sername + stuname  + '的池子，请老师稍等哦')
+                    await session.send('正在抽取' + sername + stuname + '的池子，请老师稍等哦')
                     const stu_gacha = gacha_10(server_id, id)
                     const print = await gacha_push(uid, server_id, stu_gacha)
                     const img = await creat_img(stu_gacha, print, server_id)
