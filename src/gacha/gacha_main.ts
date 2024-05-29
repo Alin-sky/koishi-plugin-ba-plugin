@@ -17,7 +17,6 @@ const random = new Random(() => Math.random())
 const url1 = 'https://schale.gg/images/student/icon/'
 const cosurl = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/gacha-img/'
 
-
 //表
 declare module 'koishi' {
     interface Tables {
@@ -46,7 +45,7 @@ export async function gacha_f(ctx: Context, config: Config) {
     const root_json = await rootF("bap-json")
     const root_img = await rootF("bap-img")
     const fmp = new FMPS(ctx)
-    const mdid = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数1']
+    const mdid = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板id']
     const mdkey1 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数1']
     const mdkey2 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数2']
     const mdkey3 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数3']
@@ -600,7 +599,6 @@ export async function gacha_f(ctx: Context, config: Config) {
         logger.info("⚠️ md相关设置未完善,未启用MD模板")
         mdswitch = false
     }
-
 
     async function draw_particle(star: number) {
         const canvas = await ctx.canvas.createCanvas(500, 800);

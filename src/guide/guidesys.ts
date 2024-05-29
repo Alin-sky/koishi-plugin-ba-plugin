@@ -15,7 +15,7 @@ const logger: Logger = new Logger(log)
 const random = new Random(() => Math.random())
 export const inject = ['canvas']
 
-//Alin’s ba guide systems v3.2 2024-05-20
+//Alin’s ba guide systems v3.2.1 2024-05-29
 //配置项
 export interface guide_qq {
   markdown_setting: {
@@ -107,7 +107,7 @@ export const guide_systeam = ({
     const log_on = config.guide.logger
     const times = config.guide.time
 
-    const mdid = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数1']
+    const mdid = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板id']
     const mdkey1 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数1']
     const mdkey2 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数2']
     const mdkey3 = config.qqconfig.markdown_setting.table.length == 0 ? null : config.qqconfig.markdown_setting.table[0]['MD模板参数3']
@@ -242,9 +242,11 @@ export const guide_systeam = ({
           values: ["点击按钮直接查询哦"],
         }
       } else {
-        imgurl = {
-          key: mdkey1,
-          values: [`${url}`],
+        if (url) {
+          imgurl = {
+            key: mdkey1,
+            values: [`${url}`],
+          }
         }
       }
       if (n3) {
@@ -627,7 +629,6 @@ export const guide_systeam = ({
                 }
               }
             }
-
             let cosurl
             let rimg
             if (match_data[0] == 'Student' && canvas_fun) {
@@ -635,11 +636,11 @@ export const guide_systeam = ({
               rimg = await create_guide_icon(
                 match_data[0], match_data[1], match_data[2],
                 match_data[3], match_data[4], match_data[5], match_data[6])
+              cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
             } else {
               cosurl = false
             }
             if (mdswitch) {
-              cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
               console.log(cosurl)
               const md = await markdow_fuzzy(
                 session,
@@ -726,9 +727,6 @@ export const guide_systeam = ({
             if (!arodata.data) {
               return session.text('.no_guide')
             }
-            const uid = (session.event.user.id).slice(0, 9)
-            const ram = random.int(0, 1000000)
-            const filename = (uid + ram) + '.jpg'
             let i1 = 0, i2 = 0, i3 = 0, i4 = 0
             if (arodata.data.length == 2) {
               i1 = 0, i2 = 1, i3 = 1, i4 = 1
@@ -744,11 +742,11 @@ export const guide_systeam = ({
                 arodata.data[i2].name,
                 arodata.data[i3].name,
                 arodata.data[i4].name,)
+                cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
             } else {
               cosurl = false
             }
             if (mdswitch) {
-              cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
               let i1 = 0, i2 = 0, i3 = 0, i4 = 0
               if (arodata.data.length == 2) {
                 i1 = 0, i2 = 1, i3 = 1, i4 = 1

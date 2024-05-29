@@ -10,7 +10,6 @@ import { file_search, rootF } from './FMPS/FMPS_F';
 import { match_file, MatchStudentName } from './Snae_match/match';
 import { cal_level } from './calculate/cal_level';
 
-
 export const inject = ['canvas', 'puppeteer', "database"]
 
 //export const using = ['canvas', 'puppeteer']
@@ -303,7 +302,6 @@ export async function apply(ctx: Context, config: Config) {
       }
       log.info("🟢 json文件更新完毕")
     }
-
 
     const fileb = await fmp.json_parse(root_json + "/hash.json")
     if (fileb == null) {
