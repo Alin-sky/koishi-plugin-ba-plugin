@@ -78,6 +78,14 @@ npm install koishi-plugin-ba-plugin
 <details>
 <summary>点我查看更新日志详情</summary>
 
+### 1.1.1
+  - 更新数据
+  - 概率可随fes池更新
+  - ~~废弃攒钻功能~~
+
+### 1.1.0
+  - 继承自1.1.0-beta.3
+  - 修复已知问题
 
 ### 1.1.0-beta.x
   - 修复好感计算器问题

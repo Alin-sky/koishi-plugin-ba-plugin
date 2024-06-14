@@ -53,7 +53,9 @@ export const guideConfig: Schema<guideConfig> = Schema.intersect([
   }).description('攻略系统设置'),
 ])
 
-export const maxmap_sms = 25
+//日服最大地图
+export const maxmap_sms = 26
+
 export const synonyms: { [key: string]: string[] } = {
   "当前": ["目前", "现在", "此刻", "当下", "在办", "在开展", "在进行", "开展中", "进行中"],
   "竞技场": ["jjc", "pvp"],
@@ -132,7 +134,7 @@ export const guide_systeam = ({
         mds = false
       }
     }
-    if (mdid && mds && mdkey1 && mdid && qqguild_id) {
+    if (mdid && mds && mdkey1 && qqguild_id) {
       logger.info('🟢 攻略已启用MD消息模板')
       mdswitch = true
     } else {
@@ -483,6 +485,19 @@ export const guide_systeam = ({
       .usage("发送“攻略”查看具体使用方法")
       .example('攻略 爱丽丝')
       .action(async ({ session }, message) => {
+        let bot = {
+          id: '',
+          secret: ''
+        }
+        if (session.event.platform == 'qqguild') {
+          bot.id = session.bot["parent"].config.id
+          bot.secret = session.bot["parent"].config.secret
+
+        } else if (session.event.platform == 'qq') {
+          bot.id = session.bot.config.id
+          bot.secret = session.bot.config.secret
+        }
+
         let platfrom: boolean = false
         if (session.event.platform == 'qq' || session.event.platform == 'qqguild') {
           platfrom = true
@@ -636,7 +651,7 @@ export const guide_systeam = ({
               rimg = await create_guide_icon(
                 match_data[0], match_data[1], match_data[2],
                 match_data[3], match_data[4], match_data[5], match_data[6])
-              cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
+              cosurl = await fmp.img_to_channel(rimg, bot.id, bot.secret, qqguild_id)
             } else {
               cosurl = false
             }
@@ -652,7 +667,11 @@ export const guide_systeam = ({
                 match_data[5],
                 match_data[6])
               try {
-                await session.qq.sendMessage(session.channelId, md)
+                if (session.event.platform == 'qq') {
+                  await session.qq.sendMessage(session.channelId, md)
+                } else if (session.event.platform == 'qqguide') {
+                  await session.qqguild.sendMessage(session.channelId, md)
+                }
               } catch (e) {
                 logger.info('发送md时发生错误', e)
                 const text = [1, 2, 3, 4, 5, 6].map(
@@ -742,7 +761,7 @@ export const guide_systeam = ({
                 arodata.data[i2].name,
                 arodata.data[i3].name,
                 arodata.data[i4].name,)
-                cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
+              cosurl = await fmp.img_to_channel(rimg, session.bot.config.id, session.bot.config.secret, qqguild_id)
             } else {
               cosurl = false
             }

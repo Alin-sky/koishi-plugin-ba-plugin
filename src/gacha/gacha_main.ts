@@ -6,10 +6,11 @@ import { Config } from '..';
 import { StudentMatch } from "../Snae_match/match";
 import { Image } from '@koishijs/canvas';
 import { fail } from "assert";
+import { calculate_numer } from '../sanae-code/favorability';
 
 export const inject = { required: ['canvas', 'database'] }
 
-//Alin’s ba-gacha-systems v3.2 2024-05-20
+//Alin’s ba-gacha-systems v3.3 2024-06-14
 
 const log = "ba-plugin-gacha"
 const logger: Logger = new Logger(log)
@@ -180,15 +181,16 @@ export async function gacha_f(ctx: Context, config: Config) {
         const jpp = nowTime < new Date(pick[0].pick_jp_time[1]) && nowTime > new Date(pick[0].pick_jp_time[0]) ? pick[0].now_pick_jp : []
         return [cnp, inp, jpp]
     })();
+
     const all_pick_name = (() => {
-        const cnp = all_pick_id[0].map(i => id_to_name(i))
-        const inp = all_pick_id[1].map(i => id_to_name(i))
-        const jpp = all_pick_id[2].map(i => id_to_name(i))
+        const cnp = (all_pick_id[0].map(i => id_to_name(i))).map(i => pick[0].fes_cn ? i + "(fes)" : i)
+        const inp = (all_pick_id[1].map(i => id_to_name(i))).map(i => pick[0].fes_in ? i + "(fes)" : i)
+        const jpp = (all_pick_id[2].map(i => id_to_name(i))).map(i => pick[0].fes_jp ? i + "(fes)" : i)
         return [cnp, inp, jpp]
     })()
 
     function id_to_name(id) {
-        const name = sms_data.filter(i => i.Id_db == id)
+        const name = (sms_data.filter(i => i.Id_db == id))
         return name[0].MapName
     }
     function id_to_dbid(id) {
@@ -247,7 +249,6 @@ export async function gacha_f(ctx: Context, config: Config) {
         }
         return muzhu
     }
-
 
     function serverid_to_text(serid) {
         let text
@@ -864,11 +865,36 @@ export async function gacha_f(ctx: Context, config: Config) {
         let stu_sta = []
         let safeguards: number = 0//保底数
         const pickp = stu ? 0.007 : 0
+
+        let sername = ''
+        let suoying = 0
+        switch (IsReleased) {
+            case 0:
+                sername = 'jp'
+                break
+            case 1:
+                sername = 'in'
+                break
+            case 2:
+                sername = 'cn'
+                break
+        }
+
+        let arry = []
+        if (pick[0][`fes_${sername}`]) {
+            arry[0] = 0.755
+            arry[1] = 0.185
+            arry[2] = 0.06
+        } else {
+            arry[0] = 0.785
+            arry[1] = 0.185
+            arry[2] = 0.03
+        }
         for (let i = 0; i < 10; i++) {
             const sta = random.weightedPick({
-                "1": 0.785,
-                "2": 0.185,
-                "3": (0.03 - pickp),
+                "1": arry[0],
+                "2": arry[1],
+                "3": (arry[2] - pickp),
                 "pick": pickp
             })
             if (i == 9 && safeguards == 0) {
@@ -905,7 +931,6 @@ export async function gacha_f(ctx: Context, config: Config) {
         }
         return [stu_10, stu_sta]
     }
-
     function gacha_200(IsReleased, stu?) {
         let g_200 = [[], []]
         for (let i = 0; i < 20; i++) {
@@ -1039,13 +1064,21 @@ ${i2}国服十连 爱丽丝
                     const img = await creat_img(stu_gacha, print, 0)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_jp).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     const md = markdown_gacha_sub(session, 0, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
                     const sername = serverid_to_text(0)
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_jp).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     await session.send('正在抽取' + sername + stuname + '的池子，请老师稍等哦')
                     const stu_gacha = gacha_10(0, id)
                     const print = await gacha_push(uid, 0, stu_gacha)
@@ -1134,14 +1167,22 @@ ${i2}国服十连 爱丽丝
                     const img = await creat_img(stu_gacha, print, 1)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_in).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     const md = markdown_gacha_sub(session, 1, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
                     const id = id_to_dbid(student[1])
                     const sername = serverid_to_text(1)
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_in).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     await session.send('正在抽取' + sername + stuname + '的池子，请老师稍等哦')
                     const stu_gacha = gacha_10(1, id)
                     const print = await gacha_push(uid, 1, stu_gacha)
@@ -1228,14 +1269,22 @@ ${i2}国服十连 爱丽丝
                     const img = await creat_img(stu_gacha, print, server_id)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_cn).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     const md = markdown_gacha_sub(session, server_id, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
                     const id = id_to_dbid(student[1])
                     const sername = serverid_to_text(server_id)
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_cn).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     await session.send('正在抽取' + sername + stuname + '的池子，请老师稍等哦')
                     const stu_gacha = gacha_10(server_id, id)
                     const print = await gacha_push(uid, server_id, stu_gacha)
@@ -1304,12 +1353,20 @@ ${i2}国服十连 爱丽丝
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_jp).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     const md = markdown_gacha_sub(session, 3, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_jp).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     await session.send('正在抽一井日服的' + stuname + '池子，请老师稍等哦')
                     const stu_gacha = gacha_200(server_ids, id)
                     const img = await draw_200_img(stu_gacha)
@@ -1392,13 +1449,21 @@ ${i2}国服十连 爱丽丝
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
                     const imgurl = await fmp.img_to_channel(img, session.bot.config.id, session.bot.config.secret, qqguild_id)
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_in).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     const md = markdown_gacha_sub(session, 4, muzhu, imgurl, stuname)
                     await session.qq.sendMessage(session.channelId, md)
                     return
                 } else {
                     const id = id_to_dbid(student[1])
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_in).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     await session.send('正在抽一井国际服的' + stuname + '池子，请老师稍等哦')
                     const stu_gacha = gacha_200(server_ids, id)
                     const img = await draw_200_img(stu_gacha)
@@ -1478,7 +1543,11 @@ ${i2}国服十连 爱丽丝
                 }
                 if (session.event.platform == 'qq' && mdswitch) {
                     const id = id_to_dbid(student[1])
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_cn).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     const stu_gacha = gacha_200(server_ids, id)
                     const img = await draw_200_img(stu_gacha)
                     const muzhu = cal_muzhu(stu_gacha)
@@ -1488,7 +1557,11 @@ ${i2}国服十连 爱丽丝
                     return
                 } else {
                     const id = id_to_dbid(student[1])
-                    const stuname = id_to_name(id)
+                    let fess = ''
+                    if ((pick[0].now_pick_cn).includes(id) && pick[0].fes_cn) {
+                        fess = '(fes)'
+                    }
+                    const stuname = id_to_name(id) + fess
                     await session.send('正在抽一井国服的' + stuname + '池子，请老师稍等哦')
                     const stu_gacha = gacha_200(server_ids, id)
                     const img = await draw_200_img(stu_gacha)
