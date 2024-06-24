@@ -33,7 +33,7 @@ npm install koishi-plugin-ba-plugin
 
 
 #### ⚙️技术架构
-- 该插件是 [koishi](https://github.com/koishijs/koishi) 框架的一部分，需在 koishi 框架中使用。
+- 本项目是 [koishi](https://github.com/koishijs/koishi) 机器人框架的一个插件，需在 koishi 中使用。
 
 ### 🙏致谢
 
