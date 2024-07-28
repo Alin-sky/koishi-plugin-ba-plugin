@@ -14,9 +14,12 @@
 
 </div>
 
+### 声明 
+
+###### 我是菜比，我是笨比🏳️🏳️
 
 ### 特性介绍 🌟
-###### 我是菜比，我是笨比
+
 #### 1.0版本亮点
 - 适配官方bot，自动更新json数据🔄
 - 全面重构旧功能
@@ -42,7 +45,8 @@ npm install koishi-plugin-ba-plugin
 
 感谢各位巨佬的指导🙏<br/>
 感谢各位巨佬帮忙测试🙏<br/>
-感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏
+感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏<br/>
+感谢巨佬的[什亭之匣](https://arona.icu/)的档线数据🙏
 
 
 <h2>🌈目前功能:</h2>
@@ -77,6 +81,10 @@ npm install koishi-plugin-ba-plugin
 ## 📃更新日志
 <details>
 <summary>点我查看更新日志详情</summary>
+
+### 1.1.2
+  - 更新数据
+  - 其他小修小补
 
 ### 1.1.1
   - 更新数据

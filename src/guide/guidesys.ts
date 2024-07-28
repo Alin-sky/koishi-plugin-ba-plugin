@@ -189,7 +189,7 @@ export const guide_systeam = ({
     }
     //await initia()
     try {
-      ctx.setInterval(async () => { await initia(), logger.info('⏱️ 定时攻略数据更新完毕') }, 6 * 60 * 60 * 1000)
+      setInterval(async () => { await initia(), logger.info('⏱️ 定时攻略数据更新完毕') }, 6 * 60 * 60 * 1000)
 
     } catch (e) {
       logger.info(e)
@@ -608,7 +608,7 @@ export const guide_systeam = ({
                   const wait_mess = await session.prompt(times)
                   if (!wait_mess) {
                     const timeoutmess = await session.send(session.text('.outtime_return'))
-                    ctx.setTimeout(() => {
+                    setTimeout(() => {
                       try {
                         session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
                       } catch (e) {
@@ -633,7 +633,7 @@ export const guide_systeam = ({
                     await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
                   } else {
                     const etext = await session.send(session.text('.num_error'))
-                    ctx.setTimeout(() => {
+                    setTimeout(() => {
                       try {
                         session.bot.deleteMessage(session.bot.selfId, etext[0])
                       } catch (e) {
@@ -683,7 +683,7 @@ export const guide_systeam = ({
               const text = [1, 2, 3, 4, 5, 6].map(
                 i => match_data[i] ? `${i}.${match_data[i]}` : '').filter(Boolean).join('\n');
               const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`);
-              ctx.setTimeout(() => {
+              setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, messid[0])
                   session.bot.deleteMessage(session.bot.selfId, imgmess[0])
@@ -696,7 +696,7 @@ export const guide_systeam = ({
               const wait_mess = await session.prompt(times)
               if (!wait_mess) {
                 const timeoutmess = await session.send(session.text('.outtime_return'))
-                ctx.setTimeout(() => {
+                setTimeout(() => {
                   try {
                     session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
                   } catch (e) {
@@ -718,7 +718,7 @@ export const guide_systeam = ({
                 return
               } else {
                 const etext = await session.send(session.text('.num_error'))
-                ctx.setTimeout(() => {
+                setTimeout(() => {
                   try {
                     session.bot.deleteMessage(session.bot.selfId, etext[0])
                   } catch (e) {
@@ -801,7 +801,7 @@ export const guide_systeam = ({
               const wait_mess = await session.prompt(times)
               if (!wait_mess) {
                 const timeoutmess = await session.send(session.text('.outtime_return'))
-                ctx.setTimeout(() => {
+                setTimeout(() => {
                   try {
                     session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
                   } catch (e) {
@@ -826,7 +826,7 @@ export const guide_systeam = ({
                 await session.send(h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
               } else {
                 const etext = await session.send(session.text('.num_error'))
-                ctx.setTimeout(() => {
+                setTimeout(() => {
                   try {
                     session.bot.deleteMessage(session.bot.selfId, etext[0])
                   } catch (e) {
@@ -876,7 +876,7 @@ export const guide_systeam = ({
               const text = [1, 2, 3, 4, 5, 6].map(
                 i => match_data[i] ? `${i}.${match_data[i]}` : '').filter(Boolean).join('\n');
               const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`);
-              ctx.setTimeout(() => {
+              setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, messid[0])
                   session.bot.deleteMessage(session.bot.selfId, imgmess[0])
@@ -888,7 +888,7 @@ export const guide_systeam = ({
               const text = [1, 2, 3, 4, 5, 6].map(
                 i => match_data[i] ? `${i}.${match_data[i]}` : '').filter(Boolean).join('\n');
               const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`);
-              ctx.setTimeout(() => {
+              setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.channelId, messid[0])
                 } catch (e) {
@@ -901,7 +901,7 @@ export const guide_systeam = ({
             const wait_mess = await session.prompt(times)
             if (!wait_mess) {
               const timeoutmess = await session.send(session.text('.outtime_return'))
-              ctx.setTimeout(() => {
+              setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
                 } catch (e) {
@@ -976,7 +976,7 @@ export const guide_systeam = ({
               const text = bui.map(
                 i => (`${i + 1}.${arodata.data[i].name}\n`)).join('')
               const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`)
-              ctx.setTimeout(() => {
+              setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, messid[0])
                   session.bot.deleteMessage(session.bot.selfId, imgmess[0])
@@ -996,7 +996,7 @@ export const guide_systeam = ({
               const text = bui.map(
                 i => (`${i + 1}.${arodata.data[i].name}\n`)).join('')
               const messid = await session.send(`${h('at', { id: session.userId })}\n${session.text('.match_text')}\n${text}`)
-              ctx.setTimeout(() => {
+              setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, messid[0])
                 } catch (e) {
@@ -1007,7 +1007,7 @@ export const guide_systeam = ({
             const wait_mess = await session.prompt(times)
             if (!wait_mess) {
               const timeoutmess = await session.send(session.text('.outtime_return'))
-              ctx.setTimeout(() => {
+              setTimeout(() => {
                 try {
                   session.bot.deleteMessage(session.bot.selfId, timeoutmess[0])
                 } catch (e) {

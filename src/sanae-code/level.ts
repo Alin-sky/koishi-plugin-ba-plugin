@@ -10,8 +10,8 @@ const expLevel: { [key: number]: number } = {
 };
 // 咖啡厅每小时体力生产
 
-const max_cn_lev = 80
-const max_in_lev = 87
+const max_cn_lev = 83
+const max_in_lev = 90
 const max_jp_lev = 90
 
 

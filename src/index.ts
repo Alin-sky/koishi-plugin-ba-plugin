@@ -54,8 +54,9 @@ export const usage = `
   <li> 抽卡模拟器 </li>
   <li> bawiki推图攻略 </li>
   <li> 活动查询 </li>
-  <li> 数据自动更新 <li>
+  <li> 数据自动更新 </li>
 </ul>
+
 
 <table>
   <thead>
@@ -76,6 +77,10 @@ export const usage = `
   </tbody>
 </table>
 
+
+<a href ="https://github.com/Alin-sky/koishi-plugin-ba-plugin/blob/main/src/mdreadme.md"><h4>MD模板介绍</h4></a>
+
+<div style="border:1px solid #CCC"></div> 
 `;
 
 export interface plugin_Config {
@@ -357,5 +362,4 @@ export async function apply(ctx: Context, config: Config) {
   ctx.plugin(cal_favorable, config)
   ctx.plugin(cal_level)
   ctx.plugin(active_get, config)
-
 }

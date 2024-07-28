@@ -155,7 +155,7 @@ export async function gacha_f(ctx: Context, config: Config) {
         //还要写一个选择不同资源服务的，等fmps完善了再写
         const i = await fmp.file_download(('https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/json/gacha_data.json'), root_json, "gacha_data.json")
         gacha_json = await fmp.json_parse(root_json + "/gacha_data.json")
-        ctx.setInterval(async () => gacha_json = await fmp.json_parse(root_json + "/gacha_data.json"), 3 * 60 * 60 * 1000)
+        //ctx.setInterval(async () => gacha_json = await fmp.json_parse(root_json + "/gacha_data.json"), 3 * 60 * 60 * 1000)
     } catch (e) {
         logger.info("出现错误" + e + "正在尝试本地更新抽卡数据")
         await init_gacha()
@@ -444,7 +444,7 @@ export async function gacha_f(ctx: Context, config: Config) {
                         {
                             buttons: [
                                 {
-                                    render_data: { label: "再抽一次", style: 2 },
+                                    render_data: { label: "再抽一次", style: 1 },
                                     action: {
                                         type: 2,
                                         permission: { type: 2 },
@@ -453,7 +453,7 @@ export async function gacha_f(ctx: Context, config: Config) {
                                     },
                                 },
                                 {
-                                    render_data: { label: "查看菜单", style: 2 },
+                                    render_data: { label: "查看菜单", style: 1 },
                                     action: {
                                         type: 2,
                                         permission: { type: 2 },
@@ -477,7 +477,7 @@ export async function gacha_f(ctx: Context, config: Config) {
             for (let i = 0; i < a; i++) {
                 button.push(
                     {
-                        render_data: { label: `国服:${all_pick_name[0][i]}`, style: 0 },
+                        render_data: { label: `国服:${all_pick_name[0][i]}`, style: 1 },
                         action: {
                             type: 2,
                             permission: { type: 2 },
@@ -495,7 +495,7 @@ export async function gacha_f(ctx: Context, config: Config) {
             for (let i = 0; i < a; i++) {
                 button.push(
                     {
-                        render_data: { label: `国际服:${all_pick_name[1][i]}`, style: 0 },
+                        render_data: { label: `国际服:${all_pick_name[1][i]}`, style: 1 },
                         action: {
                             type: 2,
                             permission: { type: 2 },
@@ -514,7 +514,7 @@ export async function gacha_f(ctx: Context, config: Config) {
             for (let i = 0; i < a; i++) {
                 button.push(
                     {
-                        render_data: { label: `日服:${all_pick_name[2][i]}`, style: 0 },
+                        render_data: { label: `日服:${all_pick_name[2][i]}`, style: 1 },
                         action: {
                             type: 2,
                             permission: { type: 2 },
@@ -558,7 +558,7 @@ export async function gacha_f(ctx: Context, config: Config) {
                         {
                             buttons: [
                                 {
-                                    render_data: { label: "日服一井", style: 2 },
+                                    render_data: { label: "日服一井", style: 4 },
                                     action: {
                                         type: 2,
                                         permission: { type: 2 },
@@ -567,7 +567,7 @@ export async function gacha_f(ctx: Context, config: Config) {
                                     },
                                 },
                                 {
-                                    render_data: { label: "国际服一井", style: 2 },
+                                    render_data: { label: "国际服一井", style: 4 },
                                     action: {
                                         type: 2,
                                         permission: { type: 2 },
@@ -576,7 +576,7 @@ export async function gacha_f(ctx: Context, config: Config) {
                                     },
                                 },
                                 {
-                                    render_data: { label: "国服一井", style: 2 },
+                                    render_data: { label: "国服一井", style: 4 },
                                     action: {
                                         type: 2,
                                         permission: { type: 2 },
@@ -1576,7 +1576,7 @@ ${i2}国服十连 爱丽丝
 
     //Alin’s ba random—manga v2 20244-04-05
     let manga_jsondata = await fmp.json_parse(`${root_json}/manga_main.json`)
-    ctx.setInterval(async () => manga_jsondata = await fmp.json_parse(`${root_json}/manga_main.json`), 3 * 60 * 60 * 1000)
+    //ctx.setInterval(async () => manga_jsondata = await fmp.json_parse(`${root_json}/manga_main.json`), 3 * 60 * 60 * 1000)
 
     if (!manga_jsondata) {
         logger.info('数据读取出错')
