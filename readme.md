@@ -82,8 +82,9 @@ npm install koishi-plugin-ba-plugin
 <details>
 <summary>点我查看更新日志详情</summary>
 
-### 1.1.2
+### 1.1.2 & 1.1.3
   - 更新数据
+  - koishi版本号填错咪
   - 其他小修小补
 
 ### 1.1.1
