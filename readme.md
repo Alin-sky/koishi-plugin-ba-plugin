@@ -1,4 +1,4 @@
-8<div align="center">
+<div align="center">
 
 # koishi-plugin-ba-plugin
 
