@@ -1,4 +1,4 @@
-<div align="center">
+8<div align="center">
 
 # koishi-plugin-ba-plugin
 
@@ -76,7 +76,7 @@ npm install koishi-plugin-ba-plugin
 ---
 ## ❤️支持
 
-#### [爱发电，感谢所有赞助咪😽](https://afdian.net/a/alin-sky)
+#### [爱发电，感谢大家的赞助咪😽](https://afdian.com/a/alin-sky)
 
 ## 📃更新日志
 <details>
