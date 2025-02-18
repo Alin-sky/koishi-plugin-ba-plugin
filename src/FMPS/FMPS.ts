@@ -492,6 +492,8 @@ export class FMPS {
 
         const imagePath = path.join(folderPath, imageName + '.jpg');
         if (fs.existsSync(imagePath)) {
+            
+            logger.info(imagePath)
             loggers ? logger.info('🟢 文件已存在，使用本地文件') : ''
         } else {
             for (let i = 1; i < 4; i++) {

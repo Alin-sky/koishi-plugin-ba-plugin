@@ -947,6 +947,9 @@ export const guide_systeam = ({
             if (canvas_fun) {
               if (arodata.code == 200) {
                 await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
+                logger.info("在这里发送的950")
+                logger.info(arodata.data[0].hash + '.jpg')
+                if(arodata.data[0].hash === "977fdd7d8e065dbbdb8c10b42d98b1c2") return "没有这样的攻略哦~"
                 return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
               }
               let i1 = 0, i2 = 0, i3 = 0, i4 = 0
