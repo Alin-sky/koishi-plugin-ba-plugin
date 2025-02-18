@@ -54,7 +54,7 @@ export const guideConfig: Schema<guideConfig> = Schema.intersect([
 ])
 
 //日服最大地图
-export const maxmap_sms = 26
+export const maxmap_sms = 28;
 
 export const synonyms: { [key: string]: string[] } = {
   "当前": ["目前", "现在", "此刻", "当下", "在办", "在开展", "在进行", "开展中", "进行中"],
@@ -947,9 +947,7 @@ export const guide_systeam = ({
             if (canvas_fun) {
               if (arodata.code == 200) {
                 await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodata.data[0].content), arodata.data[0].hash, log_on)
-                logger.info("在这里发送的950")
-                logger.info(arodata.data[0].hash + '.jpg')
-                if(arodata.data[0].hash === "977fdd7d8e065dbbdb8c10b42d98b1c2") return "没有这样的攻略哦~"
+                if (arodata.data[0].hash === "977fdd7d8e065dbbdb8c10b42d98b1c2") return "没有这样的攻略哦"
                 return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodata.data[0].hash + '.jpg'))).href))
               }
               let i1 = 0, i2 = 0, i3 = 0, i4 = 0

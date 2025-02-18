@@ -14,7 +14,7 @@ export interface guideConfig {
 }
 export declare const guide_qq: Schema<guide_qq>;
 export declare const guideConfig: Schema<guideConfig>;
-export declare const maxmap_sms = 26;
+export declare const maxmap_sms = 28;
 export declare const synonyms: {
     [key: string]: string[];
 };
