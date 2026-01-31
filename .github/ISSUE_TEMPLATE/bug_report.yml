@@ -1,0 +1,92 @@
+name: Bug 反馈
+description: 报告可能的异常行为
+title: '[BUG] '
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您进行 Bug 反馈。请起一个能够清晰描述您的问题的标题，便于开发者解决您的问题。
+
+        > [!important]
+        > 重要：如果要提出 **多个 Bug**，请为每一个 Bug 开一个 **单独** 的 Issue。
+        >
+        > 如果您不知道如何有效、精准地表述，我们建议您先阅读[《提问的智慧》](https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md)。
+
+        ### 检查清单
+
+        在反馈此问题之前，请先确认一下事项是否满足：
+
+        1. 我已更新到最新版。
+        2. 我已在 [Issues](https://github.com/Alin-sky/koishi-plugin-ba-plugin/issues?q=label%3Abug) 中检索，确认这一 Bug 未被提交过。
+        3. 我已知晓并同意，此处仅用于汇报程序中存在的问题。
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 确认检查清单
+      description: 在反馈此问题之前，请先确认一下事项是否满足：
+      options:
+        - label: 我已阅读以上清单并确认。
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Bug 信息
+
+        描述您遇到的 Bug。您可以附上截图、录屏、堆栈跟踪、日志等材料，便于开发者追踪问题。
+
+        > [!WARNING]
+        > 若您要上传材料，请等待材料文件上传完成后再发布 Issue。
+        >
+        > 若显示为 `![Uploading 文件名]()` 即为上传中，请等待链接变动后再提交。
+
+  - type: input
+    id: python-version
+    attributes:
+      label: koishi 版本
+      description: 这会帮助我们更快的复现问题
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 发生了什么?
+      description: 填写你认为的 ba-plugin 的不正常行为
+    validations:
+      required: true
+
+  - type: textarea
+    id: how-reproduce
+    attributes:
+      label: 如何复现
+      description: 填写应当如何操作才能触发这个不正常行为
+      placeholder: |
+        1. xxx
+        2. xxx
+        3. xxx
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-expected
+    attributes:
+      label: 期望的结果?
+      description: 填写你认为 ba-plugin 应当执行的正常行为
+
+  - type: textarea
+    id: Amrita-log
+    attributes:
+      label: koishi 运行日志
+      description: 请粘贴 koishi 运行后报错的控制台内容到此
+      render: shell
+
+
+  - type: checkboxes
+    id: revision
+    attributes:
+      label: 最后一步
+      description: 回顾您的回答
+      options:
+        - label: 我认为上述的描述已经足以详细，以允许开发人员能复现该问题。如果我的 Issue 没有按照上述的要求填写，可能会被 **无条件关闭**。
+          required: true
