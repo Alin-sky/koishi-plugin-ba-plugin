@@ -15,8 +15,6 @@ export const inject = { required: ['canvas', 'database'] }
 const log = "ba-plugin-gacha"
 const logger: Logger = new Logger(log)
 const random = new Random(() => Math.random())
-const url1 = 'https://schale.gg/images/student/icon/'
-const cosurl = 'https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/gacha-img/'
 
 //表
 declare module 'koishi' {
@@ -63,12 +61,55 @@ export async function gacha_f(ctx: Context, config: Config) {
      * 通过wiki数据获取当前up角色
      */
     async function get_gacha_stu() {
-        const utimetamp = Math.floor(Date.now() / 1000);
-        const wiki_data = await ctx.http.get(`https://ba.gamekee.com/v1/activity/query?active_at=${utimetamp}`, {
+        const wiki_data = await ctx.http.get(`https://ba.gamekee.com/v1/cardpool/query-list?status=1`, {
             headers: {
-                "game-alias": "ba"
+                "Game-Alias": "ba"
             }
         })
+       /**
+        # 请求示例返回：
+        {
+            "code":0,
+            "msg":"成功",
+            "data":[
+                {
+                    "id":579,
+                    "name":"花凛(兔女郎)",
+                    "start_at":1769479200,
+                    "end_at":1770688740,
+                    "tag":"",
+                    "icon":"//cdnimg-v2.gamekee.com/wiki2.0/images/w_300/h_338/829/399789/2026/0/27/705888.png",
+                    "is_del":0,
+                    "created_at":1769481729,
+                    "updated_at":1769481729,
+                    "desc":"",
+                    "game_id":829,
+                    "server_id":17,
+                    "image_list":"",
+                    "star":"",
+                    "name_alias":"花凛(兔女郎)",
+                    "kind_id":6,
+                    "link_url":"https://www.gamekee.com/ba/tj/89275.html",
+                    "tag_id":"6,9",
+                    "content_card_skin_id":0,
+                    "thumb_image":"",
+                    "sort":1,
+                    "reward_rules":"",
+                    "content_id":0,
+                    "name_code":"",
+                    "damage_type":"",
+                    "attr":"",
+                    "status":1
+                },
+                ......
+            ],
+            "meta":
+                {
+                    "request_id":"request:74ab1a25-6b92-4f76-82de-84e146656d9f",
+                    "trace_id":"trace:139e3b9e-88a6-4f78-9103-907d81438632"
+                }
+        }
+        */
         let now_pick_cn = []
         let now_pick_in = []
         let now_pick_jp = []
@@ -76,35 +117,32 @@ export async function gacha_f(ctx: Context, config: Config) {
         let pick_in_time = []
         let pick_jp_time = []
         for (let i = 0; i < wiki_data.data.length; i++) {
-            if (/卡池/.test(wiki_data.data[i].title) && utimetamp >= (wiki_data.data[i].begin_at) && utimetamp <= (wiki_data.data[i].end_at)) {
-                const txt = wiki_data.data[i].title
-                const regex = /[\u4e00-\u9fa5]+/g
-                const matches = txt.match(regex);
-                matches ? matches.join('') : '';
-                if (wiki_data.data[i].pub_area == '国服') {
-                    pick_cn_time.push(fmp.formatTimestamp(wiki_data.data[i].begin_at))
-                    pick_cn_time.push(fmp.formatTimestamp(wiki_data.data[i].end_at))
-                    for (let ii = 1; ii < matches.length; ii++) {
-                        const stuid = await StudentMatch(matches[ii])
-                        const stuids = id_to_dbid(stuid[1])
-                        now_pick_cn.push(stuids)
-                    }
-                } else if (wiki_data.data[i].pub_area == '日服') {
-                    pick_jp_time.push(fmp.formatTimestamp(wiki_data.data[i].begin_at))
-                    pick_jp_time.push(fmp.formatTimestamp(wiki_data.data[i].end_at))
-                    for (let ii = 1; ii < matches.length; ii++) {
-                        const stuid = await StudentMatch(matches[ii])
-                        const stuids = id_to_dbid(stuid[1])
-                        now_pick_jp.push(stuids)
-                    }
-                } else if (wiki_data.data[i].pub_area == '国际服') {
-                    pick_in_time.push(fmp.formatTimestamp(wiki_data.data[i].begin_at))
-                    pick_in_time.push(fmp.formatTimestamp(wiki_data.data[i].end_at))
-                    for (let ii = 1; ii < matches.length; ii++) {
-                        const stuid = await StudentMatch(matches[ii])
-                        const stuids = id_to_dbid(stuid[1])
-                        now_pick_in.push(stuids)
-                    }
+            const txt = wiki_data.data[i].title
+            const matches = txt.match(wiki_data.data[i].name_alias);
+            matches ? matches.join('') : '';
+            if (wiki_data.data[i].server_id == 16) {
+                pick_cn_time.push(fmp.formatTimestamp(wiki_data.data[i].end_at))
+                pick_cn_time.push(fmp.formatTimestamp(wiki_data.data[i].start_at))
+                for (let ii = 1; ii < matches.length; ii++) {
+                    const stuid = await StudentMatch(matches[ii])
+                    const stuids = id_to_dbid(stuid[1])
+                    now_pick_cn.push(stuids)
+                }
+            } else if (wiki_data.data[i].server_id == 15) {
+                pick_jp_time.push(fmp.formatTimestamp(wiki_data.data[i].start_at))
+                pick_jp_time.push(fmp.formatTimestamp(wiki_data.data[i].end_at))
+                for (let ii = 1; ii < matches.length; ii++) {
+                    const stuid = await StudentMatch(matches[ii])
+                    const stuids = id_to_dbid(stuid[1])
+                    now_pick_jp.push(stuids)
+                }
+            } else if (wiki_data.data[i].server_id == 17) {
+                pick_in_time.push(fmp.formatTimestamp(wiki_data.data[i].start_at))
+                pick_in_time.push(fmp.formatTimestamp(wiki_data.data[i].end_at))
+                for (let ii = 1; ii < matches.length; ii++) {
+                    const stuid = await StudentMatch(matches[ii])
+                    const stuids = id_to_dbid(stuid[1])
+                    now_pick_in.push(stuids)
                 }
             }
         }
@@ -128,7 +166,7 @@ export async function gacha_f(ctx: Context, config: Config) {
 
     async function init_gacha() {
         try {
-            const dbdata = await ctx.http.get("https://schale.gg/data/cn/students.json")
+            const dbdata = await ctx.http.get("https://schaledb.com/data/cn/students.json")
             let in_json_create_data = [[], []]
             const autoupd = await get_gacha_stu()
             in_json_create_data[0].push(autoupd)
@@ -152,7 +190,7 @@ export async function gacha_f(ctx: Context, config: Config) {
 
     let gacha_json
     try {
-        //还要写一个选择不同资源服务的，等fmps完善了再写
+        //TODO 还要写一个选择不同资源服务的，等fmps完善了再写
         const i = await fmp.file_download(('https://1145141919810-1317895529.cos.ap-chengdu.myqcloud.com/json/gacha_data.json'), root_json, "gacha_data.json")
         gacha_json = await fmp.json_parse(root_json + "/gacha_data.json")
         //ctx.setInterval(async () => gacha_json = await fmp.json_parse(root_json + "/gacha_data.json"), 3 * 60 * 60 * 1000)
@@ -867,7 +905,6 @@ export async function gacha_f(ctx: Context, config: Config) {
         const pickp = stu ? 0.007 : 0
 
         let sername = ''
-        let suoying = 0
         switch (IsReleased) {
             case 0:
                 sername = 'jp'
@@ -1002,7 +1039,7 @@ ${i2}国服十连 爱丽丝
         })
 
 
-    //不想封装了，能跑就行
+    //TODO 不想封装了，能跑就行
     ctx.command("ba抽卡/日服十连 <message:text>")
         .action(async ({ session }, message) => {
             const uid = session.event.user.id
