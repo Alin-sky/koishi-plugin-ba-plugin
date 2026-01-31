@@ -61,7 +61,7 @@ export async function gacha_f(ctx: Context, config: Config) {
      * 通过wiki数据获取当前up角色
      */
     async function get_gacha_stu() {
-        const wiki_data = await ctx.http.get(`https://ba.gamekee.com/v1/cardpool/query-list?status=1`, {
+        const wiki_data = await ctx.http.get(`https://ba.gamekee.com/v1/cardPool/query-list?status=1`, {
             headers: {
                 "Game-Alias": "ba"
             }
@@ -1632,4 +1632,5 @@ ${i2}国服十连 爱丽丝
         })
     logger.info('🟢 随机漫画加载完毕')
 }
+
 
