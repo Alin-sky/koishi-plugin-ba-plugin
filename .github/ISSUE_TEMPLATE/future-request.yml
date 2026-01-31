@@ -5,7 +5,7 @@ labels: [enhancement]
 body:
   - type: markdown
     attributes:
-      value: 
+      value: |
         感谢您贡献您的想法。请起一个能够清晰概括此功能的标题，便于开发者了解您的想法。
 
         ### 检查清单
@@ -23,7 +23,7 @@ body:
       label: 确认检查清单
       description: 在反馈此问题之前，请先确认一下事项是否满足：
       options:
-        - label: 
+        - label: |
             我已阅读以上清单并确认。
           required: true
 
