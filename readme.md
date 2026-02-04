@@ -18,38 +18,17 @@
 
 ###### 我是菜比，我是笨比🏳️🏳️
 
-### 特性介绍 🌟
+## 🌟特性介绍
 
 #### 1.0版本亮点
 - 适配官方bot，自动更新json数据🔄
 - 全面重构旧功能
 - 优化和修复已知问题🛠️
 
-#### 📦安装
-```
-npm install koishi-plugin-ba-plugin
-```
-
-
-#### 🔗快速链接
-- 体验插件功能：与我们的 [QQ官方机器人](https://qun.qq.com/qunpro/robot/qunshare?robot_uin=2854197266&robot_appid=102062652&biz_type=0) 交互。
-
-
 #### ⚙️技术架构
 - 本项目是 [koishi](https://github.com/koishijs/koishi) 机器人框架的一个插件，需在 koishi 中使用。
 
-### 🙏致谢
-
-交互和功能设计灵感借鉴了[arona](https://github.com/diyigemt/arona)
-和[NoneBot-Plugin-BAWiki](https://github.com/lgc-NB2Dev/nonebot-plugin-bawiki)
-
-感谢各位巨佬的指导🙏<br/>
-感谢各位巨佬帮忙测试🙏<br/>
-感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏<br/>
-感谢巨佬的[什亭之匣](https://arona.icu/)的档线数据🙏
-
-
-<h2>🌈目前功能:</h2>
+## 🌈目前功能
 
 - [x] Aronabot的攻略图 
 - [x] 角色好感升级所需计算
@@ -61,10 +40,19 @@ npm install koishi-plugin-ba-plugin
 - [x] 活动查询 
 - [x] 数据自动更新 
 
+## 🛠️使用
 
+#### 📦安装部署
+```bash
+npm install koishi-plugin-ba-plugin
+```
+
+#### 🔗快速链接
+- 体验插件功能：与我们的 [QQ官方机器人](https://qun.qq.com/qunpro/robot/qunshare?robot_uin=2854197266&robot_appid=102062652&biz_type=0) 交互。
 
 ---
-### 🙏项目感谢
+## 🙏项目感谢
+
 | 贡献者 （按首字母排序，不分先后）           | 主要贡献                                                        |
 | :------------------------------------------ | :-------------------------------------------------------------- |
 | [diyigemt](https://github.com/diyigemt)     | 开放了API，提供了[Arona](https://github.com/diyigemt/arona)数据 |
@@ -73,10 +61,17 @@ npm install koishi-plugin-ba-plugin
 | [Sanaene](https://github.com/Sanaene)       | 攒钻计算、好感计算、等级计算、学生匹配、总力模拟等算法，tql     |
 | [shangxue](https://www.npmjs.com/~shangxue) | bawiki推图攻略的数据，还有些技术帮助~                           |
                          
----
+交互和功能设计灵感借鉴了[arona](https://github.com/diyigemt/arona)
+和[NoneBot-Plugin-BAWiki](https://github.com/lgc-NB2Dev/nonebot-plugin-bawiki)
+
+感谢各位巨佬的指导🙏<br/>
+感谢各位巨佬帮忙测试🙏<br/>
+感谢巨佬的[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库🙏<br/>
+感谢巨佬的[什亭之匣](https://arona.icu/)的档线数据🙏
+
 ## ❤️支持
 
-#### [爱发电，感谢大家的赞助咪😽](https://afdian.com/a/alin-sky)
+[爱发电](https://afdian.com/a/alin-sky)，感谢大家的赞助咪😽
 
 ## 📃更新日志
 <details>
