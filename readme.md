@@ -18,6 +18,9 @@
 
 ###### 我是菜比，我是笨比🏳️🏳️
 
+### 🔗快速链接
+- 体验插件功能：与我们的 [**QQ官方机器人AL_1S**](https://qun.qq.com/qunpro/robot/qunshare?robot_uin=2854197266&robot_appid=102062652&biz_type=0) 交互。
+
 ## 🌟特性介绍
 
 #### 1.0版本亮点
@@ -46,10 +49,6 @@
 ```bash
 npm install koishi-plugin-ba-plugin
 ```
-
-#### 🔗快速链接
-- 体验插件功能：与我们的 [QQ官方机器人](https://qun.qq.com/qunpro/robot/qunshare?robot_uin=2854197266&robot_appid=102062652&biz_type=0) 交互。
-
 ---
 ## 🙏项目感谢
 
@@ -60,6 +59,7 @@ npm install koishi-plugin-ba-plugin
 | [lgc-NB2Dev](https://github.com/lgc-NB2Dev) | 提供[ba-wiki](https://github.com/lgc-NB2Dev/bawiki-data)数据库  |
 | [Sanaene](https://github.com/Sanaene)       | 攒钻计算、好感计算、等级计算、学生匹配、总力模拟等算法，tql     |
 | [shangxue](https://www.npmjs.com/~shangxue) | bawiki推图攻略的数据，还有些技术帮助~                           |
+| [xingkuangye](https://github.com/xingkuangye) |                     |
                          
 交互和功能设计灵感借鉴了[arona](https://github.com/diyigemt/arona)
 和[NoneBot-Plugin-BAWiki](https://github.com/lgc-NB2Dev/nonebot-plugin-bawiki)
