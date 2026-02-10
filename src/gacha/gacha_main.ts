@@ -55,6 +55,7 @@ export async function gacha_f(ctx: Context, config: Config) {
 
     var mdswitch: boolean = false
 
+    //测试推送功能
     const sms_data = await fmp.json_parse(`${root_json}/sms_studata_toaro_stu.json`)
 
     /**
