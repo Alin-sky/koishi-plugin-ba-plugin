@@ -3,9 +3,25 @@ import { error } from "console";
 import * as path from 'path';
 import * as fs from 'fs'
 import zh from "zh_cn";
+
 import { simpleLine2TL } from 'chinese-s2t-pro';
 import crypto_1 from 'crypto';
 import { StudentMatch } from "../Snae_match/match";
+
+export interface md_format {
+    msg_type: number;
+    msg_id: string;
+    markdown: {
+        content?
+    };
+    keyboard?: {
+        content: {
+            rows: Array<{
+                buttons: any[];
+            }>;
+        };
+    };
+}
 
 //ba-plugin-FMPS-V1
 //Alin's File Management and Processing Systems v1.0-beta 2024-04-05 
@@ -466,7 +482,7 @@ export class FMPS {
         await refreshToken.bind(this)(bot);
         const payload = new FormData();
         payload.append('msg_id', '0');
-        payload.append('file_image', new Blob([data], { type: 'image/png' }), 'image.jpg');
+        payload.append('file_image', new Blob([data.buffer as ArrayBuffer], { type: 'image/png' }), 'image.jpg');
         await this.ctx.http.post(`https://api.sgroup.qq.com/channels/${bot.channelId}/messages`, payload, {
             headers: {
                 Authorization: `QQBot ${bot['token']}`,
@@ -569,6 +585,36 @@ export class FMPS {
         const offsetString = `${sign}${hoursOffset}:${minutesOffset}`;
         // 返回最终的格式化字符串
         return `${dateTime}${offsetString}`;
+    }
+
+
+    /**
+     * 发送Markdown格式消息
+     * 根据会话平台和类型自动选择私聊或群聊发送方式
+     * 
+     * @param session - 会话对象，包含平台信息和用户信息
+     * @param md - Markdown格式消息内容
+     */
+    async send_md_mess(session, md: md_format) {
+        try {
+            if (session.event.platform == 'qq') {
+                if (session.event.guild) {
+                    await session.qq.sendMessage(session.channelId, md)
+                } else {
+                    await session.qq.sendPrivateMessage(session.event.user.id, md)
+                }
+            } else if (session.event.platform == 'qqguild') {
+                await session.qqguild.sendMessage(session.event.channel.id, md)
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+    async get_wi_hi(imgbuff: Buffer) {
+        const image = await this.ctx.canvas.loadImage(imgbuff);
+        let width = image.naturalWidth || image['width'];
+        let height = image.naturalHeight || image['height'];
+        return { width, height };
     }
 
 

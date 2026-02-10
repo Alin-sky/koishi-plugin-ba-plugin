@@ -18,7 +18,7 @@ export const inject = ['canvas', 'puppeteer', "database"]
 export const name = "ba-plugin";
 export const usage = `
 <div style="font-size:45px; font-weight:bold; font-style: italic; text-align:center;">
-<span style="color: #66ccff;">BA</span>Plugin
+<span style="color: #66ccff;">BA</span>-Plugin
 <div style="border:1px solid #CCC"></div> 
 
 </div>
@@ -26,6 +26,7 @@ export const usage = `
 
 <div>
 <div style="text-align:center;"> <h2>注意</h2></div>
+<h3>目前QQ官方机器人情况复杂，暂无精力对所有情况进行适配和自定义设置，如果您有QQ官方机器人适配相关的需求或问题，可以提交issue或联系alin</h3>
 <h4>1.0版本对绝大部分功能进行了重构，指令用法可能改变</h4>
 <h4>第一次启动请等待下载资源1-2分钟，指令加载不出来请重启commands插件</h4>
 <h4>如果有报错可尝试开启“每次重载都下载资源”，更新下资源</h4>
@@ -34,6 +35,7 @@ export const usage = `
 <div style="border:1px solid #CCC"></div> 
 <h2>数据来源于:</h2>
 <ul>
+  <li> <a href="https://kivo.wiki/"> kivo wiki  </a> </li>
   <li> <a href="https://ba.gamekee.com/"> bawiki  </a> </li>
   <li> <a href="https://doc.arona.diyigemt.com/"> AronaBot </a> </li>
   <li> <a href="https://schale.gg/"> shale.gg </a> </li>
@@ -94,12 +96,30 @@ export const plugin_Config: Schema<plugin_Config> = Schema.intersect([
     autoupd: Schema.union([
       Schema.const('本地').description('本地'),
       Schema.const('云端').description('云端'),
-    ]).description('选择数据更新方法  本地更新为实验性功能，不能保证稳定性和数据准确性').experimental().role('radio').default("云端"),
+    ]).description('选择数据更新方法 **请优先选择云端** 本地更新为实验性功能，不能保证稳定性和数据准确性').experimental().role('radio').default("云端"),
     draw_modle: Schema.union([
       Schema.const('canvas').description('canvas'),
       Schema.const('puppeteer').description('puppeteer'),
     ]).description('选择渲染方法').role('radio').required(),
-    auto_update: Schema.boolean().default(true).experimental().description('是否每次重载都下载资源'),
+    auto_update: Schema.boolean().default(true).experimental().description('是否每次重载都下载资源 **建议关闭**'),
+      inte: Schema.intersect([
+    Schema.object({
+      type: Schema.union(['模板md', '原生md']).required(),
+    }).description('QQ markdown设置'),
+    Schema.union([
+      Schema.object({
+        type: Schema.const('百度审核').required(),
+        id: Schema.string().description('APP ID'),
+        APIKey: Schema.string().description('API Key').role('secret'),
+        SKey: Schema.string().description('Secret Key').role('secret')
+
+      }).description('模板md'),
+      Schema.object({
+        type: Schema.const('原生md').required(),
+        callback_butt: Schema.boolean().description('是否使用回调按钮，开启后一些按钮将会替换成回调按钮，该权限需要邮件给qq开放平台申请')
+      }).description('原生md'),
+    ]),
+  ])
   }).description('插件基础设置'),
 ])
 
@@ -109,6 +129,17 @@ export interface Config {
   qqconfig: guide_qq
   guide: guideConfig
 }
+
+export interface inteConfig {
+  returns: string
+  type: '百度审核' | '自定义审核'
+  id?: string
+  APIKey?: string
+  SKey?: string
+  urls?: string
+}
+
+
 //koishi控制台
 export const Config: Schema<Config> = Schema.object({
   plugin_config: plugin_Config,

@@ -1,6 +1,7 @@
 import { Context, h, Logger, Random, Schema } from "koishi";
 import { rootF } from "../FMPS/FMPS_F";
 import { FMPS } from "../FMPS/FMPS";
+import type { md_format } from "../FMPS/FMPS";
 import { } from "@satorijs/adapter-qq";
 import { Config } from '..';
 import { StudentMatch } from "../Snae_match/match";
@@ -66,50 +67,50 @@ export async function gacha_f(ctx: Context, config: Config) {
                 "Game-Alias": "ba"
             }
         })
-       /**
-        # 请求示例返回：
-        {
-            "code":0,
-            "msg":"成功",
-            "data":[
-                {
-                    "id":579,
-                    "name":"花凛(兔女郎)",
-                    "start_at":1769479200,
-                    "end_at":1770688740,
-                    "tag":"",
-                    "icon":"//cdnimg-v2.gamekee.com/wiki2.0/images/w_300/h_338/829/399789/2026/0/27/705888.png",
-                    "is_del":0,
-                    "created_at":1769481729,
-                    "updated_at":1769481729,
-                    "desc":"",
-                    "game_id":829,
-                    "server_id":17,
-                    "image_list":"",
-                    "star":"",
-                    "name_alias":"花凛(兔女郎)",
-                    "kind_id":6,
-                    "link_url":"https://www.gamekee.com/ba/tj/89275.html",
-                    "tag_id":"6,9",
-                    "content_card_skin_id":0,
-                    "thumb_image":"",
-                    "sort":1,
-                    "reward_rules":"",
-                    "content_id":0,
-                    "name_code":"",
-                    "damage_type":"",
-                    "attr":"",
-                    "status":1
-                },
-                ......
-            ],
-            "meta":
-                {
-                    "request_id":"request:74ab1a25-6b92-4f76-82de-84e146656d9f",
-                    "trace_id":"trace:139e3b9e-88a6-4f78-9103-907d81438632"
-                }
-        }
-        */
+        /**
+         # 请求示例返回：
+         {
+             "code":0,
+             "msg":"成功",
+             "data":[
+                 {
+                     "id":579,
+                     "name":"花凛(兔女郎)",
+                     "start_at":1769479200,
+                     "end_at":1770688740,
+                     "tag":"",
+                     "icon":"//cdnimg-v2.gamekee.com/wiki2.0/images/w_300/h_338/829/399789/2026/0/27/705888.png",
+                     "is_del":0,
+                     "created_at":1769481729,
+                     "updated_at":1769481729,
+                     "desc":"",
+                     "game_id":829,
+                     "server_id":17,
+                     "image_list":"",
+                     "star":"",
+                     "name_alias":"花凛(兔女郎)",
+                     "kind_id":6,
+                     "link_url":"https://www.gamekee.com/ba/tj/89275.html",
+                     "tag_id":"6,9",
+                     "content_card_skin_id":0,
+                     "thumb_image":"",
+                     "sort":1,
+                     "reward_rules":"",
+                     "content_id":0,
+                     "name_code":"",
+                     "damage_type":"",
+                     "attr":"",
+                     "status":1
+                 },
+                 ......
+             ],
+             "meta":
+                 {
+                     "request_id":"request:74ab1a25-6b92-4f76-82de-84e146656d9f",
+                     "trace_id":"trace:139e3b9e-88a6-4f78-9103-907d81438632"
+                 }
+         }
+         */
         let now_pick_cn = []
         let now_pick_in = []
         let now_pick_jp = []
@@ -1611,7 +1612,7 @@ ${i2}国服十连 爱丽丝
 
     logger.info('🟢 抽卡模拟器加载完毕')
 
-    //Alin’s ba random—manga v2 20244-04-05
+    //Alin’s ba random—manga v2 2024-04-05
     let manga_jsondata = await fmp.json_parse(`${root_json}/manga_main.json`)
     //ctx.setInterval(async () => manga_jsondata = await fmp.json_parse(`${root_json}/manga_main.json`), 3 * 60 * 60 * 1000)
 
@@ -1620,11 +1621,58 @@ ${i2}国服十连 爱丽丝
         return
     }
     ctx.command('抽漫画', '随机抽取ba官方漫画')
-        .action(async () => {
+        .action(async ({ session }) => {
             try {
                 const ii = random.int(0, manga_jsondata.length)
                 console.log(ii)
-                return h.image(manga_jsondata[ii].wikiurl)
+                console.log(manga_jsondata[ii].wikiurl)
+                const manga = await ctx.http.get(manga_jsondata[ii].wikiurl, {
+                    headers: {
+                        Referer: 'https://www.gamekee.com/'
+                    },
+                    responseType: 'arraybuffer'
+                })
+                const manga_buff = Buffer.from(manga as ArrayBuffer)
+                const channe_url = await fmp.img_to_channel(manga_buff, session.bot.config.id, session.bot.config.secret, qqguild_id)
+                const wh = await fmp.get_wi_hi(manga_buff)
+                console.log(channe_url)
+                let md: md_format = {
+                    msg_id: session.messageId,
+                    msg_type: 2,
+                    markdown: {
+                        content: "![img #" + Math.floor((wh.width)/4) + "px #" + Math.floor((wh.height)/4) + "px]" + "(" + channe_url + ")\n"
+                    },
+                    keyboard: {
+                        content: {
+                            rows: [
+                                {
+                                    buttons: [
+                                        {
+                                            render_data: { label: "再抽一张", style: 1 },
+                                            action: {
+                                                type: 2, // 指令按钮
+                                                permission: { type: 2 },
+                                                data: `/抽漫画`,
+                                                enter: true,
+                                            },
+                                        },
+                                        
+                                        {
+                                          render_data: { label: "菜单", visited_label: "🟢菜单", style: 1 },
+                                          action: {
+                                            type: 1, // 指令按钮
+                                            permission: { type: 2 },
+                                            data: `/next_page_1`,
+                                            //enter: true
+                                          },
+                                        },
+                                    ]
+                                },
+                            ],
+                        },
+                    },
+                }
+                fmp.send_md_mess(session,md)
             } catch (e) {
                 logger.info(e)
                 return '呜呜呜，出错了'

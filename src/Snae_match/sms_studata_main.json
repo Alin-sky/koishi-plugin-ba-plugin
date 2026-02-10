@@ -331,12 +331,10 @@
       "女儿",
       "盒",
       "光哟！",
-      "希卡利哟！",
       "电磁炮",
       "光之剑：超新星",
       "扫地机器人",
-      "吃头发",
-      "key"
+      "吃头发"
     ]
   },
   {
@@ -1504,13 +1502,14 @@
     "Name_en": "rumi",
     "Name_zh_tw": "瑠美",
     "Name_kr": "루미",
-    "Name_zh_cn": "流美",
+    "Name_zh_cn": "瑠海",
     "Name_zh_ft": "瑠美",
     "NickName": [
       "liumei",
       "炒饭婆",
       "炒饭奶",
-      "炒饭波奇"
+      "炒饭波奇",
+      "liuhai"
     ]
   },
   {
@@ -1522,7 +1521,7 @@
     "Name_en": "mina",
     "Name_zh_tw": "美奈",
     "Name_kr": "미나",
-    "Name_zh_cn": "弥奈",
+    "Name_zh_cn": "南",
     "Name_zh_ft": "弥奈",
     "NickName": [
       "nan",
@@ -1628,12 +1627,12 @@
     "Id": "10075",
     "Id_db": 10075,
     "FirstName_jp": "姫木",
-    "FirstName_zh": "姫木",
+    "FirstName_zh": "姬木",
     "Name_jp": "メル",
     "Name_en": "meru",
     "Name_zh_tw": "愛瑠",
     "Name_kr": "메루",
-    "Name_zh_cn": "芽留",
+    "Name_zh_cn": "芽瑠",
     "Name_zh_ft": "芽瑠",
     "NickName": [
       "meilu",
@@ -1912,7 +1911,7 @@
     "Name_en": "aru (dress)",
     "Name_zh_tw": "亞瑠(禮服)",
     "Name_kr": "아루(드레스)",
-    "Name_zh_cn": "阿露(礼服)",
+    "Name_zh_cn": "爱露(礼服)",
     "Name_zh_ft": "阿露(礼服)",
     "NickName": [
       "alou(lifu)",
@@ -1920,7 +1919,8 @@
       "礼阿露",
       "阿露礼服",
       "礼服阿露",
-      "礼露"
+      "爱露礼服",
+      "礼服爱露"
     ]
   },
   {
@@ -2055,7 +2055,7 @@
     "Name_en": "kanna (swimsuit)",
     "Name_zh_tw": "環奈(泳裝)",
     "Name_kr": "칸나(수영복)",
-    "Name_zh_cn": "环奈(泳装)",
+    "Name_zh_cn": "康娜(泳装)",
     "Name_zh_ft": "环奈(泳装)",
     "NickName": [
       "yezhu(yongzhuang)",
@@ -2074,7 +2074,11 @@
       "环奈水",
       "环奈水着",
       "水着环奈",
-      "环奈泳装"
+      "kangnuo(yongzhuang)",
+      "康娜水",
+      "康娜水着",
+      "水着康娜",
+      "康娜泳装"
     ]
   },
   {
@@ -2124,7 +2128,8 @@
       "枪大叔",
       "肘星野",
       "哈基野",
-      "xingye(linzhan)"
+      "xingye(linzhan)",
+      "xingye(wuzhuang)"
     ]
   },
   {
@@ -2204,12 +2209,15 @@
     "Name_en": "marina (qipao)",
     "Name_zh_tw": "瑪麗娜(旗袍)",
     "Name_kr": "마리나(치파오)",
-    "Name_zh_cn": "玛利娜(旗袍)",
+    "Name_zh_cn": "真里奈(旗袍)",
     "Name_zh_ft": "玛利娜(旗袍)",
     "NickName": [
       "malinuo(qipao)",
       "玛利娜旗袍",
-      "旗袍玛利娜"
+      "旗袍玛利娜",
+      "zhenlinai(qipao)",
+      "真里奈旗袍",
+      "旗袍真里奈"
     ]
   },
   {
@@ -2357,15 +2365,19 @@
     "Name_en": "neru (uniform)",
     "Name_zh_tw": "寧瑠(制服)",
     "Name_kr": "네루(교복)",
-    "Name_zh_cn": "尼露(制服)",
+    "Name_zh_cn": "妮露(制服)",
     "Name_zh_ft": "尼露(制服)",
     "NickName": [
       "nilou(zhifu)",
-      "尼露制服",
-      "制服尼露",
-      "尼露校服",
-      "校服尼露",
-      "jk尼露"
+      "尼禄制服",
+      "制服尼禄",
+      "尼禄校服",
+      "校服尼禄",
+      "jk尼禄",
+      "妮露制服",
+      "制服妮露",
+      "妮露校服",
+      "校服妮露"
     ]
   },
   {
@@ -2390,6 +2402,442 @@
   },
   {
     "Id": "10113",
+    "Id_db": 10113,
+    "FirstName_jp": "氷室",
+    "FirstName_zh": "冰室",
+    "Name_jp": "セナ(私服)",
+    "Name_en": "sena (casual)",
+    "Name_zh_tw": "瀬奈(私服)",
+    "Name_kr": "세나(사복)",
+    "Name_zh_cn": "濑名(便服)",
+    "Name_zh_ft": "濑名(便服)",
+    "NickName": [
+      "セナ(sifu)",
+      "私车",
+      "连衣裙濑名",
+      "私服濑名",
+      "私服瀬奈",
+      "laiming(bianfu)",
+      "濑名私服",
+      "濑名便服",
+      "便服濑名"
+    ]
+  },
+  {
+    "Id": "10114",
+    "Id_db": 10114,
+    "FirstName_jp": "牛牧",
+    "FirstName_zh": "牛牧",
+    "Name_jp": "ジュリ(アルバイト)",
+    "Name_en": "juri (parttime)",
+    "Name_zh_tw": "茱莉(打工)",
+    "Name_kr": "주리(아르바이트)",
+    "Name_zh_cn": "朱莉(打工)",
+    "Name_zh_ft": "茱莉(打工)",
+    "NickName": [
+      "ジュリ(アルバイト)",
+      "打工茉莉",
+      "工牛",
+      "zhuli(dagong)",
+      "朱莉打工",
+      "打工朱莉"
+    ]
+  },
+  {
+    "Id": "10115",
+    "Id_db": 10115,
+    "FirstName_jp": "野正",
+    "FirstName_zh": "野正",
+    "Name_jp": "レイ",
+    "Name_en": "rei",
+    "Name_zh_tw": "莉",
+    "Name_kr": "레이",
+    "Name_zh_cn": "丽",
+    "Name_zh_ft": "丽",
+    "NickName": [
+      "li",
+      "雅迪",
+      "棒球"
+    ]
+  },
+  {
+    "Id": "10116",
+    "Id_db": 10116,
+    "FirstName_jp": "錠前",
+    "FirstName_zh": "锭前",
+    "Name_jp": "サオリ(ドレス)",
+    "Name_en": "saori (dress)",
+    "Name_zh_tw": "沙織(禮服)",
+    "Name_kr": "사오리(드레스)",
+    "Name_zh_cn": "纱织(礼服)",
+    "Name_zh_ft": "纱织(礼服)",
+    "NickName": [
+      "サオリ(ドレス)",
+      "礼服纱织",
+      "礼纱织",
+      "shazhi(lifu)",
+      "纱织礼",
+      "纱织礼服"
+    ]
+  },
+  {
+    "Id": "10117",
+    "Id_db": 10117,
+    "FirstName_jp": "橘",
+    "FirstName_zh": "橘",
+    "Name_jp": "ヒカリ",
+    "Name_en": "hikari",
+    "Name_zh_tw": "光",
+    "Name_kr": "히카리",
+    "Name_zh_cn": "光",
+    "Name_zh_ft": "光",
+    "NickName": [
+      "guang",
+      "ヒカリ",
+      "小光",
+      "牙疼",
+      "可爱哈密瓜"
+    ]
+  },
+  {
+    "Id": "10118",
+    "Id_db": 10118,
+    "FirstName_jp": "橘",
+    "FirstName_zh": "橘",
+    "Name_jp": "ノゾミ",
+    "Name_en": "nozomi",
+    "Name_zh_tw": "希望",
+    "Name_kr": "노조미",
+    "Name_zh_cn": "望",
+    "Name_zh_ft": "望",
+    "NickName": [
+      "ノゾミ",
+      "wang",
+      "双马尾哈密瓜",
+      "希望",
+      "小望"
+    ]
+  },
+  {
+    "Id": "10119",
+    "Id_db": 10119,
+    "FirstName_jp": "御稜",
+    "FirstName_zh": "御稜",
+    "Name_jp": "ナグサ",
+    "Name_en": "nagusa",
+    "Name_zh_tw": "名草",
+    "Name_kr": "나구사",
+    "Name_zh_cn": "名草",
+    "Name_zh_ft": "名草",
+    "NickName": [
+      "mingcao"
+    ]
+  },
+  {
+    "Id": "10120",
+    "Id_db": 10120,
+    "FirstName_jp": "柚鳥",
+    "FirstName_zh": "柚鸟",
+    "Name_jp": "ナツ(バンド)",
+    "Name_en": "natsu (band)",
+    "Name_zh_tw": "夏(樂團)",
+    "Name_kr": "나츠(밴드)",
+    "Name_zh_cn": "夏(乐队)",
+    "Name_zh_ft": "夏(乐队)",
+    "NickName": [
+      "xia(yuedui)",
+      "夏乐队",
+      "乐队夏",
+      "乐队小夏",
+      "乐夏"
+    ]
+  },
+  {
+    "Id": "10121",
+    "Id_db": 10121,
+    "FirstName_jp": "勘解由小路",
+    "FirstName_zh": "勘解由小路",
+    "Name_jp": "ユカリ(水着)",
+    "Name_en": "yukari (swimsuit)",
+    "Name_zh_tw": "紫草(泳裝)",
+    "Name_kr": "유카리(수영복)",
+    "Name_zh_cn": "紫草(泳装)",
+    "Name_zh_ft": "紫草(泳装)",
+    "NickName": [
+      "zicao(yongzhuang)",
+      "泳装紫",
+      "水紫草",
+      "水紫",
+      "水雷",
+      "水着紫草",
+      "紫草泳装",
+      "泳装紫草"
+    ]
+  },
+  {
+    "Id": "10122",
+    "Id_db": 10122,
+    "FirstName_jp": "聖園",
+    "FirstName_zh": "圣园",
+    "Name_jp": "ミカ(水着)",
+    "Name_en": "mika (swimsuit)",
+    "Name_zh_tw": "彌香(泳裝)",
+    "Name_kr": "미카(수영복)",
+    "Name_zh_cn": "未花(泳装)",
+    "Name_zh_ft": "未花(泳装)",
+    "NickName": [
+      "weihua(yongzhuang)",
+      "未花水",
+      "水未花",
+      "未花水着",
+      "水着未花",
+      "未花泳装",
+      "泳装未花"
+    ]
+  },
+  {
+    "Id": "10123",
+    "Id_db": 10123,
+    "FirstName_jp": "百合園",
+    "FirstName_zh": "百合园",
+    "Name_jp": "セイア(水着)",
+    "Name_en": "seia (swimsuit)",
+    "Name_zh_tw": "聖亞(泳裝)",
+    "Name_kr": "세이아(수영복)",
+    "Name_zh_cn": "圣娅(泳装)",
+    "Name_zh_ft": "圣娅(泳装)",
+    "NickName": [
+      "shengya(yongzhuang)",
+      "圣娅水",
+      "水圣娅",
+      "圣娅水着",
+      "水着圣娅",
+      "圣娅泳装",
+      "泳装圣娅"
+    ]
+  },
+  {
+    "Id": "10124",
+    "Id_db": 10124,
+    "FirstName_jp": "羽川",
+    "FirstName_zh": "羽川",
+    "Name_jp": "ハスミ(水着)",
+    "Name_en": "hasumi (swimsuit)",
+    "Name_zh_tw": "蓮實(泳裝)",
+    "Name_kr": "하스미(수영복)",
+    "Name_zh_cn": "莲见(泳装)",
+    "Name_zh_ft": "莲见(泳装)",
+    "NickName": [
+      "lianjian(yongzhuang)",
+      "莲见水",
+      "水莲见",
+      "莲见水着",
+      "水着莲见",
+      "莲见泳装",
+      "泳装莲见"
+    ]
+  },
+  {
+    "Id": "10125",
+    "Id_db": 10125,
+    "FirstName_jp": "白尾",
+    "FirstName_zh": "白尾",
+    "Name_jp": "エリ",
+    "Name_en": "eri",
+    "Name_zh_tw": "繪梨",
+    "Name_kr": "에리",
+    "Name_zh_cn": "绘里",
+    "Name_zh_ft": "绘里",
+    "NickName": [
+      "huili",
+      "艾莉",
+      "魔女"
+    ]
+  },
+  {
+    "Id": "10126",
+    "Id_db": 10126,
+    "FirstName_jp": "板垣",
+    "FirstName_zh": "板垣",
+    "Name_jp": "カノエ",
+    "Name_en": "kanoe",
+    "Name_zh_tw": "鹿江",
+    "Name_kr": "카노에",
+    "Name_zh_cn": "庚",
+    "Name_zh_ft": "庚",
+    "NickName": [
+      "geng"
+    ]
+  },
+  {
+    "Id": "10127",
+    "Id_db": 10127,
+    "FirstName_jp": "桜井",
+    "FirstName_zh": "樱井",
+    "Name_jp": "ミヨ",
+    "Name_en": "miyo",
+    "Name_zh_tw": "美代",
+    "Name_kr": "미요",
+    "Name_zh_cn": "美代",
+    "Name_zh_ft": "美代",
+    "NickName": [
+      "meidai"
+    ]
+  },
+  {
+    "Id": "10128",
+    "Id_db": 10128,
+    "FirstName_jp": "若狭",
+    "FirstName_zh": "若狭",
+    "Name_jp": "フユ",
+    "Name_en": "fuyu",
+    "Name_zh_tw": "冬",
+    "Name_kr": "후유",
+    "Name_zh_cn": "冬",
+    "Name_zh_ft": "冬",
+    "NickName": [
+      "dong",
+      "冬优"
+    ]
+  },
+  {
+    "Id": "10129",
+    "Id_db": 10129,
+    "FirstName_jp": "守月",
+    "FirstName_zh": "守月",
+    "Name_jp": "スズミ(マジカル)",
+    "Name_en": "suzumi (magical)",
+    "Name_zh_tw": "鈴美(魔法)",
+    "Name_kr": "스즈미(매지컬)",
+    "Name_zh_cn": "铃美(魔法)",
+    "Name_zh_ft": "铃美(魔法)",
+    "NickName": [
+      "lingmei(mofa)",
+      "魔法铃美",
+      "魔闪",
+      "魔铃美",
+      "魔法少女铃美"
+    ]
+  },
+  {
+    "Id": "10130",
+    "Id_db": 10130,
+    "FirstName_jp": "梯",
+    "FirstName_zh": "梯",
+    "Name_jp": "スバル",
+    "Name_en": "subaru",
+    "Name_zh_tw": "昴",
+    "Name_kr": "스바루",
+    "Name_zh_cn": "昴",
+    "Name_zh_ft": "昴",
+    "NickName": [
+      "mao",
+      "ang",
+      "486"
+    ]
+  },
+  {
+    "Id": "10131",
+    "Id_db": 10131,
+    "FirstName_jp": "三善",
+    "FirstName_zh": "三善",
+    "Name_jp": "タカネ",
+    "Name_en": "takane",
+    "Name_zh_tw": "貴音",
+    "Name_kr": "타카네",
+    "Name_zh_cn": "贵音",
+    "Name_zh_ft": "贵音",
+    "NickName": [
+      "guiyin",
+      "红冬大小姐"
+    ]
+  },
+  {
+    "Id": "10132",
+    "Id_db": 10132,
+    "FirstName_jp": "大野",
+    "FirstName_zh": "大野",
+    "Name_jp": "ツクヨ(ドレス)",
+    "Name_en": "tsukuyo (dress)",
+    "Name_zh_tw": "月夜(禮服)",
+    "Name_kr": "츠쿠요(드레스)",
+    "Name_zh_cn": "月咏(礼服)",
+    "Name_zh_ft": "月咏(礼服)",
+    "NickName": [
+      "yueyong(lifu)",
+      "月咏礼",
+      "礼树",
+      "礼月咏",
+      "月咏礼服",
+      "礼服月咏"
+    ]
+  },
+  {
+    "Id": "10133",
+    "Id_db": 10133,
+    "FirstName_jp": "調月",
+    "FirstName_zh": "调月",
+    "Name_jp": "リオ(臨戦)",
+    "Name_en": "rio (battle)",
+    "Name_zh_tw": "莉央(臨戰)",
+    "Name_kr": "리오(무장)",
+    "Name_zh_cn": "莉音(武装)",
+    "Name_zh_ft": "莉音(临战)",
+    "NickName": [
+      "liyin(wuzhuang)",
+      "战音",
+      "临战莉音",
+      "武装莉音"
+    ]
+  },
+  {
+    "Id": "10134",
+    "Id_db": 10134,
+    "FirstName_jp": "天童",
+    "FirstName_zh": "天童",
+    "Name_jp": "アリス(臨戦)",
+    "Name_en": "aris (battle)",
+    "Name_zh_tw": "愛麗絲(臨戰)",
+    "Name_kr": "아리스(무장)",
+    "Name_zh_cn": "爱丽丝(武装)",
+    "Name_zh_ft": "爱丽丝(临战)",
+    "NickName": [
+      "ailisi(wuzhuang)",
+      "机甲爱",
+      "高达爱",
+      "战斗爱丽丝",
+      "装甲爱",
+      "临战爱丽丝",
+      "武装爱丽丝",
+      "临战爱",
+      "飞天爱丽丝",
+      "飞天爱"
+    ]
+  },
+  {
+    "Id": "10135",
+    "Id_db": 10135,
+    "FirstName_jp": "天童",
+    "FirstName_zh": "天童",
+    "Name_jp": "ケイ",
+    "Name_en": "kei",
+    "Name_zh_tw": "Kei",
+    "Name_kr": "케이",
+    "Name_zh_cn": "柯伊",
+    "Name_zh_ft": "凯伊",
+    "NickName": [
+      "keyi",
+      "kaiyi",
+      "白发爱丽丝",
+      "key",
+      "kei酱",
+      "key酱",
+      "小key",
+      "小k"
+    ]
+  },
+  {
+    "Id": "10136",
     "Id_db": 13000,
     "FirstName_jp": "室笠",
     "FirstName_zh": "室笠",
@@ -2407,7 +2855,7 @@
     ]
   },
   {
-    "Id": "10114",
+    "Id": "10137",
     "Id_db": 13001,
     "FirstName_jp": "和楽",
     "FirstName_zh": "和乐",
@@ -2425,7 +2873,7 @@
     ]
   },
   {
-    "Id": "10115",
+    "Id": "10138",
     "Id_db": 13002,
     "FirstName_jp": "鰐渕",
     "FirstName_zh": "鳄渊",
@@ -2445,7 +2893,7 @@
     ]
   },
   {
-    "Id": "10116",
+    "Id": "10139",
     "Id_db": 13003,
     "FirstName_jp": "羽川",
     "FirstName_zh": "羽川",
@@ -2464,7 +2912,7 @@
     ]
   },
   {
-    "Id": "10117",
+    "Id": "10140",
     "Id_db": 13004,
     "FirstName_jp": "十六夜",
     "FirstName_zh": "十六夜",
@@ -2482,7 +2930,7 @@
     ]
   },
   {
-    "Id": "10118",
+    "Id": "10141",
     "Id_db": 13005,
     "FirstName_jp": "鬼方",
     "FirstName_zh": "鬼方",
@@ -2499,7 +2947,7 @@
     ]
   },
   {
-    "Id": "10119",
+    "Id": "10142",
     "Id_db": 13006,
     "FirstName_jp": "浅黄",
     "FirstName_zh": "浅黄",
@@ -2519,7 +2967,7 @@
     ]
   },
   {
-    "Id": "10120",
+    "Id": "10143",
     "Id_db": 13007,
     "FirstName_jp": "赤司",
     "FirstName_zh": "赤司",
@@ -2541,7 +2989,7 @@
     ]
   },
   {
-    "Id": "10121",
+    "Id": "10144",
     "Id_db": 13008,
     "FirstName_jp": "黒見",
     "FirstName_zh": "黑见",
@@ -2560,7 +3008,7 @@
     ]
   },
   {
-    "Id": "10122",
+    "Id": "10145",
     "Id_db": 13009,
     "FirstName_jp": "春日",
     "FirstName_zh": "春日",
@@ -2580,7 +3028,7 @@
     ]
   },
   {
-    "Id": "10123",
+    "Id": "10146",
     "Id_db": 13010,
     "FirstName_jp": "早瀬",
     "FirstName_zh": "早濑",
@@ -2604,7 +3052,7 @@
     ]
   },
   {
-    "Id": "10124",
+    "Id": "10147",
     "Id_db": 13011,
     "FirstName_jp": "才羽",
     "FirstName_zh": "才羽",
@@ -2632,7 +3080,7 @@
     ]
   },
   {
-    "Id": "10125",
+    "Id": "10148",
     "Id_db": 13012,
     "FirstName_jp": "中務",
     "FirstName_zh": "中务",
@@ -2650,7 +3098,7 @@
     ]
   },
   {
-    "Id": "10126",
+    "Id": "10149",
     "Id_db": 13013,
     "FirstName_jp": "秋泉",
     "FirstName_zh": "秋泉",
@@ -2666,7 +3114,28 @@
     ]
   },
   {
-    "Id": "10127",
+    "Id": "10150",
+    "Id_db": 13014,
+    "FirstName_jp": "不破",
+    "FirstName_zh": "不破",
+    "Name_jp": "レンゲ(水着)",
+    "Name_en": "renge (swimsuit)",
+    "Name_zh_tw": "蓮華(泳裝)",
+    "Name_kr": "렌게(수영복)",
+    "Name_zh_cn": "莲华(泳装)",
+    "Name_zh_ft": "莲华(泳装)",
+    "NickName": [
+      "lianhua(yongzhuang)",
+      "莲华水",
+      "水莲华",
+      "水着莲华",
+      "泳装莲华",
+      "莲华水着",
+      "莲华泳装"
+    ]
+  },
+  {
+    "Id": "10151",
     "Id_db": 16000,
     "FirstName_jp": "伊草",
     "FirstName_zh": "伊草",
@@ -2683,7 +3152,7 @@
     ]
   },
   {
-    "Id": "10128",
+    "Id": "10152",
     "Id_db": 16001,
     "FirstName_jp": "一之瀬",
     "FirstName_zh": "一之濑",
@@ -2701,7 +3170,7 @@
     ]
   },
   {
-    "Id": "10129",
+    "Id": "10153",
     "Id_db": 16002,
     "FirstName_jp": "豊見",
     "FirstName_zh": "丰见",
@@ -2720,7 +3189,7 @@
     ]
   },
   {
-    "Id": "10130",
+    "Id": "10154",
     "Id_db": 16003,
     "FirstName_jp": "守月",
     "FirstName_zh": "守月",
@@ -2736,7 +3205,7 @@
     ]
   },
   {
-    "Id": "10131",
+    "Id": "10155",
     "Id_db": 16004,
     "FirstName_jp": "朝比奈",
     "FirstName_zh": "朝比奈",
@@ -2754,7 +3223,7 @@
     ]
   },
   {
-    "Id": "10132",
+    "Id": "10156",
     "Id_db": 16005,
     "FirstName_jp": "剣先",
     "FirstName_zh": "剑先",
@@ -2778,7 +3247,7 @@
     ]
   },
   {
-    "Id": "10133",
+    "Id": "10157",
     "Id_db": 16006,
     "FirstName_jp": "獅子堂",
     "FirstName_zh": "狮子堂",
@@ -2802,7 +3271,7 @@
     ]
   },
   {
-    "Id": "10134",
+    "Id": "10158",
     "Id_db": 16007,
     "FirstName_jp": "佐城",
     "FirstName_zh": "佐城",
@@ -2819,7 +3288,7 @@
     ]
   },
   {
-    "Id": "10135",
+    "Id": "10159",
     "Id_db": 16008,
     "FirstName_jp": "合歓垣",
     "FirstName_zh": "合欢垣",
@@ -2838,7 +3307,7 @@
     ]
   },
   {
-    "Id": "10136",
+    "Id": "10160",
     "Id_db": 16009,
     "FirstName_jp": "千鳥",
     "FirstName_zh": "千鸟",
@@ -2857,7 +3326,7 @@
     ]
   },
   {
-    "Id": "10137",
+    "Id": "10161",
     "Id_db": 16010,
     "FirstName_jp": "猫塚",
     "FirstName_zh": "猫冢",
@@ -2882,7 +3351,7 @@
     ]
   },
   {
-    "Id": "10138",
+    "Id": "10162",
     "Id_db": 16011,
     "FirstName_jp": "羽川",
     "FirstName_zh": "羽川",
@@ -2907,7 +3376,7 @@
     ]
   },
   {
-    "Id": "10139",
+    "Id": "10163",
     "Id_db": 16012,
     "FirstName_jp": "赤司",
     "FirstName_zh": "赤司",
@@ -2934,7 +3403,7 @@
     ]
   },
   {
-    "Id": "10140",
+    "Id": "10164",
     "Id_db": 16013,
     "FirstName_jp": "下江",
     "FirstName_zh": "下江",
@@ -2956,7 +3425,7 @@
     ]
   },
   {
-    "Id": "10141",
+    "Id": "10165",
     "Id_db": 16014,
     "FirstName_jp": "丹花",
     "FirstName_zh": "丹花",
@@ -2973,7 +3442,7 @@
     ]
   },
   {
-    "Id": "10142",
+    "Id": "10166",
     "Id_db": 16015,
     "FirstName_jp": "栗村",
     "FirstName_zh": "栗村",
@@ -2981,18 +3450,20 @@
     "Name_en": "airi (band)",
     "Name_zh_tw": "愛莉(樂團)",
     "Name_kr": "아이리(밴드)",
-    "Name_zh_cn": "爱莉(乐队)",
+    "Name_zh_cn": "爱理(乐队)",
     "Name_zh_ft": "爱莉(乐队)",
     "NickName": [
       "aili(yuedui)",
       "爱莉乐队",
       "乐队爱莉",
       "乐队冰",
-      "乐冰"
+      "乐冰",
+      "爱理乐队",
+      "乐队爱理"
     ]
   },
   {
-    "Id": "10143",
+    "Id": "10167",
     "Id_db": 16016,
     "FirstName_jp": "蒼森",
     "FirstName_zh": "苍森",
@@ -3010,7 +3481,59 @@
     ]
   },
   {
-    "Id": "10144",
+    "Id": "10168",
+    "Id_db": 16017,
+    "FirstName_jp": "内海",
+    "FirstName_zh": "内海",
+    "Name_jp": "アオバ",
+    "Name_en": "aoba",
+    "Name_zh_tw": "青葉",
+    "Name_kr": "아오바",
+    "Name_zh_cn": "青叶",
+    "Name_zh_ft": "青叶",
+    "NickName": [
+      "アオバ",
+      "qinye",
+      "机油味",
+      "qingye"
+    ]
+  },
+  {
+    "Id": "10169",
+    "Id_db": 16018,
+    "FirstName_jp": "河駒風",
+    "FirstName_zh": "河驹风",
+    "Name_jp": "ラブ",
+    "Name_en": "rabu",
+    "Name_zh_tw": "良舞",
+    "Name_kr": "라브",
+    "Name_zh_cn": "兰舞",
+    "Name_zh_ft": "兰舞",
+    "NickName": [
+      "lanwu"
+    ]
+  },
+  {
+    "Id": "10170",
+    "Id_db": 16019,
+    "FirstName_jp": "飛鳥馬",
+    "FirstName_zh": "飞鸟马",
+    "Name_jp": "トキ(臨戦)",
+    "Name_en": "toki (battle)",
+    "Name_zh_tw": "季(臨戰)",
+    "Name_kr": "토키(무장)",
+    "Name_zh_cn": "时(武装)",
+    "Name_zh_ft": "时(临战)",
+    "NickName": [
+      "shi(wuzhuang)",
+      "临战时",
+      "时临战",
+      "武装时",
+      "战时"
+    ]
+  },
+  {
+    "Id": "10171",
     "Id_db": 20000,
     "FirstName_jp": "猫塚",
     "FirstName_zh": "猫冢",
@@ -3028,7 +3551,7 @@
     ]
   },
   {
-    "Id": "10145",
+    "Id": "10172",
     "Id_db": 20001,
     "FirstName_jp": "角楯",
     "FirstName_zh": "角楯",
@@ -3046,7 +3569,7 @@
     ]
   },
   {
-    "Id": "10146",
+    "Id": "10173",
     "Id_db": 20002,
     "FirstName_jp": "薬子",
     "FirstName_zh": "药子",
@@ -3066,7 +3589,7 @@
     ]
   },
   {
-    "Id": "10147",
+    "Id": "10174",
     "Id_db": 20003,
     "FirstName_jp": "静山",
     "FirstName_zh": "静山",
@@ -3084,7 +3607,7 @@
     ]
   },
   {
-    "Id": "10148",
+    "Id": "10175",
     "Id_db": 20004,
     "FirstName_jp": "静山",
     "FirstName_zh": "静山",
@@ -3107,7 +3630,7 @@
     ]
   },
   {
-    "Id": "10149",
+    "Id": "10176",
     "Id_db": 20005,
     "FirstName_jp": "阿慈谷",
     "FirstName_zh": "阿慈谷",
@@ -3134,7 +3657,7 @@
     ]
   },
   {
-    "Id": "10150",
+    "Id": "10177",
     "Id_db": 20006,
     "FirstName_jp": "薬子",
     "FirstName_zh": "药子",
@@ -3156,7 +3679,7 @@
     ]
   },
   {
-    "Id": "10151",
+    "Id": "10178",
     "Id_db": 20007,
     "FirstName_jp": "初音",
     "FirstName_zh": "初音",
@@ -3177,7 +3700,7 @@
     ]
   },
   {
-    "Id": "10152",
+    "Id": "10179",
     "Id_db": 20008,
     "FirstName_jp": "天雨",
     "FirstName_zh": "天雨",
@@ -3197,7 +3720,7 @@
     ]
   },
   {
-    "Id": "10153",
+    "Id": "10180",
     "Id_db": 20009,
     "FirstName_jp": "連河",
     "FirstName_zh": "连河",
@@ -3220,7 +3743,7 @@
     ]
   },
   {
-    "Id": "10154",
+    "Id": "10181",
     "Id_db": 20010,
     "FirstName_jp": "天見",
     "FirstName_zh": "天见",
@@ -3239,7 +3762,7 @@
     ]
   },
   {
-    "Id": "10155",
+    "Id": "10182",
     "Id_db": 20011,
     "FirstName_jp": "黒見",
     "FirstName_zh": "黑见",
@@ -3267,7 +3790,7 @@
     ]
   },
   {
-    "Id": "10156",
+    "Id": "10183",
     "Id_db": 20012,
     "FirstName_jp": "氷室",
     "FirstName_zh": "冰室",
@@ -3284,7 +3807,7 @@
     ]
   },
   {
-    "Id": "10157",
+    "Id": "10184",
     "Id_db": 20013,
     "FirstName_jp": "各務",
     "FirstName_zh": "各务",
@@ -3301,7 +3824,7 @@
     ]
   },
   {
-    "Id": "10158",
+    "Id": "10185",
     "Id_db": 20014,
     "FirstName_jp": "空井",
     "FirstName_zh": "空井",
@@ -3319,7 +3842,7 @@
     ]
   },
   {
-    "Id": "10159",
+    "Id": "10186",
     "Id_db": 20015,
     "FirstName_jp": "勇美",
     "FirstName_zh": "勇美",
@@ -3337,7 +3860,7 @@
     ]
   },
   {
-    "Id": "10160",
+    "Id": "10187",
     "Id_db": 20016,
     "FirstName_jp": "棗",
     "FirstName_zh": "枣",
@@ -3360,7 +3883,7 @@
     ]
   },
   {
-    "Id": "10161",
+    "Id": "10188",
     "Id_db": 20017,
     "FirstName_jp": "槌永",
     "FirstName_zh": "槌永",
@@ -3378,7 +3901,7 @@
     ]
   },
   {
-    "Id": "10162",
+    "Id": "10189",
     "Id_db": 20018,
     "FirstName_jp": "風倉",
     "FirstName_zh": "风仓",
@@ -3396,7 +3919,7 @@
     ]
   },
   {
-    "Id": "10163",
+    "Id": "10190",
     "Id_db": 20019,
     "FirstName_jp": "室笠",
     "FirstName_zh": "室笠",
@@ -3419,7 +3942,7 @@
     ]
   },
   {
-    "Id": "10164",
+    "Id": "10191",
     "Id_db": 20020,
     "FirstName_jp": "明星",
     "FirstName_zh": "明星",
@@ -3444,7 +3967,7 @@
     ]
   },
   {
-    "Id": "10165",
+    "Id": "10192",
     "Id_db": 20021,
     "FirstName_jp": "朝顔",
     "FirstName_zh": "朝颜",
@@ -3466,7 +3989,7 @@
     ]
   },
   {
-    "Id": "10166",
+    "Id": "10193",
     "Id_db": 20022,
     "FirstName_jp": "愛清",
     "FirstName_zh": "爱清",
@@ -3495,7 +4018,7 @@
     ]
   },
   {
-    "Id": "10167",
+    "Id": "10194",
     "Id_db": 20023,
     "FirstName_jp": "尾刃",
     "FirstName_zh": "尾刃",
@@ -3517,7 +4040,7 @@
     ]
   },
   {
-    "Id": "10168",
+    "Id": "10195",
     "Id_db": 20024,
     "FirstName_jp": "桐藤",
     "FirstName_zh": "桐藤",
@@ -3538,7 +4061,7 @@
     ]
   },
   {
-    "Id": "10169",
+    "Id": "10196",
     "Id_db": 20025,
     "FirstName_jp": "伊草",
     "FirstName_zh": "伊草",
@@ -3567,7 +4090,7 @@
     ]
   },
   {
-    "Id": "10170",
+    "Id": "10197",
     "Id_db": 20026,
     "FirstName_jp": "安守",
     "FirstName_zh": "安守",
@@ -3575,7 +4098,7 @@
     "Name_en": "minori",
     "Name_zh_tw": "實里",
     "Name_kr": "미노리",
-    "Name_zh_cn": "实里",
+    "Name_zh_cn": "实梨",
     "Name_zh_ft": "实里",
     "NickName": [
       "shili",
@@ -3585,7 +4108,7 @@
     ]
   },
   {
-    "Id": "10171",
+    "Id": "10198",
     "Id_db": 20027,
     "FirstName_jp": "砂狼",
     "FirstName_zh": "砂狼",
@@ -3608,7 +4131,7 @@
     ]
   },
   {
-    "Id": "10172",
+    "Id": "10199",
     "Id_db": 20028,
     "FirstName_jp": "若葉",
     "FirstName_zh": "若叶",
@@ -3629,7 +4152,7 @@
     ]
   },
   {
-    "Id": "10173",
+    "Id": "10200",
     "Id_db": 20029,
     "FirstName_jp": "水羽",
     "FirstName_zh": "水羽",
@@ -3652,7 +4175,7 @@
     ]
   },
   {
-    "Id": "10174",
+    "Id": "10201",
     "Id_db": 20030,
     "FirstName_jp": "黒舘",
     "FirstName_zh": "黑馆",
@@ -3660,7 +4183,7 @@
     "Name_en": "haruna (track)",
     "Name_zh_tw": "羽留奈(體育服)",
     "Name_kr": "하루나(체육복)",
-    "Name_zh_cn": "晴奈(运动服)",
+    "Name_zh_cn": "晴奈(体操服)",
     "Name_zh_ft": "晴奈(运动服)",
     "NickName": [
       "qingnai(yundongfu)",
@@ -3676,11 +4199,12 @@
       "晴奈体",
       "体晴奈",
       "晴奈运动服",
-      "运动服晴奈"
+      "运动服晴奈",
+      "qingnai(ticaofu)"
     ]
   },
   {
-    "Id": "10175",
+    "Id": "10202",
     "Id_db": 20031,
     "FirstName_jp": "間宵",
     "FirstName_zh": "间宵",
@@ -3700,7 +4224,7 @@
     ]
   },
   {
-    "Id": "10176",
+    "Id": "10203",
     "Id_db": 20032,
     "FirstName_jp": "和泉元",
     "FirstName_zh": "和泉元",
@@ -3723,7 +4247,7 @@
     ]
   },
   {
-    "Id": "10177",
+    "Id": "10204",
     "Id_db": 20033,
     "FirstName_jp": "羽沼",
     "FirstName_zh": "羽沼",
@@ -3739,15 +4263,15 @@
     ]
   },
   {
-    "Id": "10178",
+    "Id": "10205",
     "Id_db": 20034,
     "FirstName_jp": "鰐渕",
-    "FirstName_zh": "鳄渕",
+    "FirstName_zh": "鳄渊",
     "Name_jp": "アカリ(正月)",
     "Name_en": "akari (newyear)",
     "Name_zh_tw": "亞伽里(正月)",
     "Name_kr": "아카리(새해)",
-    "Name_zh_cn": "明里(正月)",
+    "Name_zh_cn": "明里(新年)",
     "Name_zh_ft": "明里(正月)",
     "NickName": [
       "mingli(zhengyue)",
@@ -3759,11 +4283,12 @@
       "春牛",
       "春牛牛",
       "明里正月",
-      "正月明里"
+      "正月明里",
+      "mingli(xinnian)"
     ]
   },
   {
-    "Id": "10179",
+    "Id": "10206",
     "Id_db": 20035,
     "FirstName_jp": "春日",
     "FirstName_zh": "春日",
@@ -3785,7 +4310,7 @@
     ]
   },
   {
-    "Id": "10180",
+    "Id": "10207",
     "Id_db": 20036,
     "FirstName_jp": "黒見",
     "FirstName_zh": "黑见",
@@ -3813,7 +4338,7 @@
     ]
   },
   {
-    "Id": "10181",
+    "Id": "10208",
     "Id_db": 20037,
     "FirstName_jp": "合歓垣",
     "FirstName_zh": "合欢垣",
@@ -3836,7 +4361,7 @@
     ]
   },
   {
-    "Id": "10182",
+    "Id": "10209",
     "Id_db": 20038,
     "FirstName_jp": "佐城",
     "FirstName_zh": "佐城",
@@ -3844,16 +4369,19 @@
     "Name_en": "tomoe (qipao)",
     "Name_zh_tw": "智惠(旗袍)",
     "Name_kr": "토모에(치파오)",
-    "Name_zh_cn": "智惠(旗袍)",
+    "Name_zh_cn": "巴(旗袍)",
     "Name_zh_ft": "智惠(旗袍)",
     "NickName": [
       "zhihui(qipao)",
       "智惠旗袍",
-      "旗袍智惠"
+      "旗袍智惠",
+      "ba(qipao)",
+      "巴旗袍",
+      "旗袍巴"
     ]
   },
   {
-    "Id": "10183",
+    "Id": "10210",
     "Id_db": 20039,
     "FirstName_jp": "竜華",
     "FirstName_zh": "龙华",
@@ -3874,7 +4402,7 @@
     ]
   },
   {
-    "Id": "10184",
+    "Id": "10211",
     "Id_db": 20040,
     "FirstName_jp": "京極",
     "FirstName_zh": "京极",
@@ -3889,7 +4417,7 @@
     ]
   },
   {
-    "Id": "10185",
+    "Id": "10212",
     "Id_db": 20041,
     "FirstName_jp": "調月",
     "FirstName_zh": "调月",
@@ -3907,7 +4435,7 @@
     ]
   },
   {
-    "Id": "10186",
+    "Id": "10213",
     "Id_db": 20042,
     "FirstName_jp": "小塗",
     "FirstName_zh": "小涂",
@@ -3927,7 +4455,234 @@
     ]
   },
   {
-    "Id": "10187",
+    "Id": "10214",
+    "Id_db": 20043,
+    "FirstName_jp": "獅子堂",
+    "FirstName_zh": "狮子堂",
+    "Name_jp": "イズミ(正月)",
+    "Name_en": "izumi (newyear)",
+    "Name_zh_tw": "泉(正月)",
+    "Name_kr": "이즈미(새해)",
+    "Name_zh_cn": "泉(正月)",
+    "Name_zh_ft": "泉(正月)",
+    "NickName": [
+      "quan(zhengyue)",
+      "泉新年",
+      "新年泉",
+      "泉春",
+      "春泉",
+      "泉正月",
+      "正月泉"
+    ]
+  },
+  {
+    "Id": "10215",
+    "Id_db": 20044,
+    "FirstName_jp": "乙花",
+    "FirstName_zh": "乙花",
+    "Name_jp": "スミレ(アルバイト)",
+    "Name_en": "sumire (parttime)",
+    "Name_zh_tw": "堇(打工)",
+    "Name_kr": "스미레(아르바이트)",
+    "Name_zh_cn": "堇(打工)",
+    "Name_zh_ft": "堇(打工)",
+    "NickName": [
+      "jin(dagong)",
+      "堇打工",
+      "打工堇",
+      "工堇"
+    ]
+  },
+  {
+    "Id": "10216",
+    "Id_db": 20045,
+    "FirstName_jp": "朝比奈",
+    "FirstName_zh": "朝比奈",
+    "Name_jp": "フィーナ(ガイド)",
+    "Name_en": "pina (guide)",
+    "Name_zh_tw": "菲娜(導覽員)",
+    "Name_kr": "피나(가이드)",
+    "Name_zh_cn": "菲娜(导游)",
+    "Name_zh_ft": "菲娜(导游)",
+    "NickName": [
+      "feinuo(daoyou)",
+      "菲娜导游",
+      "导游菲娜",
+      "菲娜导",
+      "导菲娜"
+    ]
+  },
+  {
+    "Id": "10217",
+    "Id_db": 20046,
+    "FirstName_jp": "天地",
+    "FirstName_zh": "天地",
+    "Name_jp": "ニヤ",
+    "Name_en": "niya",
+    "Name_zh_tw": "仁耶",
+    "Name_kr": "니야",
+    "Name_zh_cn": "妮娅",
+    "Name_zh_ft": "尼娅",
+    "NickName": [
+      "niya",
+      "renye"
+    ]
+  },
+  {
+    "Id": "10218",
+    "Id_db": 20047,
+    "FirstName_jp": "桐生",
+    "FirstName_zh": "桐生",
+    "Name_jp": "キキョウ(水着)",
+    "Name_en": "kikyou (swimsuit)",
+    "Name_zh_tw": "桔梗(泳裝)",
+    "Name_kr": "키쿄(수영복)",
+    "Name_zh_cn": "桔梗(泳装)",
+    "Name_zh_ft": "桔梗(泳装)",
+    "NickName": [
+      "jiegeng(yongzhuang)",
+      "桔梗水",
+      "水桔梗",
+      "桔梗水着",
+      "水着桔梗",
+      "泳装桔梗",
+      "桔梗泳装"
+    ]
+  },
+  {
+    "Id": "10219",
+    "Id_db": 20048,
+    "FirstName_jp": "桐藤",
+    "FirstName_zh": "桐藤",
+    "Name_jp": "ナギサ(水着)",
+    "Name_en": "nagisa (swimsuit)",
+    "Name_zh_tw": "渚(泳裝)",
+    "Name_kr": "나기사(수영복)",
+    "Name_zh_cn": "渚(泳装)",
+    "Name_zh_ft": "渚(泳装)",
+    "NickName": [
+      "zhu(yongzhuang)",
+      "渚水",
+      "水渚",
+      "渚水着",
+      "水着渚",
+      "渚泳装",
+      "泳装渚"
+    ]
+  },
+  {
+    "Id": "10220",
+    "Id_db": 20049,
+    "FirstName_jp": "戒野",
+    "FirstName_zh": "戒野",
+    "Name_jp": "ミサキ(水着)",
+    "Name_en": "misaki (swimsuit)",
+    "Name_zh_tw": "美咲(泳裝)",
+    "Name_kr": "미사키(수영복)",
+    "Name_zh_cn": "美咲(泳装)",
+    "Name_zh_ft": "美咲(泳装)",
+    "NickName": [
+      "meixiao(yongzhuang)",
+      "美咲水",
+      "水美咲",
+      "水円",
+      "美咲水着",
+      "水着美咲",
+      "美咲泳装",
+      "泳装美咲"
+    ]
+  },
+  {
+    "Id": "10221",
+    "Id_db": 20050,
+    "FirstName_jp": "薄葉",
+    "FirstName_zh": "薄叶",
+    "Name_jp": "リツ",
+    "Name_en": "ritsu",
+    "Name_zh_tw": "律",
+    "Name_kr": "리츠",
+    "Name_zh_cn": "律",
+    "Name_zh_ft": "律",
+    "NickName": [
+      "lv"
+    ]
+  },
+  {
+    "Id": "10222",
+    "Id_db": 20051,
+    "FirstName_jp": "宇沢",
+    "FirstName_zh": "宇泽",
+    "Name_jp": "レイサ(マジカル)",
+    "Name_en": "reisa (magical)",
+    "Name_zh_tw": "澪紗(魔法)",
+    "Name_kr": "레이사(매지컬)",
+    "Name_zh_cn": "玲纱(魔法)",
+    "Name_zh_ft": "玲纱(魔法)",
+    "NickName": [
+      "lingsha(mofa)",
+      "魔芋",
+      "魔法少女玲纱",
+      "魔法铃纱",
+      "魔法芋圆"
+      
+    ]
+  },
+  {
+    "Id": "10223",
+    "Id_db": 20052,
+    "FirstName_jp": "荒槇",
+    "FirstName_zh": "荒槙",
+    "Name_jp": "ヤクモ",
+    "Name_en": "yakumo",
+    "Name_zh_tw": "八雲",
+    "Name_kr": "야쿠모",
+    "Name_zh_cn": "八云",
+    "Name_zh_ft": "八云",
+    "NickName": [
+      "bayun"
+    ]
+  },
+  {
+    "Id": "10224",
+    "Id_db": 20053,
+    "FirstName_jp": "千鳥",
+    "FirstName_zh": "千鸟",
+    "Name_jp": "ミチル(ドレス)",
+    "Name_en": "michiru (dress)",
+    "Name_zh_tw": "三千留(禮服)",
+    "Name_kr": "미치루(드레스)",
+    "Name_zh_cn": "满(礼服)",
+    "Name_zh_ft": "满(礼服)",
+    "NickName": [
+      "man(lifu)",
+      "满礼",
+      "礼满",
+      "满礼服",
+      "礼服满",
+      "礼服小满"
+    ]
+  },
+  {
+    "Id": "10225",
+    "Id_db": 20054,
+    "FirstName_jp": "明星",
+    "FirstName_zh": "明星",
+    "Name_jp": "ヒマリ(臨戦)",
+    "Name_en": "himari (battle)",
+    "Name_zh_tw": "陽葵(臨戰)",
+    "Name_kr": "히마리(무장)",
+    "Name_zh_cn": "日鞠(武装)",
+    "Name_zh_ft": "日鞠(临战)",
+    "NickName": [
+      "riju(wuzhuang)",
+      "临战日鞠",
+      "摩托",
+      "临战otto",
+      "武装日鞠"
+    ]
+  },
+  {
+    "Id": "10226",
     "Id_db": 23000,
     "FirstName_jp": "栗村",
     "FirstName_zh": "栗村",
@@ -3946,7 +4701,7 @@
     ]
   },
   {
-    "Id": "10188",
+    "Id": "10227",
     "Id_db": 23001,
     "FirstName_jp": "愛清",
     "FirstName_zh": "爱清",
@@ -3964,7 +4719,7 @@
     ]
   },
   {
-    "Id": "10189",
+    "Id": "10228",
     "Id_db": 23002,
     "FirstName_jp": "朝顔",
     "FirstName_zh": "朝颜",
@@ -3983,7 +4738,7 @@
     ]
   },
   {
-    "Id": "10190",
+    "Id": "10229",
     "Id_db": 23003,
     "FirstName_jp": "小鈎",
     "FirstName_zh": "小钩",
@@ -4003,7 +4758,7 @@
     ]
   },
   {
-    "Id": "10191",
+    "Id": "10230",
     "Id_db": 23004,
     "FirstName_jp": "白石",
     "FirstName_zh": "白石",
@@ -4020,7 +4775,7 @@
     ]
   },
   {
-    "Id": "10192",
+    "Id": "10231",
     "Id_db": 23005,
     "FirstName_jp": "奥空",
     "FirstName_zh": "奥空",
@@ -4037,7 +4792,7 @@
     ]
   },
   {
-    "Id": "10193",
+    "Id": "10232",
     "Id_db": 23006,
     "FirstName_jp": "河和",
     "FirstName_zh": "河和",
@@ -4057,7 +4812,7 @@
     ]
   },
   {
-    "Id": "10194",
+    "Id": "10233",
     "Id_db": 23007,
     "FirstName_jp": "浦和",
     "FirstName_zh": "浦和",
@@ -4074,7 +4829,7 @@
     ]
   },
   {
-    "Id": "10195",
+    "Id": "10234",
     "Id_db": 23008,
     "FirstName_jp": "伊落",
     "FirstName_zh": "伊落",
@@ -4094,7 +4849,7 @@
     ]
   },
   {
-    "Id": "10196",
+    "Id": "10235",
     "Id_db": 26000,
     "FirstName_jp": "火宮",
     "FirstName_zh": "火宫",
@@ -4112,7 +4867,7 @@
     ]
   },
   {
-    "Id": "10197",
+    "Id": "10236",
     "Id_db": 26001,
     "FirstName_jp": "音瀬",
     "FirstName_zh": "音濑",
@@ -4129,7 +4884,7 @@
     ]
   },
   {
-    "Id": "10198",
+    "Id": "10237",
     "Id_db": 26002,
     "FirstName_jp": "牛牧",
     "FirstName_zh": "牛牧",
@@ -4146,7 +4901,7 @@
     ]
   },
   {
-    "Id": "10199",
+    "Id": "10238",
     "Id_db": 26003,
     "FirstName_jp": "鷲見",
     "FirstName_zh": "鹫见",
@@ -4168,7 +4923,7 @@
     ]
   },
   {
-    "Id": "10200",
+    "Id": "10239",
     "Id_db": 26004,
     "FirstName_jp": "円堂",
     "FirstName_zh": "圆堂",
@@ -4184,7 +4939,7 @@
     ]
   },
   {
-    "Id": "10201",
+    "Id": "10240",
     "Id_db": 26005,
     "FirstName_jp": "伊原木",
     "FirstName_zh": "伊原木",
@@ -4203,7 +4958,7 @@
     ]
   },
   {
-    "Id": "10202",
+    "Id": "10241",
     "Id_db": 26006,
     "FirstName_jp": "天見",
     "FirstName_zh": "天见",
@@ -4220,7 +4975,7 @@
     ]
   },
   {
-    "Id": "10203",
+    "Id": "10242",
     "Id_db": 26007,
     "FirstName_jp": "奥空",
     "FirstName_zh": "奥空",
@@ -4247,7 +5002,7 @@
     ]
   },
   {
-    "Id": "10204",
+    "Id": "10243",
     "Id_db": 26008,
     "FirstName_jp": "河和",
     "FirstName_zh": "河和",
@@ -4271,7 +5026,7 @@
     ]
   },
   {
-    "Id": "10205",
+    "Id": "10244",
     "Id_db": 26009,
     "FirstName_jp": "花岡",
     "FirstName_zh": "花冈",
@@ -4294,7 +5049,7 @@
     ]
   },
   {
-    "Id": "10206",
+    "Id": "10245",
     "Id_db": 26010,
     "FirstName_jp": "霞沢",
     "FirstName_zh": "霞泽",
@@ -4317,7 +5072,7 @@
     ]
   },
   {
-    "Id": "10207",
+    "Id": "10246",
     "Id_db": 26011,
     "FirstName_jp": "佐天",
     "FirstName_zh": "佐天",
@@ -4335,7 +5090,7 @@
     ]
   },
   {
-    "Id": "10208",
+    "Id": "10247",
     "Id_db": 26012,
     "FirstName_jp": "中務",
     "FirstName_zh": "中务",
@@ -4356,7 +5111,7 @@
     ]
   },
   {
-    "Id": "10209",
+    "Id": "10248",
     "Id_db": 26013,
     "FirstName_jp": "秤",
     "FirstName_zh": "秤",
@@ -4376,11 +5131,15 @@
       "水敦子",
       "泳装亚津子",
       "泳装敦子",
-      "yajinzi(yongzhuang)"
+      "yajinzi(yongzhuang)",
+      "亚津子水",
+      "亚津子水着",
+      "水着亚津子",
+      "亚津子泳装"
     ]
   },
   {
-    "Id": "10210",
+    "Id": "10249",
     "Id_db": 26014,
     "FirstName_jp": "角楯",
     "FirstName_zh": "角楯",
@@ -4396,6 +5155,27 @@
       "制服花凛",
       "花凛校服",
       "校服花凛"
+    ]
+  },
+  {
+    "Id": "10250",
+    "Id_db": 26015,
+    "FirstName_jp": "仲正",
+    "FirstName_zh": "仲正",
+    "Name_jp": "イチカ(水着)",
+    "Name_en": "ichika (swimsuit)",
+    "Name_zh_tw": "一花(泳裝)",
+    "Name_kr": "이치카(수영복)",
+    "Name_zh_cn": "一花(泳装)",
+    "Name_zh_ft": "一花(泳装)",
+    "NickName": [
+      "yihua(yongzhuang)",
+      "一花水",
+      "水一花",
+      "一花水着",
+      "水着一花",
+      "一花泳装",
+      "泳装一花"
     ]
   }
 ]
