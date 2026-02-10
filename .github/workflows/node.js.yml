@@ -23,21 +23,47 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
     
     - name: Install dependencies
-      run: npm ci || npm install
+      run: npm install
     
-    - name: Build (optional)
-      run: npm run build --if-present
+    - name: Check for lock file
+      run: |
+        if [ -f package-lock.json ]; then
+          echo "Found package-lock.json, caching dependencies"
+        else
+          echo "No lock file found, using regular install"
+        fi
     
-    # 如果 package.json 中没有 test 脚本，就跳过测试
+    - name: Check package.json scripts
+      run: npm run || echo "No npm scripts defined"
+    
+    # 构建 TypeScript 项目（如果有 tsconfig.json）
+    - name: Check for TypeScript
+      run: |
+        if [ -f tsconfig.json ]; then
+          echo "TypeScript project detected"
+          npx tsc --version || npm install typescript --no-save
+        else
+          echo "No TypeScript config found"
+        fi
+    
+    # 尝试构建，如果有 tsconfig.json 则使用 tsc
+    - name: Build
+      run: |
+        if [ -f tsconfig.json ]; then
+          npx tsc || npm run build --if-present
+        else
+          npm run build --if-present
+        fi
+    
+    # 如果有 test 脚本则运行测试
     - name: Test (if exists)
       run: |
-        if grep -q '"test"' package.json; then
+        if [ -f package.json ] && grep -q '"test"' package.json; then
           npm test
         else
-          echo "No test script found in package.json, skipping tests"
+          echo "No test script found, skipping tests"
         fi
 
   publish:
@@ -55,12 +81,35 @@ jobs:
         registry-url: 'https://registry.npmjs.org'
     
     - name: Install dependencies
-      run: npm ci || npm install
+      run: npm install
     
-    - name: Build (optional)
-      run: npm run build --if-present
+    # 构建步骤
+    - name: Build
+      run: |
+        if [ -f tsconfig.json ]; then
+          # 如果使用 TypeScript，先确保安装了 typescript
+          npx tsc --version 2>/dev/null || npm install typescript --no-save
+          npx tsc
+        else
+          npm run build --if-present
+        fi
     
-    # 直接在当前目录发布（假设这就是 koishi-plugin-ba-plugin 包）
+    # 准备发布 - 确保 dist 和 lib 目录存在
+    - name: Prepare for publish
+      run: |
+        echo "Checking build output..."
+        ls -la
+        
+        # 如果 lib 目录不存在但 tsconfig.json 存在，尝试构建
+        if [ ! -d "lib" ] && [ -f tsconfig.json ]; then
+          echo "lib directory not found, building with tsc..."
+          npx tsc --version 2>/dev/null || npm install typescript --no-save
+          npx tsc
+        fi
+        
+        echo "Final structure:"
+        ls -la
+    
     - name: Publish to npm
       run: npm publish --access public
       env:
