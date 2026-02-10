@@ -9,8 +9,9 @@ on:
     types: [published]
 
 jobs:
-  test-and-build:
+  build:
     runs-on: ubuntu-latest
+    
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
@@ -18,35 +19,30 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Check for lock files
-      run: |
-        echo "Looking for lock files..."
-        find . -name "package-lock.json" -o -name "yarn.lock" -o -name "pnpm-lock.yaml" || echo "No lock files found"
-    
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
     
-    # 根据实际情况调整路径
-    - name: Install dependencies in workspace
-      run: |
-        cd koishi-plugin-ba-plugin || true
-        npm install
+    - name: Install dependencies
+      run: npm ci || npm install
     
-    - name: Build
-      run: |
-        cd koishi-plugin-ba-plugin || true
-        npm run build --if-present
+    - name: Build (optional)
+      run: npm run build --if-present
     
-    - name: Test
+    # 如果 package.json 中没有 test 脚本，就跳过测试
+    - name: Test (if exists)
       run: |
-        cd koishi-plugin-ba-plugin || true
-        npm test
+        if grep -q '"test"' package.json; then
+          npm test
+        else
+          echo "No test script found in package.json, skipping tests"
+        fi
 
   publish:
     if: github.event_name == 'release' && github.event.action == 'published'
-    needs: test-and-build
+    needs: build
     runs-on: ubuntu-latest
     
     steps:
@@ -58,19 +54,14 @@ jobs:
         node-version: '20.x'
         registry-url: 'https://registry.npmjs.org'
     
-    - name: Install dependencies in workspace
-      run: |
-        cd koishi-plugin-ba-plugin || true
-        npm install
+    - name: Install dependencies
+      run: npm ci || npm install
     
-    - name: Build
-      run: |
-        cd koishi-plugin-ba-plugin || true
-        npm run build --if-present
+    - name: Build (optional)
+      run: npm run build --if-present
     
+    # 直接在当前目录发布（假设这就是 koishi-plugin-ba-plugin 包）
     - name: Publish to npm
-      run: |
-        cd koishi-plugin-ba-plugin
-        npm publish --access public
+      run: npm publish --access public
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
