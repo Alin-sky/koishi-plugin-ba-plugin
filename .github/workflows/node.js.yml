@@ -1,0 +1,116 @@
+name: Node.js CI and Release
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Check for lock file
+      run: |
+        if [ -f package-lock.json ]; then
+          echo "Found package-lock.json, caching dependencies"
+        else
+          echo "No lock file found, using regular install"
+        fi
+    
+    - name: Check package.json scripts
+      run: npm run || echo "No npm scripts defined"
+    
+    # 构建 TypeScript 项目（如果有 tsconfig.json）
+    - name: Check for TypeScript
+      run: |
+        if [ -f tsconfig.json ]; then
+          echo "TypeScript project detected"
+          npx tsc --version || npm install typescript --no-save
+        else
+          echo "No TypeScript config found"
+        fi
+    
+    # 尝试构建，如果有 tsconfig.json 则使用 tsc
+    - name: Build
+      run: |
+        if [ -f tsconfig.json ]; then
+          npx tsc || npm run build --if-present
+        else
+          npm run build --if-present
+        fi
+    
+    # 如果有 test 脚本则运行测试
+    - name: Test (if exists)
+      run: |
+        if [ -f package.json ] && grep -q '"test"' package.json; then
+          npm test
+        else
+          echo "No test script found, skipping tests"
+        fi
+
+  publish:
+    if: github.event_name == 'release' && github.event.action == 'published'
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        registry-url: 'https://registry.npmjs.org'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    # 构建步骤
+    - name: Build
+      run: |
+        if [ -f tsconfig.json ]; then
+          # 如果使用 TypeScript，先确保安装了 typescript
+          npx tsc --version 2>/dev/null || npm install typescript --no-save
+          npx tsc
+        else
+          npm run build --if-present
+        fi
+    
+    # 准备发布 - 确保 dist 和 lib 目录存在
+    - name: Prepare for publish
+      run: |
+        echo "Checking build output..."
+        ls -la
+        
+        # 如果 lib 目录不存在但 tsconfig.json 存在，尝试构建
+        if [ ! -d "lib" ] && [ -f tsconfig.json ]; then
+          echo "lib directory not found, building with tsc..."
+          npx tsc --version 2>/dev/null || npm install typescript --no-save
+          npx tsc
+        fi
+        
+        echo "Final structure:"
+        ls -la
+    
+    - name: Publish to npm
+      run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
