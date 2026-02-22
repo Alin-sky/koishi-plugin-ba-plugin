@@ -136,7 +136,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
         async function get_stu_favo() {
             let in_json_create_data = []
             try {
-                const dbdata = await ctx.http.get("https://schale.gg/data/cn/students.json")
+                const dbdata = await ctx.http.get("https://schaledb.com/data/cn/students.json")
                 for (let i = 0; i < dbdata.length; i++) {
                     in_json_create_data.push({
                         "id": dbdata[i].Id,
@@ -425,7 +425,7 @@ export async function cal_favorable(ctx: Context, config: Config) {
         c.font = `bold 56px Arial`;
         c.fillText(`总经验:${num[0]},需满足以下任意一点`, x + 100, y + 300 + yss)
         c.font = `bold 30px Arial`;
-        c.fillText(`数据来源：https://schale.gg/                      https://ba.gamekee.com`, 50, height - 20)
+        c.fillText(`数据来源：https://schaledb.com/                      https://ba.gamekee.com`, 50, height - 20)
         c.font = `bold 55px Arial`;
         await draw_text(favorlist)
         const img = canvas.toDataURL("image/png")

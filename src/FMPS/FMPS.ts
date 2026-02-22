@@ -27,15 +27,15 @@ export interface md_format {
 //Alin's File Management and Processing Systems v1.0-beta 2024-04-05 
 //koishi api versions 
 
-const schale_db_url = 'https://schale.gg/data/'
+const schale_db_url = 'https://schaledb.com/data/'
 const log1 = "ba-plugin-FMPS"
 const logger: Logger = new Logger(log1)
 
-const student_data_cn = 'https://schale.gg/data/cn/students.json'
-const student_data_jp = 'https://schale.gg/data/jp/students.json'
-const student_data_tw = 'https://schale.gg/data/tw/students.json'
-const student_data_kr = 'https://schale.gg/data/kr/students.json'
-const student_data_zh = 'https://schale.gg/data/zh/students.json'
+const student_data_cn = 'https://schaledb.com/data/cn/students.json'
+const student_data_jp = 'https://schaledb.com/data/jp/students.json'
+const student_data_tw = 'https://schaledb.com/data/tw/students.json'
+const student_data_kr = 'https://schaledb.com/data/kr/students.json'
+const student_data_zh = 'https://schaledb.com/data/zh/students.json'
 
 export class FMPS {
     private ctx: Context;
