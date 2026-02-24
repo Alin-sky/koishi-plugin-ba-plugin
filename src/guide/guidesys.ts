@@ -103,7 +103,7 @@ export const guide_systeam = ({
 
     const arona_url = 'https://arona.diyigemt.com/api/v2'
     const arona_cdn = 'https://arona.cdn.diyigemt.com/image'
-    const db_imgdata_url = 'https://schale.gg/images/student/collection/'
+    const db_imgdata_url = 'https://schaledb.com/images/student/collection/'
 
     const fmp = new FMPS(ctx)
     const log_on = config.guide.logger
