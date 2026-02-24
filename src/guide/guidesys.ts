@@ -28,6 +28,7 @@ export interface guideConfig {
   avatar: boolean
   logger: boolean
   time: number
+  map: number
 }
 
 export const guide_qq: Schema<guide_qq> = Schema.intersect([
@@ -50,11 +51,11 @@ export const guideConfig: Schema<guideConfig> = Schema.intersect([
     avatar: Schema.boolean().default(true).description('模糊匹配时生成学生头像图（canvas）'),
     logger: Schema.boolean().default(true).description('每次攻略请求输出日志'),
     time: Schema.number().default(20000).description('攻略、抽卡系统的等待时间（单位：毫秒）'),
+    map: Schema.number().default(30).description('当前日服最高主线地图'),
   }).description('攻略系统设置'),
 ])
 
-//日服最大地图
-export const maxmap_sms = 28;
+
 
 export const synonyms: { [key: string]: string[] } = {
   "当前": ["目前", "现在", "此刻", "当下", "在办", "在开展", "在进行", "开展中", "进行中"],
@@ -91,6 +92,8 @@ export const FMPS_server_download = "https://1145141919810-1317895529.cos.ap-che
 export const guide_systeam = ({
 
   async apply(ctx: Context, config: Config) {
+    //日服最大地图
+    const maxmap_sms = config.guide.map;
     ctx.i18n.define('zh-CN', require('../locales/zh-CN'))
     const root = await rootF("bap-guidesys")
     const root_guide = await rootF("bap-guidesys", "guide_aronaimg")
@@ -1107,7 +1110,7 @@ export const guide_systeam = ({
         const arodatas = await ctx.http.get(arona_url + '/image?name=' + '国服未来视')
         if (arodatas.code == 200) {
           await fmp.guide_download_image(root_guide, (arona_cdn + '/s' + arodatas.data[0].content), (arodatas.data[0].hash), log_on)
-          return (h.image(pathToFileURL(resolve(root_guide + '/' + (arodatas.data[0].hash + '.jpg'))).href))
+          return (h.image(pathToFileURL(resolve(root_guide + '/' + ('d7eb993e9be07a74f0aca5a854dbe963' + '.png'))).href))
         } else {
           return session.text('.error')
         }

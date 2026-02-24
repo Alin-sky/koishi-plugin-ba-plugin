@@ -123,6 +123,12 @@ export const plugin_Config: Schema<plugin_Config> = Schema.intersect([
   }).description('插件基础设置'),
 ])
 
+//koishi控制台
+export const Config: Schema<Config> = Schema.object({
+  plugin_config: plugin_Config,
+  qqconfig: guide_qq,
+  guide: guideConfig,
+})
 
 export interface Config {
   plugin_config: plugin_Config
@@ -140,12 +146,7 @@ export interface inteConfig {
 }
 
 
-//koishi控制台
-export const Config: Schema<Config> = Schema.object({
-  plugin_config: plugin_Config,
-  qqconfig: guide_qq,
-  guide: guideConfig,
-})
+
 
 //代码区
 

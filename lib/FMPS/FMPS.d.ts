@@ -1,4 +1,18 @@
 import { Context } from "koishi";
+export interface md_format {
+    msg_type: number;
+    msg_id: string;
+    markdown: {
+        content?: any;
+    };
+    keyboard?: {
+        content: {
+            rows: Array<{
+                buttons: any[];
+            }>;
+        };
+    };
+}
 export declare class FMPS {
     private ctx;
     constructor(ctx: Context);
@@ -89,4 +103,16 @@ export declare class FMPS {
      * @returns {string} 返回格式化的时间字符串
      */
     formatTimestamp(timestamp: any): string;
+    /**
+     * 发送Markdown格式消息
+     * 根据会话平台和类型自动选择私聊或群聊发送方式
+     *
+     * @param session - 会话对象，包含平台信息和用户信息
+     * @param md - Markdown格式消息内容
+     */
+    send_md_mess(session: any, md: md_format): Promise<void>;
+    get_wi_hi(imgbuff: Buffer): Promise<{
+        width: any;
+        height: any;
+    }>;
 }

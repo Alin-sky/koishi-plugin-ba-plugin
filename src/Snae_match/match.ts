@@ -3,10 +3,11 @@
 //Revised by Alin on 3034-5-22
 //ba-students-match-systems v2.1
 
+
+import { Context } from "koishi";
 import { FMPS } from "../FMPS/FMPS";
 import { rootF } from "../FMPS/FMPS_F";
-import { maxmap_sms, synonyms } from "../guide/guidesys";
-import { Context } from "koishi";
+import { synonyms } from "../guide/guidesys";
 
 // 定义各种学生名字的接口
 interface StudentName {
@@ -24,6 +25,8 @@ interface StudentName {
 
 const ctx = new Context();
 const fmp = new FMPS(ctx)
+
+const maxmap_sms = 30;
 //const NameData: StudentName[] = require(`./sms_studata_main.json`) as StudentName[];
 export const match_file = __dirname
 
